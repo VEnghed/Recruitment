@@ -9,7 +9,11 @@ const competenceSchema = new Schema({
     karuselldrift: {
         type: Number,
         required: true
-    }
+    },
+    Städning: {
+        type: Number,
+        required: true
+    } 
 })
 
 const Competence = mongoose.model('competence', competenceSchema);

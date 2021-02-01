@@ -152,7 +152,7 @@ function Applicationpage(props) {
      * @param applicationData The data to send
      */
     function sendApplication(applicationData) {
-        //Add more applicant info here?
+        //Add applicant info here?
         let application =  applicationData;
 
         console.log("Sending application: " + application)
@@ -169,10 +169,10 @@ function Applicationpage(props) {
     
             //If something went wrong with saving application
             if(response.status === 500) {   // internal error
-            
+                console.log("internal error")
             } 
             else if(response.status === 200) {    
-                console.log("Something")
+                console.log("Success")
             }
             else if(response.status === 201) {    
                 console.log("Something else")
