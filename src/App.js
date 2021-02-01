@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import Application from './applicationpageview';
+import Application from './applicationpageview/applicationpage';
 
 /**
  * renders the application, in terms of a header
@@ -11,7 +11,7 @@ import Application from './applicationpageview';
 function App() {
   return (
     <div className="app-container">
-      <Header/>    
+          
       <Router>
         <Route path="/application" component={Application}/>
       </Router>

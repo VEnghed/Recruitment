@@ -153,8 +153,20 @@ function Applicationpage(props) {
      */
     function sendApplication(applicationData) {
         //Add applicant info here?
-        let application =  applicationData;
+        let fakePerson = {
+            role: "Applicant",
+            firstName: "firstName",
+            lastName: "lastName",
+            username: "username",
+            password: "password",
+            email: "email",
+            ssn: 11234674576
+          };
 
+        let application =  {applicationData, 
+            fakePerson
+        };
+        //Insomnia
         console.log("Sending application: " + application)
         // /application?
         fetch('/post', {
@@ -187,7 +199,7 @@ function Applicationpage(props) {
      */
     function onSendApplicationClick() {
         //gather data
-        let applicationData = {competenceArray,availabilityArray};
+        let applicationData = {availabilityArray, competenceArray};
         console.log(applicationData);
         sendApplication(applicationData);
     }

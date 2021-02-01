@@ -8,7 +8,6 @@ router.post('/post', (req, res) => {
     //res.status(200).json({ msg: 'Thanks for your application :)' })
     let response = {};
     try {
-        
         controller.sendApplication(req.body)
         response.success = "true"
         res.status(200).json(response)
