@@ -148,21 +148,16 @@ function Applicationpage(props) {
 
 
     /**
-     * @description 
-     * @param
-     * @param
-     * @param
-     * @param
+     * @description This function sends application data (json format) to the server and handles the server response 
+     * @param applicationData The data to send
      */
     function sendApplication(applicationData) {
-        let application = ({
-            //Add more applicant info here?
-            applicationData
-        })
+        //Add more applicant info here?
+        let application =  applicationData;
 
         console.log("Sending application: " + application)
-
-        fetch('/apply', {
+        // /application?
+        fetch('/post', {
             method: 'POST', 
             headers: {
             'Accept': 'application/json',
@@ -187,12 +182,11 @@ function Applicationpage(props) {
 
     //onClick function for sending application
     /**
+     * @description Gathers data from user input and uses it to send application to server with the sendApplication function.
      * 
      */
     function onSendApplicationClick() {
         //gather data
-        
-        
         let applicationData = {competenceArray,availabilityArray};
         console.log(applicationData);
         sendApplication(applicationData);

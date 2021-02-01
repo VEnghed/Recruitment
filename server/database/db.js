@@ -45,9 +45,14 @@ function loginUser(username, password) {
 }
 
 /**
- * Creates an application on the server
+ * @description Attempts to create an application on in the database
+ * @param {Object} application An object containing application data
+ * @returns {Promise} Promise object that represents the result of the create attempt
  */
-function createApplication() { }
+function createApplication(application) {
+    let newApplication = new Application(application)
+    return newApplication.save()
+}
 
 /**
  * Returns an array of applications based on the query criterias
