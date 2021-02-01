@@ -3,7 +3,7 @@
  */
 function Success() {
     return (
-            <p>Congratulations, you created an account!</p>
+            <h2>Congratulations, you created an account!</h2>
         )
     }
 export default Success;
