@@ -32,8 +32,7 @@ const personSchema = new Schema({
     },
     competenceProfile: Object,
     availability: {
-        type: Array,
-        required: true
+        type: Array
     }
 });
 

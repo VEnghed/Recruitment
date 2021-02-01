@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import TestPerson from '../model/testperson'
+import Person from '../model/persons'
 
 /**
  * Connects the server to the recruitment system's database. Creates a connection pool of eight sockets.
@@ -16,10 +17,23 @@ function connect() {
  * Attemps to create a new applicant user in the database,
  * @param {Object} userData 
  * @returns {Promise} Promise object represents the result of the create attempt.
+ * @throws Throws an exception if user cannot be saved
  */
 function createUser(userData) {
-    let testPerson = new TestPerson(userData)
-    return testPerson.save()
+    let testPerson = new Person(userData)
+    return new Promise((resolve, reject) => {
+        testPerson.save((err, doc) => {
+            if(err) {
+                reject({ msg: 'could not save user: wrong input', ...err })
+                return
+            }
+            else if(doc) {
+                resolve(doc)
+                return
+            }   
+            reject({ msg: 'could not save user: internal database error', ...err })  
+        })
+    })
 }
 
 /**
