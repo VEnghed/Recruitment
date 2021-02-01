@@ -16,4 +16,14 @@ async function registerApplicant(userData) {
     return db.createUser(userData)
 }
 
+/**
+ * Get all applicants that matches the search
+ * @param {AppQuery} the given query 
+ * @returns {applicants} All applicant that 
+ * mathces the query in the business logic
+ */
+async function getApplicants(AppQuery) {
+    return 
+}
+
 export default { establishDatabaseConnection, registerApplicant }

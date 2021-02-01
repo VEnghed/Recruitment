@@ -68,4 +68,10 @@ function createApplication() { }
  */
 function getApplications() { }
 
+/**
+ * Returns an object representing the details of 
+ * an application
+ */
+function getApplicationDetails() {}
+
 export default { connect, createUser, loginUser, createApplication, getApplications }
