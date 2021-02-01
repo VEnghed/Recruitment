@@ -20,11 +20,11 @@
   },
   "proxy": "http://localhost:8080",
   "scripts": {
-    "start": "PORT=1337 react-scripts start",
+    "start": "set PORT=1337 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "serve": "node -r esm server.js",
+    "serve": "node -r esm ./server/server.js",
     "citest": "node citest.js"
   },
   "eslintConfig": {
