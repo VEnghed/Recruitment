@@ -15,16 +15,17 @@
     "mongoose": "^5.11.13",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
     "web-vitals": "^0.2.4"
   },
   "proxy": "http://localhost:8080",
   "scripts": {
-    "start": "PORT=1337 react-scripts start",
+    "start": "set PORT=1337 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "serve": "node -r esm server.js",
+    "serve": "node -r esm ./server/server.js",
     "citest": "node citest.js"
   },
   "eslintConfig": {
