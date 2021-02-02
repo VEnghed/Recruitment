@@ -14,6 +14,7 @@ router.post('/post', (req, res) => {
     }catch(err) {
         response.success = "false"
         response.error('internal error')
+        console.log(err)
         res.status(500).json(response)
     }
 })

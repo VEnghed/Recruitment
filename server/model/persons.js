@@ -31,10 +31,10 @@ const personSchema = new Schema({
         required: true
     },
     competenceProfile: Object,
-    availability: {
+    /*availability: {
         type: Array,
         required: true
-    }
+    }*/
 });
 
 const Person = mongoose.model('person', personSchema);

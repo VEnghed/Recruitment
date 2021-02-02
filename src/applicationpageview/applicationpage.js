@@ -153,7 +153,7 @@ function Applicationpage(props) {
      */
     function sendApplication(applicationData) {
         //Add applicant info here?
-        let fakePerson = {
+        /*let fakePerson = {
             role: "Applicant",
             firstName: "firstName",
             lastName: "lastName",
@@ -161,13 +161,21 @@ function Applicationpage(props) {
             password: "password",
             email: "email",
             ssn: 11234674576
-          };
-
-        let application =  {applicationData, 
-            fakePerson
+        };
+        */
+        let application =  {availabilities: applicationData.availabilityArray, competencies: applicationData.competenceArray, 
+            applicant: {
+                role: "Applicant",
+                firstName: "firstName",
+                lastName: "lastName",
+                username: "username",
+                password: "password",
+                email: "email",
+                ssn: 11234674576
+            }
         };
         //Insomnia
-        console.log("Sending application: " + application)
+        console.log("Sending application: " + JSON.stringify(application))
         // /application?
         fetch('/post', {
             method: 'POST', 
