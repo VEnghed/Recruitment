@@ -1,6 +1,6 @@
 import './applicationpage.css';
 import React, { useState, useRef } from "react";
-import ReactDOM from "react-dom"; //Not used
+
 
 
 //global arrays use to store user input, probably not a great way to do it
@@ -19,21 +19,21 @@ function Applicationpage(props) {
     
 
     function addCompetenceToArr (comp, exp) {
-        let newElem = {"comp" : comp, "exp": exp};
+        //let newElem = {"competence" : comp, "yearsExperience": exp};
+        let newElem = {[`${comp}`]: exp};
         competenceArray.push(newElem);
     } 
     function changeCompArray (id, comp, exp) {
-        competenceArray[id] = {"comp":comp, "exp":exp}
-        console.log(competenceArray);
+        //competenceArray[id] = {"competence":comp, "yearsExperience":exp}
+        competenceArray[id] = {[`${comp}`]: exp}
     }
 
     function addAvailabilityToArr (avFrom, avTo) {
-        let newElem = {"avFrom":avFrom, "avTo":avTo};
+        let newElem = {"availableFrom":avFrom, "availableTo":avTo};
         availabilityArray.push(newElem);
     }
     function changeAvArray (id, avFrom, avTo) {
-        availabilityArray[id] = {"avFrom":avFrom, "avTo":avTo};
-        console.log(availabilityArray);
+        availabilityArray[id] = {"availableFrom":avFrom, "availableTo":avTo};
     }
 
     const textInput = useRef(null);
@@ -47,10 +47,10 @@ function Applicationpage(props) {
         const [yearsExperience, setYearsExperience] = useState('')
         /**
          * 
-         * @param {*} stateVal 
-         * @param {*} identifier 
-         * @param {*} comp 
-         * @param {*} exp 
+         * @param {*} stateVal Value in the state
+         * @param {*} identifier The row that should be changed in the array 
+         * @param {*} comp The competence
+         * @param {*} exp Years experience
          */
         function changeCompetence(stateVal, identifier, comp, exp) {
             setCompetence(stateVal);
@@ -59,10 +59,10 @@ function Applicationpage(props) {
         
         /**
          * 
-         * @param {*} stateVal 
-         * @param {*} identifier 
-         * @param {*} comp 
-         * @param {*} exp 
+         * @param {*} stateVal Value in the state
+         * @param {*} identifier The row that should be changed in the array 
+         * @param {*} comp The competence
+         * @param {*} exp The experience
          */
         function changeYearsExperience(stateVal, identifier, comp, exp) {
             setYearsExperience(stateVal);
@@ -158,9 +158,9 @@ function Applicationpage(props) {
             firstName: "firstName",
             lastName: "lastName",
             username: "username",
+            ssn: 11234674576,
             password: "password",
-            email: "email",
-            ssn: 11234674576
+            email: "email"
         };
         */
         let application =  {availabilities: applicationData.availabilityArray, competencies: applicationData.competenceArray, 
@@ -169,15 +169,14 @@ function Applicationpage(props) {
                 firstName: "firstName",
                 lastName: "lastName",
                 username: "username",
+                ssn: 11234674576,
                 password: "password",
                 email: "email",
-                ssn: 11234674576
+                
             }
         };
-        //Insomnia
         console.log("Sending application: " + JSON.stringify(application))
-        // /application?
-        fetch('/post', {
+        fetch('/application/post', {
             method: 'POST', 
             headers: {
             'Accept': 'application/json',
@@ -185,8 +184,8 @@ function Applicationpage(props) {
             },
             body: JSON.stringify(application)
         }).then(response => {
-            console.log(response)  
-    
+              
+            
             //If something went wrong with saving application
             if(response.status === 500) {   // internal error
                 console.log("internal error")

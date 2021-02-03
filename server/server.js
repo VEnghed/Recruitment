@@ -1,3 +1,5 @@
+//require = require("esm")(module/*, options */)
+//module.exports = require("./server.js")
 import 'dotenv/config'
 import express from 'express'
 import bodyParser from 'body-parser'

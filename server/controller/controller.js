@@ -8,8 +8,9 @@ function establishDatabaseConnection() {
 }
 
 function sendApplication(application) {
-    return db.createApplication(application)
+    //JSON parse because mongoose does not like JSON objects
+    return db.createApplication(JSON.parse(application))
 }
 
 
-export default { establishDatabaseConnection }
+export default { establishDatabaseConnection, sendApplication}

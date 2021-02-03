@@ -2,19 +2,20 @@ import mongoose from 'mongoose'
 const Schema = mongoose.Schema;
 
 const competenceSchema = new Schema({
-    korvgrillning: {
+    Korvgrillning: {
         type: Number,
-        required: true
+        //required: true
     }, 
-    karuselldrift: {
+    Karuselldrift: {
         type: Number,
-        required: true
+        //required: true
     },
     Städning: {
         type: Number,
-        required: true
+        //required: true
     } 
 })
 
 const Competence = mongoose.model('competence', competenceSchema);
 module.exports = Competence;
+export default Competence
