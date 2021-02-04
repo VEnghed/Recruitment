@@ -1,10 +1,17 @@
-import db from '../database/db'
+import db from '../database/SQLdb'
 
 /**
  * Connects the integration layer with the HTTP-layer
  */
 function establishDatabaseConnection() {
     return db.connect()
+}
+
+/**
+ * testing login
+ */
+async function Login(userData) {
+    return db.loginUser(userData)
 }
 
 /**
@@ -26,4 +33,4 @@ async function getApplicants(AppQuery) {
     return 
 }
 
-export default { establishDatabaseConnection, registerApplicant }
+export default { establishDatabaseConnection, Login,registerApplicant }

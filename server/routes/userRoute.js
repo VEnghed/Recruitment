@@ -18,7 +18,7 @@ router.post('/register',
     body('lastName').notEmpty().isString().isAlpha(),
     body('username').notEmpty().isString().isAlphanumeric(),
     body('password').notEmpty().isString().isAlphanumeric(),
-    body('ssn').notEmpty().isDate({format:"YYYY-MM-DD",strictMode:true}),
+    body('ssn').notEmpty(),
     (req, res) => {
     console.log("New user: " + JSON.stringify(req.body) + '\n')
 
@@ -42,6 +42,17 @@ router.post('/register',
 })
 
 router.post('/login', (req, res) => {
+    controller.Login(req.body)
+    .then(user => {
+        respBody.success = true;
+        respBody.user = user;
+        res.status(201).json(respBody);
+    })
+    .catch((err) => {
+        respBody.success = false;
+        res.status(500).json(respBody);
+        console.log(err);     //print in console
+    })
     res.status(200).json({ msg: 'logged in!' })
 })
 

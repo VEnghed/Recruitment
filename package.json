@@ -14,11 +14,14 @@
     "express-validator": "^6.9.2",
     "is-benji": "^1.1.4",
     "mongoose": "^5.11.13",
-    "nodemon": "^2.0.7",
+    "pg": "^8.5.1",
+    "pg-hstore": "^2.3.3",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
+    "sequelize": "^6.5.0",
+    "sqlite3": "^5.0.1",
     "web-vitals": "^0.2.4"
   },
   "proxy": "http://localhost:8080",
@@ -28,6 +31,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "serve": "node -r esm ./server/server.js",
+    "dev": "nodemon -r esm ./server/server.js",
     "citest": "node citest.js"
   },
   "eslintConfig": {
@@ -47,5 +51,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
   }
 }
