@@ -55,7 +55,7 @@ function Applicationpage(props) {
         function changeCompetence(stateVal, identifier, comp, exp) {
             setCompetence(stateVal);
             changeCompArray(identifier, comp, exp);
-        };
+        }
         
         /**
          * 
