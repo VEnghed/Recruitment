@@ -46,7 +46,7 @@ function loginUser(username, password) {
 }
 
 /**
- * @description Attempts to create an application on in the database
+ * @description Attempts to create an application in the database
  * @param {Object} application An object containing application data
  * @returns {Promise} Promise object that represents the result of the create attempt
  */

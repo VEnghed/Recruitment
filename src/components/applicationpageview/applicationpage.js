@@ -8,8 +8,8 @@ let competenceArray = [];
 let availabilityArray = [];
 
 /**
- * 
- * @param {*} props 
+ * @description Function for the application page, generates all necessary frontend
+ * @param {*} props used for sending data
  */
 function Applicationpage(props) {
     
@@ -40,7 +40,8 @@ function Applicationpage(props) {
     
 
     /**
-     * function for adding a react component
+     * @description function for adding a react component called competence
+     * @param props Used to send variables to this component that can be used inside it
      */
     const Competence = (props) => {
         const [competence, setCompetence] = useState('')
@@ -110,7 +111,8 @@ function Applicationpage(props) {
     };
 
     /**
-     * function for adding a react component
+     * @description Function for adding a react component
+     * @param props Used for sending variables that can be used inside this function
      */
     const Availability = (props) => {
         const [availableTo, setAvailableTo] = useState('')
@@ -171,8 +173,7 @@ function Applicationpage(props) {
                 username: "username",
                 ssn: 11234674576,
                 password: "password",
-                email: "email",
-                
+                email: "email@email.com",
             }
         };
         console.log("Sending application: " + JSON.stringify(application))
@@ -184,8 +185,6 @@ function Applicationpage(props) {
             },
             body: JSON.stringify(application)
         }).then(response => {
-              
-            
             //If something went wrong with saving application
             if(response.status === 500) {   // internal error
                 console.log("internal error")
@@ -196,10 +195,13 @@ function Applicationpage(props) {
             else if(response.status === 201) {    
                 console.log("Something else")
             }
+            else if(response.status === 400) {
+                console.log("Wrong input")
+                console.log(JSON.stringify(response))
+            }
         })
     }
 
-    //onClick function for sending application
     /**
      * @description Gathers data from user input and uses it to send application to server with the sendApplication function.
      * 
