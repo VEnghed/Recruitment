@@ -7,7 +7,7 @@ import './header.css'
 function Header() {
     return (
         <header className="header">
-            <h2 onClick={() => window.location='/'}>Recriutment</h2>
+            <h2 onClick={() => window.location='/'}>Recruitment</h2>
         </header>
         )
     }

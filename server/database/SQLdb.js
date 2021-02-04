@@ -1,16 +1,19 @@
-import {Sequelize} from 'sequelize'
-import Person from '../model/person'
+import {Sequelize, DataTypes} from 'sequelize'
+import { makePerson } from '../model/person'
 
 // instance of sequelize connection
 var Db = new Sequelize(process.env.PG_URI);
-
+var Person;
 /**
  * testing connection to postgres database
  * @returns {Promise} a promise object representing the result  of the authenticate attempt.
  * @throws Throws an exception if connection to database cannot be established
  */
 function connect() {
-    return Db.authenticate();
+    Person = makePerson(Db, DataTypes)
+    console.log(Person) 
+    Db.sync()
+    return Db.authenticate()
 }   
 
 /**
@@ -80,7 +83,7 @@ function getApplications() { }
 function getApplicationDetails() {}
 
 
-export default { connect, createUser, loginUser, createApplication, getApplications}
+export default { connect, createUser, loginUser, createApplication, getApplications, Db}
 
 /*'firstName lastName username email ssn', (err, doc) => {
             */
