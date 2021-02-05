@@ -7,4 +7,8 @@ function establishDatabaseConnection() {
     return db.connect()
 }
 
-export default { establishDatabaseConnection }
+function loginUser({ username, password }) {
+    return db.loginUser(username, password)
+}
+
+export default { establishDatabaseConnection, loginUser }
