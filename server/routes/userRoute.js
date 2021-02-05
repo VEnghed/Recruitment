@@ -1,6 +1,6 @@
 import express from 'express'
 import controller from '../controller/controller'
-import { check, body, validationResult } from 'express-validator';
+import { body, validationResult } from 'express-validator';
 
 const router = express.Router()
 const ROUTE = '/user'

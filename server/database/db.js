@@ -4,6 +4,7 @@ import { makePerson } from '../model/person'
 // instance of sequelize connection
 var Db = new Sequelize(process.env.PG_URI);
 var Person;
+//models here
 
 /**
  * Authenticate connection to database
@@ -16,7 +17,6 @@ function connect() {
     //makeCompetence
     //makeAvailability
     //makeCompetenceprofile
-    
     Db.sync()
     return Db.authenticate()
 }   
@@ -38,7 +38,6 @@ function createUser(userData) {
             email: userData.email,
             ssn: userData.ssn
             }).then(result => {
-                console.log('Saved onto postgres')
                 resolve(result)
                 return 
             }).catch(err => {
