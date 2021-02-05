@@ -1,4 +1,4 @@
-import db from '../database/SQLdb'
+import db from '../database/db'
 
 /**
  * Connects the integration layer with the HTTP-layer
