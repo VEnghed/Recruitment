@@ -7,8 +7,20 @@ function establishDatabaseConnection() {
     return db.connect()
 }
 
+/**
+ * login
+ */
 function loginUser({ username, password }) {
     return db.loginUser(username, password)
 }
 
-export default { establishDatabaseConnection, loginUser }
+/**
+ * Register a new user on the application
+ * @param {data} data of the new user
+ * @returns {response} The created user as an object
+ */
+async function registerApplicant(userData) {
+    return db.createUser(userData)
+}
+
+export default { establishDatabaseConnection, loginUser, registerApplicant }

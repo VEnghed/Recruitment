@@ -15,7 +15,7 @@ function Login() {
       password: password
     })
 
-    fetch('/signUp', {
+    fetch('/user/login', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

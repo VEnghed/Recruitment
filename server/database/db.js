@@ -1,25 +1,50 @@
-import mongoose from 'mongoose'
-import TestPerson from '../model/testperson'
+import { Sequelize, DataTypes } from 'sequelize'
+import { makePerson } from '../model/person'
+
+// instance of sequelize connection
+var Db = new Sequelize(process.env.PG_URI);
+var Person;
+//models here
 
 /**
- * Connects the server to the recruitment system's database. Creates a connection pool of eight sockets.
- * @returns {Promise} Promise object represents the result of the connect attempt.
+ * Authenticate connection to database
+ * @returns {Promise} a promise object representing the result of the authenticate attempt.
+ * @throws Throws an exception if connection cannot be established
  */
 function connect() {
-    return mongoose.connect(process.env.DB_URI, {
-        useUnifiedTopology: true,
-        useNewUrlParser: true
-    })
-}
+    Person = makePerson(Db, DataTypes)
+    //makeApplication
+    //makeCompetence
+    //makeAvailability
+    //makeCompetenceprofile
+    Db.sync()
+    return Db.authenticate()
+}   
 
 /**
- * Attemps to create a new applicant user in the database,
- * @param {Object} userData 
+ * Attemps to create a new applicant user in the database
+ * @param {Object} userData object rpresenting data of the user
  * @returns {Promise} Promise object represents the result of the create attempt.
+ * @throws Throws an exception if user cannot be saved
  */
 function createUser(userData) {
-    let testPerson = new TestPerson(userData)
-    return testPerson.save()
+    return new Promise((resolve, reject) => {
+        Person.create({ 
+            role: userData.role,
+            firstName: userData.firstName, 
+            lastName: userData.lastName,
+            username: userData.username,
+            password: userData.password,
+            email: userData.email,
+            ssn: userData.ssn
+            }).then(result => {
+                resolve(result)
+                return 
+            }).catch(err => {
+                reject({ msg: 'could not save user', ...err })
+                return
+        })
+    }) 
 }
 
 /**
@@ -30,17 +55,20 @@ function createUser(userData) {
  */
 function loginUser(username, password) {
     return new Promise((resolve, reject) => {
-        TestPerson.findOne({ username: username, password: password }, 'firstName lastName username email ssn', (err, doc) => {
-            if (err) {
-                reject({ msg: 'could not connect to database', ...err })
-                return
+        Person.findAll({ 
+            where: {
+                username: username,
+                password: password
             }
-            if (doc) {
-                resolve(doc)
-                return
-            }
-            reject({ msg: 'username or password is wrong' })
-        })
+        });
+        if(err) {
+            reject({ msg: 'could not connect to database', ...err })
+            return
+        }if(doc) {
+            resolve(doc)
+            return
+        }
+        reject({ msg: 'username or password is wrong' })
     })
 }
 
@@ -54,4 +82,10 @@ function createApplication() { }
  */
 function getApplications() { }
 
-export default { connect, createUser, loginUser, createApplication, getApplications }
+/**
+ * Returns an object representing the details of 
+ * an application
+ */
+function getApplicationDetails() {}
+
+export default { connect, createUser, loginUser, createApplication, getApplications}

@@ -36,7 +36,7 @@ function Register() {
     })
 
     console.log("sending: " + newUser)
-    fetch('/register', {
+    fetch('/user/register', {
       method: 'POST', 
       headers: {
         'Accept': 'application/json',
@@ -50,6 +50,9 @@ function Register() {
       if(response.status === 500) {   // internal error
         setErrormsg(response.statusText)
       } 
+      if(response.status === 400) {   // bad request
+        setErrormsg(response.statusText)
+      }
       else if(response.status === 201) {    //user is registered 
         window.location = "/success"  //change location to application later
       }
