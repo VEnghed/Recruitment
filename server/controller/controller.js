@@ -8,10 +8,10 @@ function establishDatabaseConnection() {
 }
 
 /**
- * testing login
+ * login
  */
-async function Login(userData) {
-    return db.loginUser(userData)
+function loginUser({ username, password }) {
+    return db.loginUser(username, password)
 }
 
 /**
@@ -23,4 +23,4 @@ async function registerApplicant(userData) {
     return db.createUser(userData)
 }
 
-export default { establishDatabaseConnection, Login, registerApplicant }
+export default { establishDatabaseConnection, loginUser, registerApplicant }

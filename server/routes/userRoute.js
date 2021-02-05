@@ -1,4 +1,5 @@
 import express from 'express'
+import { body, validationResult } from 'express-validator'
 import controller from '../controller/controller'
 import { body, validationResult } from 'express-validator';
 
@@ -41,19 +42,22 @@ router.post('/register',
     })
 })
 
-router.post('/login', (req, res) => {
-    controller.Login(req.body)
-    .then(user => {
-        respBody.success = true;
-        respBody.user = user;
-        res.status(201).json(respBody);
+router.post('/login',
+    body('username').isAlphanumeric(),
+    body('password').isLength({ min: 4 }),
+    (req, res) => {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() })
+        }
+
+        controller.loginUser(req.body)
+            .then(user => {
+                res.status(200).json(user)
+            })
+            .catch(err => {
+                res.status(401).json(err)
+            })
     })
-    .catch((err) => {
-        respBody.success = false;
-        res.status(500).json(respBody);
-        console.log(err);     //print in console
-    })
-    res.status(200).json({ msg: 'logged in!' })
-})
 
 export default { router: router, route: ROUTE }
