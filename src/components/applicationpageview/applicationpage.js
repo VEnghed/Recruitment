@@ -1,5 +1,5 @@
 import './applicationpage.css';
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 
 
 
@@ -10,6 +10,7 @@ let availabilityArray = [];
 /**
  * @description Function for the application page, generates all necessary frontend
  * @param {*} props used for sending data
+ * @returns A react component with frontend HTML.
  */
 function Applicationpage(props) {
     
@@ -17,33 +18,53 @@ function Applicationpage(props) {
     let [availabilityList, setAvailabilityList] = useState([]);
     
     
-
+    /**
+     * @description Adds a competence to the array for competencies with the right format
+     * @param {*} comp The competence
+     * @param {*} exp Years experience
+     */
     function addCompetenceToArr (comp, exp) {
         //let newElem = {"competence" : comp, "yearsExperience": exp};
         let newElem = {[`${comp}`]: exp};
         competenceArray.push(newElem);
     } 
+    /**
+     * @description Changes a competency in the competency array
+     * identified by @param id, using the parameters @param comp, @param exp 
+     * @param {*} id Identifies the row/entry in the array
+     * @param {*} comp The competency
+     * @param {*} exp The years experience
+     */
     function changeCompArray (id, comp, exp) {
         //competenceArray[id] = {"competence":comp, "yearsExperience":exp}
         competenceArray[id] = {[`${comp}`]: exp}
     }
 
+    /**
+     * @description Adds an availability element to the availability array
+     * @param {*} avFrom The available from date
+     * @param {*} avTo The available to date
+     */
     function addAvailabilityToArr (avFrom, avTo) {
         let newElem = {"availableFrom":avFrom, "availableTo":avTo};
         availabilityArray.push(newElem);
     }
+    /**
+     * @description Changes an element in the availability array 
+     * identified by @param id, with the parameters @param avFrom and @param avTo
+     * @param {*} id Identifies row/element in availability array
+     * @param {*} avFrom The available from date
+     * @param {*} avTo The available to date
+     */
     function changeAvArray (id, avFrom, avTo) {
         availabilityArray[id] = {"availableFrom":avFrom, "availableTo":avTo};
     }
 
-    const textInput = useRef(null);
-    
-
     /**
      * @description function for adding a react component called competence
-     * @param props Used to send variables to this component that can be used inside it
+     * @param prop Used to send variables to this component that can be used inside it
      */
-    const Competence = (props) => {
+    const Competence = (prop) => {
         const [competence, setCompetence] = useState('')
         const [yearsExperience, setYearsExperience] = useState('')
         /**
@@ -74,7 +95,7 @@ function Applicationpage(props) {
                 <p>Choose competence:</p>
                     <select value={competence} 
                         onChange={event => changeCompetence(event.target.value, 
-                                                        props.identifier, 
+                                                        prop.identifier, 
                                                         event.target.value, 
                                                         yearsExperience)} 
                     name="competency-select" className="competency-select">
@@ -88,7 +109,7 @@ function Applicationpage(props) {
                         {/* Ensure that only numbers can be entered here! */}
                         <input value={yearsExperience} type="number" className="experience" 
                             onChange={event => changeYearsExperience(event.target.value, 
-                                                                    props.identifier, 
+                                                                    prop.identifier, 
                                                                     competence, 
                                                                     event.target.value)}>
                         </input>
@@ -97,10 +118,14 @@ function Applicationpage(props) {
         );
     }
 
-    //Add another competence
+    
+    /**
+     * @description Adds another competence component to the page, competence array and competenceList state
+     * @param {*} event The event that triggers this function
+     */
     const onAddCompetenceClick = event => {
         //Do not add too many competencies
-        if(competenceList.length <= 2) {
+        if(competenceList.length <= 5) {
             const newCompetence = <Competence identifier={competenceList.length} key={competenceList.length}/>
             competenceList = [...competenceList, newCompetence]
             
@@ -112,9 +137,9 @@ function Applicationpage(props) {
 
     /**
      * @description Function for adding a react component
-     * @param props Used for sending variables that can be used inside this function
+     * @param prop Used for sending variables that can be used inside this function
      */
-    const Availability = (props) => {
+    const Availability = (prop) => {
         const [availableTo, setAvailableTo] = useState('')
         const [availableFrom, setAvailableFrom] = useState('')
         
@@ -129,17 +154,30 @@ function Applicationpage(props) {
         return (
             <div className="Availability">
                 <p>Available from:</p>
-                <input ref={textInput} value={availableFrom} onChange={event => changeAvFrom(event.target.value, props.identifier, event.target.value)} type="date" className="available-from" name="available-from"
-                    min="2021-02-01" max="2030-12-31"></input>
+                <input value={availableFrom} 
+                    onChange={event => changeAvFrom(event.target.value, 
+                                                    prop.identifier, 
+                                                    event.target.value)} 
+                    type="date" className="available-from" name="available-from"
+                    min="2021-02-01" max="2030-12-31">
+                </input>
                     
                 <p>Available to:</p>
-                <input value={availableTo} onChange={event => changeAvTo(event.target.value, props.identifier, event.target.value)} type="date" className="available-to" name="available-to"
-                    min="2021-02-01" max="2040-12-31"></input>
+                <input value={availableTo} 
+                    onChange={event => changeAvTo(event.target.value, 
+                                                    prop.identifier, 
+                                                    event.target.value)} 
+                    type="date" className="available-to" name="available-to"
+                    min="2021-02-01" max="2040-12-31">
+                </input>
             </div>
         );
     };
 
-    //Add another availability element   
+    /**
+     * @description Adds another availability component to the page, availability array, and availabilyList state
+     * @param {*} event The event that triggers this function
+     */   
     const onAddAvailabilityClick = event => {
         const newAvailability = <Availability identifier={availabilityList.length} key={availabilityList.length}/>
         availabilityList = [...availabilityList, newAvailability]
@@ -154,27 +192,9 @@ function Applicationpage(props) {
      * @param applicationData The data to send
      */
     function sendApplication(applicationData) {
-        //Add applicant info here?
-        /*let fakePerson = {
-            role: "Applicant",
-            firstName: "firstName",
-            lastName: "lastName",
-            username: "username",
-            ssn: 11234674576,
-            password: "password",
-            email: "email"
-        };
-        */
-        let application =  {availabilities: applicationData.availabilityArray, competencies: applicationData.competenceArray, 
-            applicant: {
-                role: "Applicant",
-                firstName: "firstName",
-                lastName: "lastName",
-                username: "username",
-                ssn: 11234674576,
-                password: "password",
-                email: "email@email.com",
-            }
+        let application =  {availabilities: applicationData.availabilityArray, 
+                            competencies: applicationData.competenceArray, 
+                            applicant: applicationData.applicant
         };
         console.log("Sending application: " + JSON.stringify(application))
         fetch('/application/post', {
@@ -204,11 +224,21 @@ function Applicationpage(props) {
 
     /**
      * @description Gathers data from user input and uses it to send application to server with the sendApplication function.
-     * 
+     * Uses availability, competence arrays
      */
     function onSendApplicationClick() {
         //gather data
-        let applicationData = {availabilityArray, competenceArray};
+        //Applicant should not be hardcoded
+        let applicant = {
+            role: "Applicant",
+            firstName: "firstName",
+            lastName: "lastName",
+            username: "username",
+            ssn: 11234674576,
+            password: "password",
+            email: "email@email.com",
+        }
+        let applicationData = {availabilityArray, competenceArray, applicant};
         console.log(applicationData);
         sendApplication(applicationData);
     }

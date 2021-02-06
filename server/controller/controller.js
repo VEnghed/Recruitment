@@ -7,6 +7,10 @@ function establishDatabaseConnection() {
     return db.connect()
 }
 
+/**
+ * Sends an application from the HTTP-layer to the integration layer (database)
+ * @param {*} application The application to send.
+ */
 function sendApplication(application) {
     
     /*check('application.availabilites').exists(),

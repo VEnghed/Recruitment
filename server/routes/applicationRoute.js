@@ -5,6 +5,10 @@ import {body , validationResult} from 'express-validator'
 const router = express.Router()
 const ROUTE = '/application'
 
+/**
+ * Handles a post request on the /applicationpage/post url
+ * which is used when a user wants to send an application
+ */
 router.post('/post',
     //Ensure that request body is correctly formatted
     body('competencies').exists(),
