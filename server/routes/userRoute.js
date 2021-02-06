@@ -1,6 +1,7 @@
 import express from 'express'
 import { body, validationResult } from 'express-validator'
 import controller from '../controller/controller'
+import { authToken } from '../utils/auth'
 
 const router = express.Router()
 const ROUTE = '/user'
@@ -54,7 +55,7 @@ router.post('/login',
 
         controller.loginUser(req.body)
             .then(user => {
-                res.status(200).json(user)
+                res.status(200).json(authToken(user.username))
             })
             .catch(err => {
                 res.status(401).json(err)
