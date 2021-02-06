@@ -1,7 +1,6 @@
 import express from 'express'
 import { body, validationResult } from 'express-validator'
 import controller from '../controller/controller'
-import { body, validationResult } from 'express-validator';
 
 const router = express.Router()
 const ROUTE = '/user'
@@ -21,35 +20,37 @@ router.post('/register',
     body('password').notEmpty().isString().isAlphanumeric(),
     body('ssn').notEmpty(),
     (req, res) => {
-    console.log("New user: " + JSON.stringify(req.body) + '\n')
+        console.log("New user attempt: " + JSON.stringify(req.body) + '\n')
 
-    const error = validationResult(req)
-    if(!error.isEmpty()) {
-        return res.status(400).json({ error: error.array() });
-    }
+        const error = validationResult(req)
+        if (!error.isEmpty()) {
+            return res.status(400).json({ error: error.array() });
+        }
 
-    let respBody = {};
-    controller.registerApplicant(req.body)
-    .then(user => {
-        respBody.success = true;
-        respBody.user = user;
-        res.status(201).json(respBody);
+        let respBody = {};
+        controller.registerApplicant(req.body)
+            .then(user => {
+                respBody.success = true;
+                respBody.user = user;
+                res.status(201).json(respBody);
+            })
+            .catch((err) => {
+                respBody.success = false;
+                res.status(500).json(respBody);
+                console.log(err);     //print in console
+            })
     })
-    .catch((err) => {
-        respBody.success = false;
-        res.status(500).json(respBody);
-        console.log(err);     //print in console
-    })
-})
 
+/**
+ * Handles requests to the login endpoint.
+ */
 router.post('/login',
     body('username').isAlphanumeric(),
     body('password').isLength({ min: 4 }),
     (req, res) => {
         const errors = validationResult(req)
-        if (!errors.isEmpty()) {
+        if (!errors.isEmpty())
             return res.status(400).json({ errors: errors.array() })
-        }
 
         controller.loginUser(req.body)
             .then(user => {
