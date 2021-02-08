@@ -1,10 +1,10 @@
 import { Sequelize, DataTypes } from 'sequelize'
 import { makePerson } from '../model/person'
+import { isAlphaString, isAlphaNumString, isPositiveInteger, isEmail } from '../util/validator'
 
 // instance of sequelize connection
-var Db = new Sequelize(process.env.PG_URI);
+var Db = new Sequelize(process.env.PG_URI, {logging: false});
 var Person;
-//models here
 
 /**
  * Authenticate connection to database
@@ -13,9 +13,8 @@ var Person;
  */
 function connect() {
     Person = makePerson(Db, DataTypes)
-    //makeApplication
-    //makeCompetence
     //makeAvailability
+    //makeCompetence
     //makeCompetenceprofile
     Db.sync()
     return Db.authenticate()
