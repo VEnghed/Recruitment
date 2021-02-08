@@ -10,6 +10,10 @@ app.use(bodyParser.json())
 // Entry point
 loadHandlers(app)
 
-app.listen(process.env.PORT, () => {
-    console.log('Check it out http://localhost:' + process.env.PORT)
+app.get('/', (req, res) => {
+    res.send('Hello from baba booey')
+})
+
+app.listen(process.env.PORT || 8080, () => {
+    console.log('Check it out http://localhost:' + (process.env.PORT || 8080))
 })
