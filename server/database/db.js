@@ -30,7 +30,6 @@ function connect() {
 function createUser(userData) {
     return new Promise((resolve, reject) => {
         Person.create({ 
-            pid: '',
             role: userData.role,
             firstname: userData.firstName, 
             lastname: userData.lastName,
