@@ -19,7 +19,7 @@ function connect() {
     //makeCompetenceprofile
     Db.sync()
     return Db.authenticate()
-}   
+}
 
 /**
  * Attemps to create a new applicant user in the database
@@ -32,44 +32,43 @@ function createUser(userData) {
         Person.create({ 
             pid: '',
             role: 2,
-            firstname: userData.firstName, 
-            lastname: userData.lastName,
+            firstName: userData.firstName, 
+            lastName: userData.lastName,
             username: userData.username,
             password: userData.password,
             email: userData.email,
             ssn: userData.ssn
-            }).then(result => {
-                resolve(result)
-                return 
-            }).catch(err => {
-                reject({ msg: 'could not save user', ...err })
-                return
+        }).then(result => {
+            resolve(result)
+            return
+        }).catch(err => {
+            reject({ msg: 'could not save user', ...err })
+            return
         })
-    }) 
+    })
 }
 
 /**
- * Attempts to authorize a user using the supplied credentials
+ * Attempts to authorize the user by querying the database for an existing user matching the
+ * provided credentials.
  * @param {String} username 
  * @param {String} password 
  * @returns {Promise} Promise object represents the result of the authorization attempt.
  */
 function loginUser(username, password) {
     return new Promise((resolve, reject) => {
-        Person.findAll({ 
+        Person.findAll({
             where: {
                 username: username,
                 password: password
             }
-        });
-        if(err) {
-            reject({ msg: 'could not connect to database', ...err })
-            return
-        }if(doc) {
-            resolve(doc)
-            return
-        }
-        reject({ msg: 'username or password is wrong' })
+        }).then(doc => {
+            if (doc.length == 0) {
+                reject('no user found')
+            } else {
+                resolve(doc[0].dataValues)
+            }
+        })
     })
 }
 
@@ -87,6 +86,6 @@ function getApplications() { }
  * Returns an object representing the details of 
  * an application
  */
-function getApplicationDetails() {}
+function getApplicationDetails() { }
 
-export default { connect, createUser, loginUser, createApplication, getApplications}
+export default { connect, createUser, loginUser, createApplication, getApplications }
