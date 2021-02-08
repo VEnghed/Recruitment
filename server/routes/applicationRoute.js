@@ -18,7 +18,7 @@ router.post('/post',
     body('availabilities').isArray(),
     
     body('applicant').exists(),
-    body('applicant').isJSON(),
+    //body('applicant').isJSON(),
     //Ensure that firstname and lastname contain only letters
     body('applicant.firstName').notEmpty().isAlpha(),
     body('applicant.lastName').notEmpty().isAlpha(),

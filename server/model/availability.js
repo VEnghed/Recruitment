@@ -11,12 +11,12 @@ function makeAvailability(Sequelize, DataTypes, person) {
             autoIncrement: true
         },
         from_date: {
-            type: DataTypes.DATE,
-            allownNull: false
+            type: DataTypes.DATEONLY,
+            allowNull: false
         },
         to_date: {
-            type: DataTypes.DATE,
-            allownNull: false
+            type: DataTypes.DATEONLY,
+            allowNull: false
         },
         pid: {
             type: DataTypes.INTEGER,

@@ -1,6 +1,5 @@
 import './applicationpage.css';
 import React, { useState } from "react";
-import controller from '../../../server/controller/controller';
 
 
 
@@ -27,9 +26,12 @@ function Applicationpage(props) {
     function addCompetenceToArr (comp, exp) {
         //let newElem = {"competence" : comp, "yearsExperience": exp};
         let id;
-        if (comp = "Korvgrillning")id = 1;
-        else id = 2;
-        let newElem = {competence_id: id,[`${comp}`]: exp};
+        if (comp === "Korvgrillning")
+            id = 1;
+        else 
+            id = 2;
+
+        let newElem = {competence_id: id, competence: comp, years_experience: exp};
         competenceArray.push(newElem);
     } 
     /**
@@ -42,9 +44,11 @@ function Applicationpage(props) {
     function changeCompArray (id, comp, exp) {
         //competenceArray[id] = {"competence":comp, "yearsExperience":exp}
         let cid;
-        if (comp = "Korvgrillning") id = 1;
-        else cid = 2;
-        competenceArray[id] = {competence_id: cid, [`${comp}`]: exp}
+        if (comp === "Korvgrillning")
+            cid = 1;
+        else 
+            cid = 2;
+        competenceArray[id] = {competence_id: cid, competence: comp, years_experience: exp}
     }
 
     /**

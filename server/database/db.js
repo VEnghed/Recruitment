@@ -1,8 +1,8 @@
 import { Sequelize, DataTypes } from 'sequelize'
-import { makePerson } from '../model/person'
-import { makeCompetence } from '../model/competence'
-import { makeAvailability } from '../model/availability'
-import { makeCompetenceProfile } from '../model/competenceProfile';
+import { makePerson } from '../model/person.js'
+import { makeCompetence } from '../model/competence.js'
+import { makeAvailability } from '../model/availability.js'
+import { makeCompetenceProfile } from '../model/competenceProfile.js'
 
 
 // instance of sequelize connection
@@ -88,26 +88,40 @@ function loginUser(username, password) {
  * @param applicationData Data used to create an application
  */
 function createApplication(applicationData) {
-    //Try to create availabilites and competence profiles
-    return new Promise((resolve, reject) => {
-        for (let availability in applicationData.availabilities) {
-            Availability.create({from_date: availability.avaliableFrom,
-                            to_date: availability.availableTo,
-                            pid: applicationData.applicant.pid})
-        }
-        for(let competence in applicationData.competencies) { 
-            CompetenceProfile.create({years_experience: competence.exp,
-                competence_id: competence.competence_id,
-                pid: applicationData.applicant.pid
-            })
-        }
-    }).then(result => {
-        resolve(result)
-        return
-    }).catch(err => {
-        reject({ msg: 'could not save application', ...err })
-        return
+    let promiseList = [];
+    let newPromise;
+    console.log("Här kommer datan: ")
+    console.log(new Date(applicationData.availabilities[0].availableFrom))
+    console.log(JSON.stringify(applicationData))
+    applicationData.availabilities.map((availability) => {
+        console.log("DATA")
+        console.log(availability)
+
+        newPromise = new Promise((resolve, reject) => {
+            Availability.create({from_date: availability.availableFrom,
+                to_date: availability.availableTo,
+                pid: applicationData.applicant.pid})
+        });
+        promiseList = [...promiseList, newPromise]
     })
+    applicationData.competencies.map((competence) => { 
+        //console.log(JSON.stringify(competence))
+        newPromise = new Promise((resolve, reject) => {
+            
+            CompetenceProfile.create({
+                years_of_experience: competence.years_experience,
+                pid: applicationData.applicant.pid,
+                competence_id: competence.competence_id
+            })
+        });
+        promiseList = [...promiseList, newPromise]
+    })
+    Promise.all(promiseList).then(values => {
+        console.log(values);
+      })
+      .catch(error => {
+        console.error(error.message)
+      });
 }
 
 /**
