@@ -31,9 +31,9 @@ function createUser(userData) {
     return new Promise((resolve, reject) => {
         Person.create({ 
             pid: '',
-            role: 2,
-            firstName: userData.firstName, 
-            lastName: userData.lastName,
+            role: userData.role,
+            firstname: userData.firstName, 
+            lastname: userData.lastName,
             username: userData.username,
             password: userData.password,
             email: userData.email,

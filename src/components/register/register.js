@@ -26,7 +26,7 @@ function Register() {
     }
 
     let newUser = ({
-      role: "Applicant",
+      role: 2,
       firstName: firstName,
       lastName: lastName,
       username: username,
