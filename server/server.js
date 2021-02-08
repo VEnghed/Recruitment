@@ -1,7 +1,8 @@
-import 'dotenv/config'
+import dotenv from 'dotenv'
+dotenv.config()
 import express from 'express'
 import bodyParser from 'body-parser'
-import loadHandlers from './routes'
+import loadHandlers from './routes/index.js'
 
 const app = express()
 app.use(bodyParser.json())

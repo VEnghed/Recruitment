@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import TestPerson from '../model/testperson'
+import TestPerson from '../model/testperson.js'
 
 /**
  * Connects the server to the recruitment system's database. Creates a connection pool of eight sockets.
