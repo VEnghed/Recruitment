@@ -14,7 +14,7 @@ function makeRole(Sequelize, DataTypes) {
         },
         name: {
             type: DataTypes.STRING,
-            allownNull: false,
+            allowNull: false,
             validate: {
                 isAlpha: true,
             }
