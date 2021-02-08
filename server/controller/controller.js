@@ -1,5 +1,4 @@
 import db from '../database/db'
-import {check, validationResult} from 'express-validator'
 /**
  * Connects the integration layer with the HTTP-layer
  */
