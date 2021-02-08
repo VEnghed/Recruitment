@@ -29,10 +29,10 @@ function connect() {
  */
 function createUser(userData) {
     return new Promise((resolve, reject) => {
-        Person.create({
+        Person.create({ 
             role: userData.role,
-            firstName: userData.firstName,
-            lastName: userData.lastName,
+            firstname: userData.firstName, 
+            lastname: userData.lastName,
             username: userData.username,
             password: userData.password,
             email: userData.email,

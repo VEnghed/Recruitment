@@ -2,15 +2,21 @@
 //instance of sequelize
 function makePerson(Sequelize, DataTypes) {
     return Sequelize.define('person', {
+        pid: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            allowNull: false,
+            autoIncrement: true
+        },
         role: {
+            type: DataTypes.INTEGER,
+            allownNull: false
+        },
+        firstname: {
             type: DataTypes.STRING,
             allownNull: false
         },
-        firstName: {
-            type: DataTypes.STRING,
-            allownNull: false
-        },
-        lastName: {
+        lastname: {
             type: DataTypes.STRING,
             allownNull: false
         },
@@ -30,10 +36,10 @@ function makePerson(Sequelize, DataTypes) {
             type: DataTypes.INTEGER,
             allownNull: false
         }}, {
-            tableName: 'person'
+            tableName: 'person',
+            timestamps: false
         }
-    );
+    ); 
 }
-
 
 export { makePerson };
