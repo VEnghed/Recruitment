@@ -5,7 +5,6 @@ import Person from './persons'
 
 
 const Schema = mongoose.Schema;
-
 /**
  * Schema for an application, must contain a number of availabilities, a number of competencies and a person/applicant
  */
@@ -23,5 +22,3 @@ const applicationSchema = new Schema({
 const Application = mongoose.model('application', applicationSchema);
 module.exports = Application;
 export default Application
-
-

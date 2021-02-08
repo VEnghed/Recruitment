@@ -1,5 +1,6 @@
 import './applicationpage.css';
 import React, { useState } from "react";
+import controller from '../../../server/controller/controller';
 
 
 
@@ -25,7 +26,10 @@ function Applicationpage(props) {
      */
     function addCompetenceToArr (comp, exp) {
         //let newElem = {"competence" : comp, "yearsExperience": exp};
-        let newElem = {[`${comp}`]: exp};
+        let id;
+        if (comp = "Korvgrillning")id = 1;
+        else id = 2;
+        let newElem = {competence_id: id,[`${comp}`]: exp};
         competenceArray.push(newElem);
     } 
     /**
@@ -37,7 +41,10 @@ function Applicationpage(props) {
      */
     function changeCompArray (id, comp, exp) {
         //competenceArray[id] = {"competence":comp, "yearsExperience":exp}
-        competenceArray[id] = {[`${comp}`]: exp}
+        let cid;
+        if (comp = "Korvgrillning") id = 1;
+        else cid = 2;
+        competenceArray[id] = {competence_id: cid, [`${comp}`]: exp}
     }
 
     /**
@@ -125,7 +132,7 @@ function Applicationpage(props) {
      */
     const onAddCompetenceClick = event => {
         //Do not add too many competencies
-        if(competenceList.length <= 5) {
+        if(competenceList.length <= 2) {
             const newCompetence = <Competence identifier={competenceList.length} key={competenceList.length}/>
             competenceList = [...competenceList, newCompetence]
             
@@ -183,7 +190,6 @@ function Applicationpage(props) {
         availabilityList = [...availabilityList, newAvailability]
         setAvailabilityList(availabilityList);
         addAvailabilityToArr("test", "test")
-        
     };
 
 
@@ -230,13 +236,14 @@ function Applicationpage(props) {
         //gather data
         //Applicant should not be hardcoded
         let applicant = {
-            role: "Applicant",
+            role: 2,
             firstName: "firstName",
             lastName: "lastName",
             username: "username",
             ssn: 11234674576,
             password: "password",
             email: "email@email.com",
+            pid: 11,
         }
         let applicationData = {availabilityArray, competenceArray, applicant};
         console.log(applicationData);

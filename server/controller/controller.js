@@ -1,4 +1,4 @@
-import db from '../database/db'
+import db from '../database/MongoDB'
 /**
  * Connects the integration layer with the HTTP-layer
  */
@@ -19,5 +19,12 @@ function sendApplication(application) {
     return db.createApplication(JSON.parse(application))
 }
 
+/**
+ * Attempts to retrieve all competencies from the database.
+ */
+function getCompetencies() {
+    return db.getCompetencies()
+}
 
-export default { establishDatabaseConnection, sendApplication}
+
+export default { establishDatabaseConnection, sendApplication, getCompetencies }

@@ -14,10 +14,12 @@
     "express-validator": "^6.9.2",
     "is-benji": "^1.1.4",
     "mongoose": "^5.11.13",
+    "pg": "^8.5.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
+    "sequelize": "^6.5.0",
     "web-vitals": "^0.2.4"
   },
   "proxy": "http://localhost:8080",

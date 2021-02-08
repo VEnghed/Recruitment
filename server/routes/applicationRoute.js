@@ -19,8 +19,6 @@ router.post('/post',
     
     body('applicant').exists(),
     body('applicant').isJSON(),
-    //Ensure that only applicants can post applications
-    body('applicant.role').equals("Applicant"),
     //Ensure that firstname and lastname contain only letters
     body('applicant.firstName').notEmpty().isAlpha(),
     body('applicant.lastName').notEmpty().isAlpha(),
