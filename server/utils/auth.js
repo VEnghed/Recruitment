@@ -11,4 +11,8 @@ function authToken(username) {
     return { accessToken: token }
 }
 
+function authenticate(req, res, next) {
+    
+}
+
 export { authToken }
