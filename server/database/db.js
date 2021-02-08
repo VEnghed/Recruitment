@@ -1,9 +1,9 @@
 import { Sequelize, DataTypes } from 'sequelize'
 import { makePerson } from '../model/person'
-import { isNonEmptyString, isAlphaString, isAlphaNumString } from '../util/validator'
+import { isAlphaString, isAlphaNumString, isPositiveInteger, isEmail } from '../util/validator'
 
 // instance of sequelize connection
-var Db = new Sequelize(process.env.PG_URI);
+var Db = new Sequelize(process.env.PG_URI, {logging: false});
 var Person;
 
 /**

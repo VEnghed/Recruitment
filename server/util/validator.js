@@ -35,4 +35,38 @@ function isAlphaNumString(value, name) {
     assert(validator.isAlphanumeric(value), `${name} can only contain letters and numbers.`);
 }
 
-export {isNonEmptyString, isAlphaString, isAlphaNumString};
+/**
+ * validates that the given value is a Integer
+ * @param {any} value value to validate
+ * @param {any} name name of the value
+ * @throws {AssertionError} If the given value is not a Integer
+ */
+function isInteger(value, name) {
+    assert(!Number.isNaN(value),`${name} cannot be Nan.`);
+    assert(Number.isInteger(value),`${name} must be a Integer.`);
+};
+
+/**
+ * validates that the given value is a positive Integer
+ * @param {any} value value to validate
+ * @param {any} name name of the value
+ * @throws {AssertionError} If the given value is not a positive Integer
+ */
+function isPositiveInteger(value, name) {
+    isInteger(value, name)
+    assert(value > 0, `${name} must be a positive Integer.`)
+};
+
+/**
+ * validates that the given value is a email
+ * @param {any} value value to validate
+ * @param {any} name name of the value
+ * @throws {AssertionError} If the given value is not a email
+ */
+function isEmail(value, name) {
+    isNonEmptyString(value, name)
+    assert(validator.isEmail(value),`${name} must be a email.`);
+};
+
+
+export {isNonEmptyString, isAlphaString, isAlphaNumString, isInteger, isPositiveInteger, isEmail};
