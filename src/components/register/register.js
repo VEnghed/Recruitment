@@ -1,6 +1,5 @@
 import './register.css';
 import { useState } from 'react';
-
 /**
  * the function component that renders the register page.
  * Lets the user create an account on the application
@@ -26,7 +25,7 @@ function Register() {
     }
 
     let newUser = ({
-      role: "Applicant",
+      role: 2,
       firstName: firstName,
       lastName: lastName,
       username: username,

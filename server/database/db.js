@@ -1,11 +1,13 @@
 import pkg from 'sequelize';
 const { Sequelize, DataTypes } = pkg;
 import { makePerson } from '../model/person.js'
+import { isAlphaString, isAlphaNumString, isPositiveInteger, isEmail } from '../util/validator.js'
 
 // instance of sequelize connection
 var Db
 var Person;
-//models here
+
+// instance of sequelize connection
 
 /**
  * Authenticate connection to database
@@ -15,9 +17,8 @@ var Person;
 function connect() {
     Db = new Sequelize(process.env.PG_URI);
     Person = makePerson(Db, DataTypes)
-    //makeApplication
-    //makeCompetence
     //makeAvailability
+    //makeCompetence
     //makeCompetenceprofile
     Db.sync()
     return Db.authenticate()
@@ -31,10 +32,10 @@ function connect() {
  */
 function createUser(userData) {
     return new Promise((resolve, reject) => {
-        Person.create({
+        Person.create({ 
             role: userData.role,
-            firstName: userData.firstName,
-            lastName: userData.lastName,
+            firstname: userData.firstName, 
+            lastname: userData.lastName,
             username: userData.username,
             password: userData.password,
             email: userData.email,

@@ -13,7 +13,7 @@ const ROUTE = '/user'
  *          500: Internal server error
  */
 router.post('/register',
-    body('role').equals("Applicant", body('role')),
+    body('role').isInt(),
     body('firstName').notEmpty().isString().isAlpha(),
     body('lastName').notEmpty().isString().isAlpha(),
     body('username').notEmpty().isString().isAlphanumeric(),
