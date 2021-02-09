@@ -1,6 +1,6 @@
-import applicationRouter from './applicationRoute'
-import userRouter from './userRoute'
-import controller from '../controller/controller'
+import applicationRouter from './applicationRoute.js'
+import userRouter from './userRoute.js'
+import controller from '../controller/controller.js'
 
 function loadHandlers(app) {
     app.use(applicationRouter.route, applicationRouter.router)
