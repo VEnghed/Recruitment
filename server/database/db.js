@@ -1,5 +1,6 @@
 import { Sequelize, DataTypes } from 'sequelize'
 import { makePerson } from '../model/person'
+import { makeRole } from '../model/role';
 import { isAlphaString, isAlphaNumString, isPositiveInteger, isEmail } from '../util/validator'
 
 // instance of sequelize connection
@@ -12,7 +13,8 @@ var Person;
  * @throws Throws an exception if connection cannot be established
  */
 function connect() {
-    Person = makePerson(Db, DataTypes)
+    Role = makeRole(Db, DataTypes)
+    Person = makePerson(Db, DataTypes, Role)
     //makeAvailability
     //makeCompetence
     //makeCompetenceprofile

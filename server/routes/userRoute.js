@@ -10,23 +10,22 @@ const ROUTE = '/user'
  * @param respBody the response body
  * @returns 201: User is created
  *          400: Bad request
- *          500: Internal server error
+ *          500: Internal server error with database
  */
 router.post('/register',
-    body('role').isInt(),
+    body('role').isNumeric().isInt(),
     body('firstName').notEmpty().isString().isAlpha(),
     body('lastName').notEmpty().isString().isAlpha(),
     body('username').notEmpty().isString().isAlphanumeric(),
     body('password').notEmpty().isString().isAlphanumeric(),
-    body('ssn').notEmpty(),
+    body('ssn').notEmpty().isInt(),
     (req, res) => {
         console.log("New user attempt: " + JSON.stringify(req.body) + '\n')
 
         const error = validationResult(req)
-        if (!error.isEmpty()) {
+        if(!error.isEmpty()) {
             return res.status(400).json({ error: error.array() });
         }
-
         let respBody = {};
         controller.registerApplicant(req.body)
             .then(user => {

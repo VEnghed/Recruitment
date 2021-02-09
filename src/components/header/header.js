@@ -1,8 +1,9 @@
 import './header.css'
 
 /**
- * An reusable header for all pages
+ * An reusable header for all pages,
  * Sends the user back to the start page on click
+ * @returns the header component
  */
 function Header() {
     return (

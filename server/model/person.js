@@ -1,8 +1,6 @@
-import { makeRole } from './role'
 
 //instance of sequelize
-function makePerson(Sequelize, DataTypes) {
-    const role = makeRole(Sequelize, DataTypes);
+function makePerson(Sequelize, DataTypes, Role) {
     return Sequelize.define('person', {
         pid: {
             type: DataTypes.INTEGER,
@@ -16,7 +14,7 @@ function makePerson(Sequelize, DataTypes) {
         role: {
             type: DataTypes.INTEGER,
             references: {
-                model: role,
+                model: Role,
                 key: 'role_id',
             },
             validate: {
