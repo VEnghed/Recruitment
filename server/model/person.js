@@ -42,7 +42,7 @@ function makePerson(Sequelize, DataTypes, Role) {
             type: DataTypes.STRING,
             allownNull: false,
             validate: {
-                isAlpha: true,  
+                isAlphanumeric: true,  
                 notEmpty: true,  
             }
         },

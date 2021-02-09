@@ -10,10 +10,10 @@ const ROUTE = '/user'
  * @param respBody the response body
  * @returns 201: User is created
  *          400: Bad request
- *          500: Internal server error with database
+ *          500: Internal server error
  */
 router.post('/register',
-    body('role').isNumeric().isInt(),
+    body('role').isInt(),
     body('firstName').notEmpty().isString().isAlpha(),
     body('lastName').notEmpty().isString().isAlpha(),
     body('username').notEmpty().isString().isAlphanumeric(),
@@ -36,7 +36,6 @@ router.post('/register',
             .catch((err) => {
                 respBody.success = false;
                 res.status(500).json(respBody);
-                console.log(err);     //print in console
             })
     })
 

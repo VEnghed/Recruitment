@@ -15,17 +15,16 @@ var Person;
 function connect() {
     Role = makeRole(Db, DataTypes)
     Person = makePerson(Db, DataTypes, Role)
-    //makeAvailability
-    //makeCompetence
-    //makeCompetenceprofile
+   
     Db.sync()
     return Db.authenticate()
 }
 
 /**
  * Attemps to create a new applicant user in the database
- * @param {Object} userData object rpresenting data of the user
- * @returns {Promise} Promise object represents the result of the create attempt.
+ * @param {Object} userData object representing data of the user
+ * @returns {Promise} Promise object representing the result of 
+ * the create attempt.
  * @throws Throws an exception if user cannot be saved
  */
 function createUser(userData) {
@@ -81,11 +80,5 @@ function createApplication() { }
  * Returns an array of applications based on the query criterias
  */
 function getApplications() { }
-
-/**
- * Returns an object representing the details of 
- * an application
- */
-function getApplicationDetails() { }
 
 export default { connect, createUser, loginUser, createApplication, getApplications }
