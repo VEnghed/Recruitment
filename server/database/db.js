@@ -1,8 +1,9 @@
-import { Sequelize, DataTypes } from 'sequelize'
-import { makePerson } from '../model/person'
+import pkg from 'sequelize';
+const { Sequelize, DataTypes } = pkg;
+import { makePerson } from '../model/person.js'
 
 // instance of sequelize connection
-var Db = new Sequelize(process.env.PG_URI);
+var Db
 var Person;
 //models here
 
@@ -12,6 +13,7 @@ var Person;
  * @throws Throws an exception if connection cannot be established
  */
 function connect() {
+    Db = new Sequelize(process.env.PG_URI);
     Person = makePerson(Db, DataTypes)
     //makeApplication
     //makeCompetence
