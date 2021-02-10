@@ -1,10 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import Application from './components/applicationpageview/applicationpage';
-import Header from './components/header/header';
-import Login from './components/login/login';
-import Register from './components/register/register';
-import Success from './components/success';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Application from './components/applicationpageview/applicationpage.js';
+import Header from './components/header/header.js';
+import Login from './components/login/login.js';
+import Register from './components/register/register.js';
+import Success from './components/success.js';
 
 /**
  * renders the application as a header component
@@ -13,12 +13,14 @@ import Success from './components/success';
 function App() {
   return (
     <div className="app-container">
-      <Header/>    
+      <Header />
       <Router>
-        <Route exact path="/" component={Login}/>
-        <Route path="/register" component={Register}/>
-        <Route path="/success" component={Success}/>
-        <Route path="/application" component={Application}/>
+        <Switch>
+          <Route exact path="/" component={Login} />
+          <Route path="/register" component={Register} />
+          <Route path="/success" component={Success} />
+          <Route path="/application" component={Application} />
+        </Switch>
       </Router>
     </div>
   );
