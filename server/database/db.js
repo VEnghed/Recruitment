@@ -1,17 +1,19 @@
-import { Sequelize, DataTypes } from 'sequelize'
+import pkg from 'sequelize';
+const { Sequelize, DataTypes } = pkg;
 import { makePerson } from '../model/person.js'
+import { makeRole } from '../model/role.js';
+import { isAlphaString, isAlphaNumString, isPositiveInteger, isEmail } from '../util/validator.js'
 import { makeCompetence } from '../model/competence.js'
 import { makeAvailability } from '../model/availability.js'
 import { makeCompetenceProfile } from '../model/competenceProfile.js'
-
-
 // instance of sequelize connection
-var Db = new Sequelize(process.env.PG_URI);
+var Db
 var Person;
+var Role;
 var Availability;
 var Competence;
 var CompetenceProfile;
-//models here
+// instance of sequelize connection
 
 /**
  * Authenticate connection to database
@@ -19,7 +21,9 @@ var CompetenceProfile;
  * @throws Throws an exception if connection cannot be established
  */
 function connect() {
-    Person = makePerson(Db, DataTypes)
+    Db = new Sequelize(process.env.PG_URI, {logging:false});
+    Role = makeRole(Db, DataTypes)
+    Person = makePerson(Db, DataTypes, Role)
     Competence = makeCompetence(Db, DataTypes)
     Availability = makeAvailability(Db, DataTypes, Person)
     CompetenceProfile = makeCompetenceProfile(Db, DataTypes, Person, Competence)
@@ -29,16 +33,17 @@ function connect() {
 
 /**
  * Attemps to create a new applicant user in the database
- * @param {Object} userData object rpresenting data of the user
- * @returns {Promise} Promise object represents the result of the create attempt.
+ * @param {Object} userData object representing data of the user
+ * @returns {Promise} Promise object representing the result of 
+ * the create attempt.
  * @throws Throws an exception if user cannot be saved
  */
 function createUser(userData) {
     return new Promise((resolve, reject) => {
-        Person.create({
+        Person.create({ 
             role: userData.role,
-            firstName: userData.firstName,
-            lastName: userData.lastName,
+            firstname: userData.firstName, 
+            lastname: userData.lastName,
             username: userData.username,
             password: userData.password,
             email: userData.email,
@@ -73,6 +78,8 @@ function loginUser(username, password) {
             } else {
                 resolve(doc[0].dataValues)
             }
+        }).catch(err => {
+            reject(err)
         })
     })
 }

@@ -10,41 +10,74 @@ function makePerson(Sequelize, DataTypes) {
             type: DataTypes.INTEGER,
             primaryKey: true,
             allowNull: false,
-            autoIncrement: true
+            autoIncrement: true, 
+            validate: {
+                isInt: true     
+            }
         },
         role: {
             type: DataTypes.INTEGER,
+            references: {
+                model: Role,
+                key: 'role_id',
+            },
+            validate: {
+                isInt: true     
+            },
             allownNull: false
         },
         firstname: {
             type: DataTypes.STRING,
-            allownNull: false
+            allownNull: false,
+            validate: {
+                isAlpha: true,  
+                notEmpty: true,  
+            }       
         },
         lastname: {
             type: DataTypes.STRING,
-            allownNull: false
+            allownNull: false, 
+            validate: {
+                isAlpha: true,  
+                notEmpty: true,  
+            }
         },
         username: {
             type: DataTypes.STRING,
-            allownNull: false
+            allownNull: false,
+            validate: {
+                isAlphanumeric: true,  
+                notEmpty: true,  
+            }
         },
         password: {
             type: DataTypes.STRING,
-            allownNull: false
+            allownNull: false,
+            validate: {
+                isAlphanumeric: true,     
+                notEmpty: true,  
+            }
         },
         email: {
             type: DataTypes.STRING,
-            allownNull: false
+            allownNull: false,
+            validate: {
+                isEmail: true,           
+                notEmpty: true,  
+            }
         },
         ssn: {
             type: DataTypes.INTEGER,
-            allownNull: false
+            allownNull: false,
+            isEmail: true,
+            validate: {
+               isInt:true
+            }
         }}, {
             tableName: 'person',
             timestamps: false
         }
     ); 
 }
-
 
 export { makePerson };

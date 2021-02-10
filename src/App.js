@@ -7,11 +7,9 @@ import Register from './components/register/register';
 import Success from './components/success';
 
 /**
- * renders the application, in terms of a header
- * and the component of the page currently being viewed
+ * renders the application as a header component
+ * and the component of the page currently viewed
  */
-
- //add more paths later
 function App() {
   return (
     <div className="app-container">
@@ -26,6 +24,4 @@ function App() {
   );
 }
 
-
 export default App;
-
