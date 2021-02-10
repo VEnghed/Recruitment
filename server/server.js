@@ -11,16 +11,23 @@ const __dirname = path.dirname(__filename);
 
 const app = express()
 app.use(bodyParser.json())
-//app.use(express.static('./build'))
+app.use(express.static('./build'))
 
 // Entry point
 loadHandlers(app)
+
 
 app.listen(process.env.PORT || 8080, () => {
     console.log('Check it out http://localhost:' + (process.env.PORT || 8080))
 })
 
+<<<<<<< HEAD
 //connect react router to our routing
 app.get('*', function (req, res) {
     res.sendFile('index.html', { root: path.join(__dirname, '../build/') });
 });
+=======
+app.get('*', function(req, res) {
+    res.sendFile('index.html', {root: path.join(__dirname, '../build/')});
+  });
+>>>>>>> 0c5bf2c (made server work)
