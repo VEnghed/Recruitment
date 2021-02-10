@@ -13,7 +13,8 @@ function establishDatabaseConnection() {
     return db.connect()
 }
 
-/**
+
+/** 
  * login
  */
 function loginUser({ username, password }) {
@@ -30,4 +31,20 @@ async function registerApplicant(userData) {
     return db.createUser(userData)
 }
 
-export default { establishDatabaseConnection, loginUser, registerApplicant }
+/**
+* Sends an application from the HTTP-layer to the integration layer (database)
+* @param {*} application The application to send.
+*/
+function sendApplication(application) {
+   //JSON parse to ensure compatibility
+   return db.createApplication(JSON.parse(application))
+}
+
+/**
+* Attempts to retrieve all competencies from the database.
+*/
+function getCompetencies() {
+   return db.getCompetencies()
+}
+
+export default { establishDatabaseConnection, loginUser, registerApplicant, sendApplication, getCompetencies }

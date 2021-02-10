@@ -1,5 +1,10 @@
 //instance of sequelize
-function makePerson(Sequelize, DataTypes, Role) {
+/**
+ * Creates a table in the database called person
+ * @param {*} Sequelize The tool used for connecting to the database
+ * @param {*} DataTypes Used for defining the datatypes in the table
+ */
+function makePerson(Sequelize, DataTypes) {
     return Sequelize.define('person', {
         pid: {
             type: DataTypes.INTEGER,
