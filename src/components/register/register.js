@@ -53,8 +53,7 @@ function Register() {
         setErrormsg(response.statusText)
       }
       else if(response.status === 201) {    // user is registered 
-        //window.location = "/application" 
-        return <Redirect to="/application"></Redirect>
+        window.location = "/application" 
       }
     })
   }
