@@ -16,7 +16,7 @@ function Applicationpage(props) {
     
     let [competenceList, setCompetenceList] = useState([]);
     let [availabilityList, setAvailabilityList] = useState([]);
-    
+    let [msgToUser, setMsgToUser] = useState("");
     
     /**
      * @description Adds a competence to the array for competencies with the right format
@@ -218,16 +218,16 @@ function Applicationpage(props) {
             //If something went wrong with saving application
             if(response.status === 500) {   // internal error
                 console.log("internal error")
+                setMsgToUser("Could not save application, internal server error, please try again")
             } 
             else if(response.status === 200) {    
                 console.log("Success")
-            }
-            else if(response.status === 201) {    
-                console.log("Something else")
+                setMsgToUser("Application saved")
             }
             else if(response.status === 400) {
                 console.log("Wrong input")
                 console.log(JSON.stringify(response))
+                setMsgToUser("Could not save application, wrong input")
             }
         })
     }
@@ -262,6 +262,7 @@ function Applicationpage(props) {
             </header>
             
             <div id="applicationpage-content">    
+                <p>{msgToUser}</p>
                 <div id="competencies">
                     <h3>Competencies</h3>
                     {/* Competence list goes here! */}
@@ -274,7 +275,7 @@ function Applicationpage(props) {
                     {availabilityList}
                     <button onClick={() => onAddAvailabilityClick()}>Add availability</button>
                 </div>
-
+                
                 <div id="send-application">
                     <button onClick={() => onSendApplicationClick()}>Send application</button>
                 </div>

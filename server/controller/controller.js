@@ -11,11 +11,7 @@ function establishDatabaseConnection() {
  * @param {*} application The application to send.
  */
 function sendApplication(application) {
-    
-    /*check('application.availabilites').exists(),
-    check('application.competencies').exists(),
-    check(application.applicant).exists(),*/
-    //JSON parse because mongoose does not like JSON objects
+    //JSON parse to ensure compatibility
     return db.createApplication(JSON.parse(application))
 }
 

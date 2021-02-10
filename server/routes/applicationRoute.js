@@ -11,14 +11,9 @@ const ROUTE = '/application'
  */
 router.post('/post',
     //Ensure that request body is correctly formatted
-    body('competencies').exists(),
-    body('competencies').isArray(),
-    
-    body('availabilities').exists(),
-    body('availabilities').isArray(),
-    
+    body('competencies').exists().isArray(),
+    body('availabilities').exists().isArray().notEmpty(),
     body('applicant').exists(),
-    //body('applicant').isJSON(),
     //Ensure that firstname and lastname contain only letters
     body('applicant.firstName').notEmpty().isAlpha(),
     body('applicant.lastName').notEmpty().isAlpha(),

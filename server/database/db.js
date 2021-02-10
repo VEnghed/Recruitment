@@ -23,12 +23,6 @@ function connect() {
     Competence = makeCompetence(Db, DataTypes)
     Availability = makeAvailability(Db, DataTypes, Person)
     CompetenceProfile = makeCompetenceProfile(Db, DataTypes, Person, Competence)
-    //Availability.belongsTo(Person); //belongsTo(Application)
-    //CompetenceProfile.belongsTo(Person);
-    //Competence.belongsTo(CompetenceProfile)
-    
-    //makeApplication
-    //makeCompetenceprofile
     Db.sync()
     return Db.authenticate()
 }
@@ -91,12 +85,9 @@ function createApplication(applicationData) {
     let promiseList = [];
     let newPromise;
     console.log("Här kommer datan: ")
-    console.log(new Date(applicationData.availabilities[0].availableFrom))
     console.log(JSON.stringify(applicationData))
-    applicationData.availabilities.map((availability) => {
-        console.log("DATA")
-        console.log(availability)
 
+    applicationData.availabilities.map((availability) => {
         newPromise = new Promise((resolve, reject) => {
             Availability.create({from_date: availability.availableFrom,
                 to_date: availability.availableTo,
@@ -105,7 +96,6 @@ function createApplication(applicationData) {
         promiseList = [...promiseList, newPromise]
     })
     applicationData.competencies.map((competence) => { 
-        //console.log(JSON.stringify(competence))
         newPromise = new Promise((resolve, reject) => {
             
             CompetenceProfile.create({
