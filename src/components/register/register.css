@@ -1,0 +1,14 @@
+.register-container {
+    text-align: center;
+    height: 100%;
+    line-height: 30px;
+    vertical-align: middle;
+}
+
+.register-btn {
+    margin-top: 20px;
+}
+
+input > .register-container {
+    margin: 0px 20px;
+}
