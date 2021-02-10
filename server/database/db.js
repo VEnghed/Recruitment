@@ -1,12 +1,13 @@
 import pkg from 'sequelize';
 const { Sequelize, DataTypes } = pkg;
 import { makePerson } from '../model/person.js'
-import { makeRole } from '../model/role';
+import { makeRole } from '../model/role.js';
 import { isAlphaString, isAlphaNumString, isPositiveInteger, isEmail } from '../util/validator.js'
 
 // instance of sequelize connection
 var Db
 var Person;
+var Role;
 
 // instance of sequelize connection
 
@@ -16,7 +17,7 @@ var Person;
  * @throws Throws an exception if connection cannot be established
  */
 function connect() {
-    Db = new Sequelize(process.env.PG_URI);
+    Db = new Sequelize(process.env.PG_URI, {logging:false});
     Role = makeRole(Db, DataTypes)
     Person = makePerson(Db, DataTypes, Role)
    
