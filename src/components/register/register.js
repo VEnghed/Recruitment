@@ -1,8 +1,10 @@
 import './register.css';
 import { useState } from 'react';
+
 /**
  * the function component that renders the register page.
- * Lets the user create an account on the application
+ * Lets the user create an account on the recruiter application
+ * @returns a component representing the register page
  */
 function Register() {
   const [firstName, setFirstName] = useState('')
@@ -14,13 +16,12 @@ function Register() {
   const [errorMsg, setErrormsg] = useState('')
 
   /**
-   * registers a valid user
-   * the user must fill all required fields
+   * registers a valid user, the user 
+   * must fill in all required fields
    */
   function registerUser() {
-    //check if all required fields are 
-    if(!firstName || !lastName || !username || !password || !email || !ssn){
-      setErrormsg("Please fill in all fields before registering")
+    if(!firstName || !lastName || !username || !password || !email || !ssn) {    //check if all required fields are filled
+      setErrormsg("Please fill in all required fields")
       return
     }
 
@@ -34,7 +35,6 @@ function Register() {
       ssn: ssn
     })
 
-    console.log("sending: " + newUser)
     fetch('/user/register', {
       method: 'POST', 
       headers: {
@@ -43,17 +43,16 @@ function Register() {
       },
       body: JSON.stringify(newUser)
     }).then(response => {
-      console.log(response)  
-
+      console.log(response)
       //check if the user is registered
-      if(response.status === 500) {   // internal error
+      if(response.status === 500) {         // internal error
         setErrormsg(response.statusText)
       } 
-      if(response.status === 400) {   // bad request
+      if(response.status === 400) {         // bad request
         setErrormsg(response.statusText)
       }
-      else if(response.status === 201) {    //user is registered 
-        window.location = "/success"  //change location to application later
+      else if(response.status === 201) {    // user is registered 
+        window.location = "/application" 
       }
     })
   }

@@ -1,6 +1,7 @@
 import pkg from 'sequelize';
 const { Sequelize, DataTypes } = pkg;
 import { makePerson } from '../model/person.js'
+import { makeRole } from '../model/role';
 import { isAlphaString, isAlphaNumString, isPositiveInteger, isEmail } from '../util/validator.js'
 
 // instance of sequelize connection
@@ -16,18 +17,18 @@ var Person;
  */
 function connect() {
     Db = new Sequelize(process.env.PG_URI);
-    Person = makePerson(Db, DataTypes)
-    //makeAvailability
-    //makeCompetence
-    //makeCompetenceprofile
+    Role = makeRole(Db, DataTypes)
+    Person = makePerson(Db, DataTypes, Role)
+   
     Db.sync()
     return Db.authenticate()
 }
 
 /**
  * Attemps to create a new applicant user in the database
- * @param {Object} userData object rpresenting data of the user
- * @returns {Promise} Promise object represents the result of the create attempt.
+ * @param {Object} userData object representing data of the user
+ * @returns {Promise} Promise object representing the result of 
+ * the create attempt.
  * @throws Throws an exception if user cannot be saved
  */
 function createUser(userData) {
@@ -85,11 +86,5 @@ function createApplication() { }
  * Returns an array of applications based on the query criterias
  */
 function getApplications() { }
-
-/**
- * Returns an object representing the details of 
- * an application
- */
-function getApplicationDetails() { }
 
 export default { connect, createUser, loginUser, createApplication, getApplications }

@@ -18,15 +18,14 @@ router.post('/register',
     body('lastName').notEmpty().isString().isAlpha(),
     body('username').notEmpty().isString().isAlphanumeric(),
     body('password').notEmpty().isString().isAlphanumeric(),
-    body('ssn').notEmpty(),
+    body('ssn').notEmpty().isInt(),
     (req, res) => {
         console.log("New user attempt: " + JSON.stringify(req.body) + '\n')
 
         const error = validationResult(req)
-        if (!error.isEmpty()) {
+        if(!error.isEmpty()) {
             return res.status(400).json({ error: error.array() });
         }
-
         let respBody = {};
         controller.registerApplicant(req.body)
             .then(user => {
@@ -37,7 +36,6 @@ router.post('/register',
             .catch((err) => {
                 respBody.success = false;
                 res.status(500).json(respBody);
-                console.log(err);     //print in console
             })
     })
 
