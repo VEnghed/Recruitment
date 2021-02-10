@@ -1,45 +1,78 @@
-import mongoose from 'mongoose'
-import TestPerson from '../model/testperson'
+import pkg from 'sequelize';
+const { Sequelize, DataTypes } = pkg;
+import { makePerson } from '../model/person.js'
+import { makeRole } from '../model/role';
+import { isAlphaString, isAlphaNumString, isPositiveInteger, isEmail } from '../util/validator.js'
+
+// instance of sequelize connection
+var Db
+var Person;
+
+// instance of sequelize connection
 
 /**
- * Connects the server to the recruitment system's database. Creates a connection pool of eight sockets.
- * @returns {Promise} Promise object represents the result of the connect attempt.
+ * Authenticate connection to database
+ * @returns {Promise} a promise object representing the result of the authenticate attempt.
+ * @throws Throws an exception if connection cannot be established
  */
 function connect() {
-    return mongoose.connect(process.env.DB_URI, {
-        useUnifiedTopology: true,
-        useNewUrlParser: true
+    Db = new Sequelize(process.env.PG_URI);
+    Role = makeRole(Db, DataTypes)
+    Person = makePerson(Db, DataTypes, Role)
+   
+    Db.sync()
+    return Db.authenticate()
+}
+
+/**
+ * Attemps to create a new applicant user in the database
+ * @param {Object} userData object representing data of the user
+ * @returns {Promise} Promise object representing the result of 
+ * the create attempt.
+ * @throws Throws an exception if user cannot be saved
+ */
+function createUser(userData) {
+    return new Promise((resolve, reject) => {
+        Person.create({ 
+            role: userData.role,
+            firstname: userData.firstName, 
+            lastname: userData.lastName,
+            username: userData.username,
+            password: userData.password,
+            email: userData.email,
+            ssn: userData.ssn
+        }).then(result => {
+            resolve(result)
+            return
+        }).catch(err => {
+            reject({ msg: 'could not save user', ...err })
+            return
+        })
     })
 }
 
 /**
- * Attemps to create a new applicant user in the database,
- * @param {Object} userData 
- * @returns {Promise} Promise object represents the result of the create attempt.
- */
-function createUser(userData) {
-    let testPerson = new TestPerson(userData)
-    return testPerson.save()
-}
-
-/**
- * Attempts to authorize a user using the supplied credentials
+ * Attempts to authorize the user by querying the database for an existing user matching the
+ * provided credentials.
  * @param {String} username 
  * @param {String} password 
  * @returns {Promise} Promise object represents the result of the authorization attempt.
  */
 function loginUser(username, password) {
     return new Promise((resolve, reject) => {
-        TestPerson.findOne({ username: username, password: password }, 'firstName lastName username email ssn', (err, doc) => {
-            if (err) {
-                reject({ msg: 'could not connect to database', ...err })
-                return
+        Person.findAll({
+            where: {
+                username: username,
+                password: password
             }
-            if (doc) {
-                resolve(doc)
-                return
+        }).then(doc => {
+            if (doc.length == 0) {
+                reject('no user found')
+            } else {
+                resolve(doc[0].dataValues)
             }
-            reject({ msg: 'username or password is wrong' })
+        }).catch(err => {
+            reject(err)
         })
     })
 }
