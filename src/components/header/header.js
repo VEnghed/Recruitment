@@ -1,4 +1,5 @@
 import './header.css'
+import { Link } from 'react-router-dom'
 
 /**
  * An reusable header for all pages,
@@ -8,9 +9,9 @@ import './header.css'
 function Header() {
     return (
         <header className="header">
-            <h2 onClick={() => window.location='/'}>Recruitment</h2>
+            <h2 onClick={() => window.location = '/'}>Recruitment</h2>
         </header>
-        )
-    }
-    
+    )
+}
+
 export default Header;

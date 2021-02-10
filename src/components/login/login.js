@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './login.css';
+import { Link } from 'react-router-dom'
 
 function Login() {
   const [firstName, setFirstName] = useState('')
@@ -32,6 +33,7 @@ function Login() {
       <div>Username<input type="text" value={username} onChange={event => setUsername(event.target.value)}></input></div>
       <div>Password<input type="text" value={password} onChange={event => setPassword(event.target.value)}></input></div>
       <button onClick={Tellem}>Submit</button>
+      <Link to="/register">Register</Link>
     </div>
   );
 }

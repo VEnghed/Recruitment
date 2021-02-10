@@ -1,5 +1,6 @@
 import './register.css';
 import { useState } from 'react';
+import { Redirect } from 'react-router-dom'
 
 /**
  * the function component that renders the register page.
@@ -52,7 +53,8 @@ function Register() {
         setErrormsg(response.statusText)
       }
       else if(response.status === 201) {    // user is registered 
-        window.location = "/application" 
+        //window.location = "/application" 
+        return <Redirect to="/application"></Redirect>
       }
     })
   }
