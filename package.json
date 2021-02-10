@@ -3,6 +3,7 @@
   "type": "module",
   "version": "0.1.0",
   "private": true,
+  "engines": {"node": "14.15.4"},
   "dependencies": {
     "@std/esm": "^0.26.0",
     "@testing-library/jest-dom": "^5.11.9",
@@ -28,7 +29,7 @@
   },
   "proxy": "http://localhost:8080",
   "scripts": {
-    "start": "SET PORT=1337 && react-scripts start",
+    "start": "node server/server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
