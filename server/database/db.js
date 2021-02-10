@@ -80,6 +80,7 @@ function loginUser(username, password) {
 /**
  * Creates an application on the server
  * @param applicationData Data used to create an application
+ * @returns {Promise} Promise object that represents the result of the create-application attempt.
  */
 function createApplication(applicationData) {
     let promiseList = [];
@@ -126,7 +127,8 @@ function getApplications() { }
 function getApplicationDetails() { }
 
 /**
- * Returns all competencies in the database
+ * @description function to retrieve all competencies in the database
+ * @returns {Promise} Promise object that represents the result of the retrieval attempt.
  */
 function getCompetencies() {
     return new Promise((resolve, reject) => {
