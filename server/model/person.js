@@ -4,7 +4,7 @@
  * @param {*} Sequelize The tool used for connecting to the database
  * @param {*} DataTypes Used for defining the datatypes in the table
  */
-function makePerson(Sequelize, DataTypes) {
+function makePerson(Sequelize, DataTypes, Role) {
     return Sequelize.define('person', {
         pid: {
             type: DataTypes.INTEGER,
