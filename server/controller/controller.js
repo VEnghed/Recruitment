@@ -1,5 +1,4 @@
-import db from '../database/db'
-
+import db from '../database/db.js'
 /**
  * controller connects the integration layer 
  * with the HTTP-layer

@@ -1,4 +1,3 @@
-
 //instance of sequelize
 function makePerson(Sequelize, DataTypes, Role) {
     return Sequelize.define('person', {

@@ -1,11 +1,14 @@
-import { Sequelize, DataTypes } from 'sequelize'
-import { makePerson } from '../model/person'
+import pkg from 'sequelize';
+const { Sequelize, DataTypes } = pkg;
+import { makePerson } from '../model/person.js'
 import { makeRole } from '../model/role';
-import { isAlphaString, isAlphaNumString, isPositiveInteger, isEmail } from '../util/validator'
+import { isAlphaString, isAlphaNumString, isPositiveInteger, isEmail } from '../util/validator.js'
 
 // instance of sequelize connection
-var Db = new Sequelize(process.env.PG_URI, {logging: false});
+var Db
 var Person;
+
+// instance of sequelize connection
 
 /**
  * Authenticate connection to database
@@ -13,6 +16,7 @@ var Person;
  * @throws Throws an exception if connection cannot be established
  */
 function connect() {
+    Db = new Sequelize(process.env.PG_URI);
     Role = makeRole(Db, DataTypes)
     Person = makePerson(Db, DataTypes, Role)
    
@@ -67,6 +71,8 @@ function loginUser(username, password) {
             } else {
                 resolve(doc[0].dataValues)
             }
+        }).catch(err => {
+            reject(err)
         })
     })
 }
