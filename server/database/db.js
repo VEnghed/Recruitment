@@ -21,7 +21,7 @@ var CompetenceProfile;
  * @throws Throws an exception if connection cannot be established
  */
 function connect() {
-    Db = new Sequelize(process.env.PG_URI);
+    Db = new Sequelize(process.env.PG_URI, {logging:false});
     Role = makeRole(Db, DataTypes)
     Person = makePerson(Db, DataTypes, Role)
     Competence = makeCompetence(Db, DataTypes)
@@ -52,7 +52,8 @@ function createUser(userData) {
             resolve(result)
             return
         }).catch(err => {
-            reject({ msg: 'could not save user', ...err })
+            //console.log(JSON.stringify(err.errors[0].message))
+            reject({ msg: 'Failed to save new user, ' + err.errors[0].message })
             return
         })
     })

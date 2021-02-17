@@ -14,7 +14,8 @@ function makeCompetence(Sequelize, DataTypes) {
             type: DataTypes.STRING,
             allownNull: false
         }}, {
-            tableName: 'competence'
+            tableName: 'competence',
+            timestamps: false
         }
     );
 }

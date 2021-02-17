@@ -32,7 +32,8 @@ function makeCompetenceProfile(Sequelize, DataTypes, person, competence) {
                 key: 'competence_id',
               }
         }}, {
-            tableName: 'competence_profile'
+            tableName: 'competence_profile',
+            timestamps: false
         }
     );
 }
