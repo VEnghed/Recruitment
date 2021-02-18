@@ -30,9 +30,27 @@ router.post('/post',
         const errors = validationResult(req);
         //If something failed to validate
         if (!errors.isEmpty()) {
-            console.log(errors.array())
+            console.log("Validation error: " + JSON.stringify(errors.array()))
             //return http status 400 and errors
-            return res.status(400).json({ errors: errors.array() });
+            let validationErrors = "Wrong input at: ";
+
+            //Finds the parameters where the validation errors occurred and appends them to a string.
+            errors.array().map((elem, index) => {
+                if(index < (errors.array().length -1)) {
+                    if(!validationErrors.includes(elem.param)) {
+                        validationErrors += elem.param + ", ";
+                    }
+                }else {
+                    if(!validationErrors.includes(elem.param)) {
+                        validationErrors += elem.param;
+                    }
+                    else {
+                        validationErrors = validationErrors.slice(0, -2);
+                    }
+                }
+            })
+            res.statusMessage = validationErrors;
+            return res.status(400).json(validationErrors);
         }
         //Try to send application to database
         let response = {};
@@ -43,7 +61,7 @@ router.post('/post',
         }catch(err) {
             //If something went wrong when sending application to database
             response.success = "false"
-            response.error = "internal error"
+            response.error = "internal server error"
             console.log(err)
             res.status(500).json(response)
         }

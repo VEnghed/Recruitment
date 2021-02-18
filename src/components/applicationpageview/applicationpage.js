@@ -187,6 +187,7 @@ function Applicationpage(props) {
             if(response.status === 500) {   // internal error
                 console.log("internal error")
                 setMsgToUser("Could not save application, internal server error, please try again")
+                
             } 
             else if(response.status === 200) {    
                 console.log("Success")
@@ -194,8 +195,10 @@ function Applicationpage(props) {
             }
             else if(response.status === 400) {
                 console.log("Wrong input")
-                console.log(JSON.stringify(response))
-                setMsgToUser("Could not save application, wrong input")
+                //console.log(response)
+                let errorsInRes = response.statusText;
+                console.log(errorsInRes);
+                setMsgToUser("Could not save application" + errorsInRes)
             }
         })
     }
@@ -221,7 +224,7 @@ function Applicationpage(props) {
         if (availabilityArray.length === 0 || competenceArray.length === 0) {
             setMsgToUser("Please add competencies and/or availabilities");
             return;
-        }
+        } 
         console.log(applicationData);
         sendApplication(applicationData);
     }
@@ -251,10 +254,11 @@ function Applicationpage(props) {
             </header>
             
             <div id="applicationpage-content">    
-                <h2>Application</h2>
+                
                 <div id="application">
-                    
+                    <h2>Application</h2>
                     <div id="application-items">
+                        
                         <div id="competencies">
                             <h3>Competencies</h3>
                             {/* Competence list goes here! */}
@@ -265,52 +269,51 @@ function Applicationpage(props) {
                             {availabilityList}
                         </div>
                     </div>
-                    <div id="application-inputs">
-                        <div id="competence-stuff">
-                            
-                            <div id="competenceInputs">
-                                <div id="competenceSelector">
-                                    <p>Competence: </p>
-                                    <select value={comp} 
-                                        onChange={event => set_comp(event.target.value)} 
-                                        name="competency-select" className="competency-select">
-                                        <option value="">--Välj ett alternativ--</option>
-                                        {/*Remove hardcoded alternatives, fetch from database */}
-                                        <option value="Korvgrillning">Korvgrillning</option>
-                                        <option value="Städning">Städning</option>
-                                    </select>
-                                </div>
-                                <div id="yearsExperience">
-                                    <p>Years of experience: </p>
-                                    {/* Ensure that only numbers can be entered here! */}
-                                    <input value={yearsexp} type="number" className="experience" 
-                                        onChange={event => set_yearsexp(event.target.value)}>
-                                    </input>
-                                </div>
+                    
+                </div>
+                <div id="application-inputs">
+                    <div id="competence-stuff">
+                        
+                        <div id="competenceInputs">
+                            <div id="competenceSelector">
+                                <p>Competence: </p>
+                                <select value={comp} 
+                                    onChange={event => set_comp(event.target.value)} 
+                                    name="competency-select" className="competency-select">
+                                    <option value="">--Välj ett alternativ--</option>
+                                    {/*Remove hardcoded alternatives, fetch from database */}
+                                    <option value="Korvgrillning">Korvgrillning</option>
+                                    <option value="Städning">Städning</option>
+                                </select>
                             </div>
-                            <button  onClick={() => onAddCompetenceClick()}>Add competence</button>
-                        </div>
-                        <div id="availability-stuff">
-                            {/*Make sure available-from is before available-to somehow*/}
-
-                            
-                            <div id="availabilitySelect">
-                                <p>Available from:</p>
-                                <input value={from_date} 
-                                    onChange={event => set_from_date(event.target.value)} 
-                                    type="date" className="available-from" name="available-from"
-                                    min="2021-02-01" max="2030-12-31">
-                                </input>
-                                    
-                                <p>Available to:</p>
-                                <input value={to_date} 
-                                    onChange={event => set_to_date(event.target.value)} 
-                                    type="date" className="available-to" name="available-to"
-                                    min="2021-02-01" max="2040-12-31">
+                            <div id="yearsExperience">
+                                <p>Years of experience: </p>
+                                {/* Ensure that only numbers can be entered here! */}
+                                <input value={yearsexp} type="number" min="0" max="99" className="experience" 
+                                    onChange={event => set_yearsexp(event.target.value)}>
                                 </input>
                             </div>
-                            <button onClick={() => onAddAvailabilityClick()}>Add availability</button>
                         </div>
+                        <button  onClick={() => onAddCompetenceClick()}>Add competence</button>
+                    </div>
+                    <div id="availability-stuff">
+                        {/*Make sure available-from is before available-to somehow*/}
+                        <div id="availabilitySelect">
+                            <p>Available from:</p>
+                            <input value={from_date} 
+                                onChange={event => set_from_date(event.target.value)} 
+                                type="date" className="available-from" name="available-from"
+                                min="2021-02-01" max="2030-12-31">
+                            </input>
+                                
+                            <p>Available to:</p>
+                            <input value={to_date} 
+                                onChange={event => set_to_date(event.target.value)} 
+                                type="date" className="available-to" name="available-to"
+                                min="2021-02-01" max="2040-12-31">
+                            </input>
+                        </div>
+                        <button onClick={() => onAddAvailabilityClick()}>Add availability</button>
                     </div>
                 </div>
                 <p id="msgToUser">{msgToUser}</p>
