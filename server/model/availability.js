@@ -27,7 +27,8 @@ function makeAvailability(Sequelize, DataTypes, person) {
                 key: 'pid',
               }
         }}, {
-            tableName: 'availability'
+            tableName: 'availability',
+            timestamps: false
         }
     );
 }
