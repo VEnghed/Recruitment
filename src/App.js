@@ -4,6 +4,7 @@ import Application from './components/applicationpageview/applicationpage.js';
 import Header from './components/header/header.js';
 import Login from './components/login/login.js';
 import Register from './components/register/register.js';
+import Recruiter from './components/recruiterpage/recruiter.js';
 import Success from './components/success.js';
 
 /**
@@ -20,6 +21,7 @@ function App() {
           <Route path="/register" component={Register} />
           <Route path="/success" component={Success} />
           <Route path="/application" component={Application} />
+          <Route path="/recruiter" component={Recruiter} />
         </Switch>
       </Router>
     </div>
