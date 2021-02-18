@@ -2,7 +2,6 @@ import pkg from 'sequelize';
 const { Sequelize, DataTypes } = pkg;
 import { makePerson } from '../model/person.js'
 import { makeRole } from '../model/role.js';
-import { isAlphaString, isAlphaNumString, isPositiveInteger, isEmail } from '../util/validator.js'
 import { makeCompetence } from '../model/competence.js'
 import { makeAvailability } from '../model/availability.js'
 import { makeCompetenceProfile } from '../model/competenceProfile.js'
@@ -52,8 +51,8 @@ function createUser(userData) {
             resolve(result)
             return
         }).catch(err => {
-            //console.log(JSON.stringify(err.errors[0].message))
-            reject({ msg: 'Failed to save new user, ' + err.errors[0].message })
+            //console.log(JSON.stringify(err.errors))
+            reject({ msg: 'Internal server error: failed to save new user' })
             return
         })
     })

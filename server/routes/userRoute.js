@@ -32,12 +32,10 @@ router.post('/register',
         let respBody = {};
         controller.registerApplicant(req.body)
             .then(user => {
-                respBody.success = true;
                 respBody.user = user;
                 res.status(201).json(respBody);
             })
             .catch((err) => {
-                //console.log("\n" + JSON.stringify(err));
                 res.statusMessage = err.msg;
                 res.status(500).end();
             })
