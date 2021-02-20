@@ -123,9 +123,23 @@ function createApplication(applicationData) {
 }
 
 /**
- * Returns an array of applications based on the query criterias
+ * Returns a set of applications based 
+ * on the query criterias
  */
-function getApplications() { }
+function getApplications(query) { 
+    return new Promise((resolve, reject) => {
+        Person.findAll({
+            // query here
+        }).then(result => {
+            resolve(result)
+            return
+        }).catch(err => {
+            console.log(JSON.stringify(err.errors))
+            reject({ msg: 'Internal server error: failed to search applicants' })
+            return
+        })
+    })
+}
 
 /**
  * Returns an object representing the details of 
