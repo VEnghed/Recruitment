@@ -5,9 +5,12 @@ import {body , validationResult} from 'express-validator'
 const router = express.Router()
 const ROUTE = '/recruiter'
 
-router.get('/search', (req, res) => {
-    res.status(200).json({ msg: 'you can search for applications here' })
-})
+router.post('/search', (req, res) => {
+    console.log(req)
+    let respBody = {};
+    respBody.name = "Amanuel Isak"
+    res.status(200).json(respBody)
+}) 
 
 router.get('/details', (req, res) => {
     res.status(200).json({ msg: 'you can get details for applications here' })

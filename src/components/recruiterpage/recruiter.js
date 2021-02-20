@@ -1,5 +1,5 @@
 import './recruiter.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom'
 
 /**
@@ -13,7 +13,7 @@ function Recruiter() {
     const [timeperiodto, setTimeperiodto] = useState('')
     const [applicationdate, setApplicationdate] = useState('')
     const [competence, setCompetence] = useState('')
-    const [applications, setApplications] = useState([])
+    const [applications, setApplications] = useState()
     const [errorMsg, setErrormsg] = useState('')
 
     //function for saving user auth token?
@@ -23,8 +23,10 @@ function Recruiter() {
      * given parameters
      */
     function searchApplicants() {
-        if(!name || !timeperiodfrom || !timeperiodto || !applicationdate || !competence)    //check if all required fields are filled
-            return setErrormsg("Please fill in all required fields")
+        if(!name || !timeperiodfrom || !timeperiodto || !applicationdate || !competence) {    //check if all required fields are filled
+            setErrormsg("Please fill in all required fields")
+            return;
+        }
         
         let searchQuery = ({
             name: name,
@@ -47,45 +49,37 @@ function Recruiter() {
                 setErrormsg(response.statusText)
             if(response.status === 400)         // bad request
                 setErrormsg(response.statusText)
-            else if(response.status === 201) {  // user is registered 
-                saveResults(response.data)
+            else if(response.status === 200) {  // query is valid 
+                showApplications(response)      // save result
             }
         }) 
     }
 
     //function for creating elements & putting values
-    function saveResults() {
-        let testarray = [
-            {name: "Markus Lövgren", date: "2021-02-07"},
-            {name: "Sarah Brown", date: "2021-01-15"},
-            {name: "Amanuel Isak", date: "2021-02-23"}
-        ]
-        setApplications(testarray)
+    function showApplications(response) {
+       let applications = response.map(application => (
+            <li key={application.name}>
+                {application.name}
+            </li>
+        ))
+        setApplications(applications);
     }
-
-
-   
-    let test2 = applications.map(application => (
-        <li key={application.name}>
-            {application.name}
-        </li>
-    ))
-    console.log(test2 );
         
     return (
         <div className="recruiter-container">
           <h2 className="register-text" >Recruitment</h2> 
+          <h4 className="errorText" >{errorMsg}</h4>
           <div className="search-bar">
             <input id="name" type="text" placeholder="Name" value={name} onChange={event => setName(event.target.value)}></input>
             <input id="application-date" type="text" placeholder="Application date" value={applicationdate} onChange={event => setApplicationdate(event.target.value)}></input>
             <input id="time-period-from" type="text" placeholder="From" value={timeperiodfrom} onChange={event => setTimeperiodfrom(event.target.value)}></input>
             <input id="time-period-to" type="text" placeholder="To" value={timeperiodto} onChange={event => setTimeperiodto(event.target.value)}></input>
             <input id="competence" type="text" placeholder="Competence" value={competence} onChange={event => setCompetence(event.target.value)}></input>
-            <button className="search-btn" onClick={() => saveResults()}>Search</button>
+            <button className="search-btn" onClick={() => searchApplicants()}>Search</button>
           </div>
         <hr></hr>
         <div className="search-results" >
-        <ul>{test2}</ul>
+            <ul>{applications}</ul>
         </div>
         <button className="load-applicants-btn" onClick={() => {}}>Load more applicants</button>
         </div>
