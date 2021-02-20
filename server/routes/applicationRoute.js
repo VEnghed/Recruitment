@@ -54,8 +54,5 @@ router.get('/get', (req, res) => {
     res.status(200).json({ msg: 'Here is an application' })
 })
 
-router.get('/search', (req, res) => {
-    res.status(200).json({ msg: 'you can search for applications here' })
-})
 
 export default { router: router, route: ROUTE }
