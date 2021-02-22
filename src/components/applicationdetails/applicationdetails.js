@@ -29,7 +29,7 @@ function Applicationpage(props) {
             } 
             else if(response.status === 200) {    
                 console.log("Success")
-                setApplication(response.body);
+                response.json().then(body => setApplication(body));
             }
         })
     }

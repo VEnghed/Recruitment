@@ -50,8 +50,24 @@ router.post('/post',
     }
 )
 
+/**
+ * @description Retrieves a specific users application-details from the database.
+ *
+ * 
+ * make sure to authenticate and authorize.
+ */
 router.get('/get', (req, res) => {
-    res.status(200).json({ msg: 'Here is an application' })
+    try {
+        controller.getApplication() //Send in username??
+        response.success = "true"
+        res.status(200).json(response)
+    }catch(err) {
+        //If something went wrong when sending application to database
+        response.success = "false"
+        response.error = "internal error"
+        console.log(err)
+        res.status(500).json(response)
+    }
 })
 
 router.get('/search', (req, res) => {
