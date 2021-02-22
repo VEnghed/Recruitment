@@ -33,6 +33,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "dev": "react-scripts start",
     "serve": "node -r esm server/server.js",
     "nodemon": "nodemon -r esm server/server.js",
     "citest": "node citest.js"
