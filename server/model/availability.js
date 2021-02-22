@@ -34,7 +34,11 @@ function makeAvailability(Sequelize, DataTypes, person) {
             }
         }}, {
             tableName: 'availability',
+<<<<<<< HEAD
             timestamps: false
+=======
+            timestamps: 'false'
+>>>>>>> 9eb4891 (start implementing transaction handling)
         }
     );
 }

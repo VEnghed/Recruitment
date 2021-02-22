@@ -42,8 +42,8 @@ function connect() {
  * @throws Throws an exception if user cannot be saved
  */
 function createUser(userData) {
-    return new Promise((resolve, reject) => {
-        Person.create({ 
+    return Db.transaction(t => {
+        return Person.create({ 
             role: userData.role,
             firstname: userData.firstName, 
             lastname: userData.lastName,
@@ -51,6 +51,7 @@ function createUser(userData) {
             password: userData.password,
             email: userData.email,
             ssn: userData.ssn
+<<<<<<< HEAD
         }).then(result => {
             resolve(result)
             return
@@ -60,6 +61,16 @@ function createUser(userData) {
             return
         })
     })
+=======
+        }, {transaction: t});
+    }).then(result => {
+        return result;// Transaction has been committed
+        // result is whatever the result of the promise chain returned to the transaction callback
+    }).catch(err => {
+        return {msg: 'could not save user', ...err}// Transaction has been rolled back
+        // err is whatever rejected the promise chain returned to the transaction callback
+    });
+>>>>>>> 9eb4891 (start implementing transaction handling)
 }
 
 /**
@@ -70,21 +81,29 @@ function createUser(userData) {
  * @returns {Promise} Promise object represents the result of the authorization attempt.
  */
 function loginUser(username, password) {
-    return new Promise((resolve, reject) => {
-        Person.findAll({
-            where: {
-                username: username,
-                password: password
-            }
-        }).then(doc => {
-            if (doc.length == 0) {
-                reject('no user found')
-            } else {
-                resolve(doc[0].dataValues)
-            }
-        }).catch(err => {
-            reject(err)
+    return Db.transaction(t => {
+        return new Promise((resolve, reject) => {
+            Person.findAll({
+                where: {
+                    username: username,
+                    password: password
+                }
+            }, {transaction: t}).then(doc => {
+                if (doc.length == 0) {
+                    reject('no user found')
+                } else {
+                    resolve(doc[0].dataValues)
+                }
+            }).catch(err => {
+                reject(err)
+            }, {transaction: t});
         })
+    }).then(result => {
+        return result;// Transaction has been committed
+        // result is whatever the result of the promise chain returned to the transaction callback
+    }).catch(err => {
+        return {err}// Transaction has been rolled back
+        // err is whatever rejected the promise chain returned to the transaction callback
     })
 }
 
@@ -98,32 +117,37 @@ function createApplication(applicationData) {
     let newPromise;
     console.log("Här kommer datan: ")
     console.log(JSON.stringify(applicationData))
-
-    applicationData.availabilities.map((availability) => {
-        newPromise = new Promise((resolve, reject) => {
-            Availability.create({from_date: availability.availableFrom,
-                to_date: availability.availableTo,
-                pid: applicationData.applicant.pid})
-        });
-        promiseList = [...promiseList, newPromise]
+    //Sequelize transaction starts here
+    return Db.transaction(t => {
+        applicationData.availabilities.map((availability) => {
+            newPromise = new Promise((resolve, reject) => {
+                Availability.create({from_date: availability.availableFrom,
+                    to_date: availability.availableTo,
+                    pid: applicationData.applicant.pid}, {transaction: t})
+            });
+            promiseList = [...promiseList, newPromise]
+        })
+        applicationData.competencies.map((competence) => { 
+            newPromise = new Promise((resolve, reject) => {
+                
+                CompetenceProfile.create({
+                    years_of_experience: competence.years_experience,
+                    pid: applicationData.applicant.pid,
+                    competence_id: competence.competence_id
+                }, {transaction: t})
+            });
+            promiseList = [...promiseList, newPromise]
+        })
+        return Promise.all(promiseList);
+    }).then(result => {
+        console.log("Transaction commited: " + result)
+        return result;// Transaction has been committed
+        // result is whatever the result of the promise chain returned to the transaction callback
+    }).catch(err => {
+        console.log("Transaction rolled back: " + err)
+        return err// Transaction has been rolled back
+        // err is whatever rejected the promise chain returned to the transaction callback
     })
-    applicationData.competencies.map((competence) => { 
-        newPromise = new Promise((resolve, reject) => {
-            
-            CompetenceProfile.create({
-                years_of_experience: competence.years_experience,
-                pid: applicationData.applicant.pid,
-                competence_id: competence.competence_id
-            })
-        });
-        promiseList = [...promiseList, newPromise]
-    })
-    Promise.all(promiseList).then(values => {
-        console.log(values);
-      })
-      .catch(error => {
-        console.error(error.message)
-      });
 }
 
 /**
@@ -142,14 +166,22 @@ function getApplicationDetails() { }
  * @returns {Promise} Promise object that represents the result of the retrieval attempt.
  */
 function getCompetencies() {
-    return new Promise((resolve, reject) => {
-        Competence.findAll().then(doc => {
-            if (doc.length == 0) {
-                reject('no competencies found')
-            } else {
-                resolve(doc)
-            }
+    return Db.transaction(t => {
+        return new Promise((resolve, reject) => {
+            Competence.findAll({transaction: t}).then(doc => {
+                if (doc.length == 0) {
+                    reject('no competencies found')
+                } else {
+                    resolve(doc)
+                }
+            })
         })
+    }).then(result => {
+        return result;// Transaction has been committed
+        // result is whatever the result of the promise chain returned to the transaction callback
+    }).catch(err => {
+        return err// Transaction has been rolled back
+        // err is whatever rejected the promise chain returned to the transaction callback
     })
 }
 

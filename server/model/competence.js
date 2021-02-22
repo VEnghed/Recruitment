@@ -15,7 +15,11 @@ function makeCompetence(Sequelize, DataTypes) {
             allownNull: false
         }}, {
             tableName: 'competence',
+<<<<<<< HEAD
             timestamps: false
+=======
+            timestamps: 'false'
+>>>>>>> 9eb4891 (start implementing transaction handling)
         }
     );
 }
