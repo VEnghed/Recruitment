@@ -4,7 +4,6 @@
   "version": "0.1.0",
   "engines": {"node": "14.15.4"},
   "private": true,
-  "engines": {"node": "14.15.4"},
   "dependencies": {
     "@std/esm": "^0.26.0",
     "@testing-library/jest-dom": "^5.11.9",
