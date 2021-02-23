@@ -8,7 +8,8 @@ function makeAvailability(Sequelize, DataTypes, person) {
         availability_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
-            autoIncrement: true
+            autoIncrement: true,
+            allowNull: false
         },
         from_date: {
             type: DataTypes.DATEONLY,
@@ -20,12 +21,17 @@ function makeAvailability(Sequelize, DataTypes, person) {
         },
         pid: {
             type: DataTypes.INTEGER,
+            allowNull: false,
             references: {
                 // This is a reference to another model
                 model: person,
                 // This is the column name of the referenced model
-                key: 'pid',
-              }
+                key: 'pid'
+            },
+            validate: {
+                notEmpty: true,
+                isInt: true     
+            }
         }}, {
             tableName: 'availability',
             timestamps: false
