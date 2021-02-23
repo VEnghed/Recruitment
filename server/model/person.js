@@ -11,67 +11,65 @@ function makePerson(Sequelize, DataTypes, Role) {
             primaryKey: true,
             allowNull: false,
             autoIncrement: true, 
-            validate: {
-                isInt: true     
-            }
         },
         role: {
             type: DataTypes.INTEGER,
+            allownNull: false,
             references: {
                 model: Role,
                 key: 'role_id',
             },
             validate: {
+                notEmpty: true,
                 isInt: true     
-            },
-            allownNull: false
+            }
         },
         firstname: {
             type: DataTypes.STRING,
             allownNull: false,
             validate: {
-                isAlpha: true,  
                 notEmpty: true,  
+                isAlpha: true
             }       
         },
         lastname: {
             type: DataTypes.STRING,
             allownNull: false, 
             validate: {
-                isAlpha: true,  
                 notEmpty: true,  
+                isAlpha: true
             }
         },
         username: {
             type: DataTypes.STRING,
             allownNull: false,
             validate: {
-                isAlphanumeric: true,  
                 notEmpty: true,  
+                isAlphanumeric: true
             }
         },
         password: {
             type: DataTypes.STRING,
             allownNull: false,
             validate: {
-                isAlphanumeric: true,     
                 notEmpty: true,  
+                isAlphanumeric: true 
             }
         },
         email: {
             type: DataTypes.STRING,
             allownNull: false,
+            isEmail: true,
             validate: {
-                isEmail: true,           
                 notEmpty: true,  
+                isEmail: true  
             }
         },
         ssn: {
             type: DataTypes.STRING,
             allownNull: false,
-            isEmail: true,
             validate: {
-               isInt:true
+                notEmpty: true 
             }
         }}, {
             tableName: 'person',
