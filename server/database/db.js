@@ -4,12 +4,15 @@ import { makePerson } from '../model/person.js'
 import { makeRole } from '../model/role.js';
 import { makeCompetence } from '../model/competence.js'
 import { makeAvailability } from '../model/availability.js'
+import { makeApplicationstatus } from '../model/applicationStatus.js'
 import { makeCompetenceProfile } from '../model/competenceProfile.js'
+
 // instance of sequelize connection
 var Db
 var Person;
 var Role;
 var Availability;
+var ApplicationStatus;
 var Competence;
 var CompetenceProfile;
 // instance of sequelize connection
@@ -20,11 +23,12 @@ var CompetenceProfile;
  * @throws Throws an exception if connection cannot be established
  */
 function connect() {
-    Db = new Sequelize(process.env.PG_URI, {logging:false});
+    Db = new Sequelize(process.env.PG_URI);
     Role = makeRole(Db, DataTypes)
     Person = makePerson(Db, DataTypes, Role)
     Competence = makeCompetence(Db, DataTypes)
     Availability = makeAvailability(Db, DataTypes, Person)
+    ApplicationStatus = makeApplicationstatus(Db, DataTypes, Person)
     CompetenceProfile = makeCompetenceProfile(Db, DataTypes, Person, Competence)
     Db.sync()
     return Db.authenticate()
