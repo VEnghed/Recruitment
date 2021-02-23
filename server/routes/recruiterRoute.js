@@ -17,14 +17,21 @@ router.post('/search',
             error.array().map(err => res.statusMessage += (err.param) + ', ');
             return res.status(400).end();  
         }
+        console.log(req.body)
 
         let respBody = {};
         controller.searchApplications(req.body)
         .then(result => {
+            console.log(result)
             respBody.result = result;
-            res.status(200).json(result);
+            res.status(200).json([
+                {name: "Markus Lövgren", date: "2021-02-07"},
+                {name: "Sarah Brown", date: "2021-01-15"},
+                {name: "Amanuel Isak", date: "2021-02-23"}
+            ]);
         })
         .catch((err) => {
+            //console.log(err)
             res.statusMessage = err.msg;
             res.status(500).end();
         })

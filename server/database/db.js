@@ -30,7 +30,15 @@ function connect() {
     Availability = makeAvailability(Db, DataTypes, Person)
     ApplicationStatus = makeApplicationstatus(Db, DataTypes, Person)
     CompetenceProfile = makeCompetenceProfile(Db, DataTypes, Person, Competence)
-    Db.sync()
+
+    /*
+    Role.hasMany(Person, {foreginKey: 'role_id'});
+    Person.belongsTo(Role, {as: 'role', foreginKey: { name: 'role_id'}});
+    Person.hasMany(Availability);
+    Availability.belongsTo(Person, {as: 'person', foreginKey: { name: 'pid'}});
+    */
+
+    Db.sync({})
     return Db.authenticate()
 }
 
@@ -131,19 +139,24 @@ function createApplication(applicationData) {
  * on the query criterias
  */
 function getApplications(query) { 
+    let names = query.name.split(" ")
+    console.log(names)
+
     return new Promise((resolve, reject) => {
         Person.findAll({
-            attributes: ['firstname', 'lastname', 'from_date', 'to_date'],
-            where: []
+            Where: { 
+                firstname: names[0],
+                lastname: names[1]
+            }
         }).then(result => {
             resolve(result)
             return
         }).catch(err => {
-            console.log(JSON.stringify(err.errors))
+            console.log(err)
             reject({ msg: 'Internal server error: failed to search applicants' })
             return
         })
-    })
+    })  
 }
 
 /**
