@@ -8,7 +8,7 @@ function makeCompetence(Sequelize, DataTypes) {
         competence_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
-            autoIncrement: true,
+            autoIncrement: true
         },
         name: {
             type: DataTypes.STRING,
