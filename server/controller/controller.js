@@ -57,4 +57,4 @@ function searchApplications(query) {
     return db.getApplications(query)
 }
 
-export default { establishDatabaseConnection, loginUser, registerApplicant, sendApplication, getCompetencies }
+export default { establishDatabaseConnection, loginUser, registerApplicant, sendApplication, getCompetencies, searchApplications}

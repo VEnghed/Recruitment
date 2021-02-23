@@ -1,5 +1,5 @@
 import './recruiter.css';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Redirect } from 'react-router-dom'
 
 /**
@@ -11,7 +11,6 @@ function Recruiter() {
     const [name, setName] = useState('')
     const [timeperiodfrom, setTimeperiodfrom] = useState('')
     const [timeperiodto, setTimeperiodto] = useState('')
-    const [applicationdate, setApplicationdate] = useState('')
     const [competence, setCompetence] = useState('')
     const [applications, setApplications] = useState()
     const [errorMsg, setErrormsg] = useState('')
@@ -23,7 +22,7 @@ function Recruiter() {
      * given parameters
      */
     function searchApplicants() {
-        if(!name || !timeperiodfrom || !timeperiodto || !applicationdate || !competence) {    //check if all required fields are filled
+        if(!name || !timeperiodfrom || !timeperiodto || !competence) {    //check if all required fields are filled
             setErrormsg("Please fill in all required fields")
             return;
         }
@@ -32,7 +31,6 @@ function Recruiter() {
             name: name,
             timeperiodfrom: timeperiodfrom,
             timeperiodto: timeperiodto,
-            applicationdate: applicationdate,
             competence: competence
         })
 
@@ -44,13 +42,13 @@ function Recruiter() {
             },
             body: JSON.stringify(searchQuery)
         }).then(response => {
-            console.log(response)
+            //console.log(response)
             if(response.status === 500)         // internal error
                 setErrormsg(response.statusText)
             if(response.status === 400)         // bad request
                 setErrormsg(response.statusText)
             else if(response.status === 200) {  // query is valid 
-                showApplications(response)      // save result
+                response.json().then(result => showApplications(result))
             }
         }) 
     }
@@ -58,11 +56,26 @@ function Recruiter() {
     //function for creating elements & putting values
     function showApplications(response) {
        let applications = response.map(application => (
-            <li key={application.name}>
-                {application.name}
+            <li key={application.name} onClick={() => goToDetails()}>
+                {application.name + "   " + application.date} 
             </li>
         ))
         setApplications(applications);
+    }
+
+    /**
+     * Go to applicant details with certain applicant
+     */
+    function goToDetails() {
+        window.location = "/details:id" 
+        //return <Redirect to="/details"></Redirect>
+    }
+
+    /**
+     * loads more applicants to view
+     */
+    function loadMoreApplicants() {
+        //comming soon
     }
         
     return (
@@ -71,7 +84,6 @@ function Recruiter() {
           <h4 className="errorText" >{errorMsg}</h4>
           <div className="search-bar">
             <input id="name" type="text" placeholder="Name" value={name} onChange={event => setName(event.target.value)}></input>
-            <input id="application-date" type="text" placeholder="Application date" value={applicationdate} onChange={event => setApplicationdate(event.target.value)}></input>
             <input id="time-period-from" type="text" placeholder="From" value={timeperiodfrom} onChange={event => setTimeperiodfrom(event.target.value)}></input>
             <input id="time-period-to" type="text" placeholder="To" value={timeperiodto} onChange={event => setTimeperiodto(event.target.value)}></input>
             <input id="competence" type="text" placeholder="Competence" value={competence} onChange={event => setCompetence(event.target.value)}></input>
@@ -81,7 +93,7 @@ function Recruiter() {
         <div className="search-results" >
             <ul>{applications}</ul>
         </div>
-        <button className="load-applicants-btn" onClick={() => {}}>Load more applicants</button>
+        <button className="load-applicants-btn" onClick={() => loadMoreApplicants()}>Load more applicants</button>
         </div>
     );
 }

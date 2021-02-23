@@ -67,7 +67,7 @@ function makePerson(Sequelize, DataTypes, Role) {
             }
         },
         ssn: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             allownNull: false,
             isEmail: true,
             validate: {

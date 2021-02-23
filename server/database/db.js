@@ -121,7 +121,7 @@ function createApplication(applicationData) {
         console.error(error.message)
       });
 }
-
+ 
 /**
  * Returns a set of applications based 
  * on the query criterias
@@ -129,7 +129,8 @@ function createApplication(applicationData) {
 function getApplications(query) { 
     return new Promise((resolve, reject) => {
         Person.findAll({
-            // query here
+            attributes: ['firstname', 'lastname', 'from_date', 'to_date'],
+            where: []
         }).then(result => {
             resolve(result)
             return
