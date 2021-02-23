@@ -6,7 +6,7 @@ function makeRole(Sequelize, DataTypes) {
             type: DataTypes.INTEGER,
             primaryKey: true,
             allowNull: false,
-            autoIncrement: true, 
+            autoIncrement: true
         },
         name: {
             type: DataTypes.STRING,

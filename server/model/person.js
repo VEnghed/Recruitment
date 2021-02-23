@@ -69,7 +69,7 @@ function makePerson(Sequelize, DataTypes, Role) {
             type: DataTypes.STRING,
             allownNull: false,
             validate: {
-                notEmpty: true,  
+                notEmpty: true 
             }
         }}, {
             tableName: 'person',
