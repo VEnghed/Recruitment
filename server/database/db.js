@@ -51,20 +51,6 @@ function createUser(userData) {
             password: userData.password,
             email: userData.email,
             ssn: userData.ssn
-<<<<<<< HEAD
-<<<<<<< HEAD
-        }).then(result => {
-            resolve(result)
-            return
-        }).catch(err => {
-            //console.log(JSON.stringify(err.errors))
-            reject({ msg: 'Internal server error: failed to save new user' })
-            return
-        })
-    })
-=======
-=======
->>>>>>> 1ea745c (start implementing transaction handling)
         }, {transaction: t});
     }).then(result => {
         return result;// Transaction has been committed
@@ -73,10 +59,6 @@ function createUser(userData) {
         return {msg: 'could not save user', ...err}// Transaction has been rolled back
         // err is whatever rejected the promise chain returned to the transaction callback
     });
-<<<<<<< HEAD
->>>>>>> 9eb4891 (start implementing transaction handling)
-=======
->>>>>>> 1ea745c (start implementing transaction handling)
 }
 
 /**
