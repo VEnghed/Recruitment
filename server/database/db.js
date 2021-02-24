@@ -106,6 +106,7 @@ function createApplication(applicationData) {
     console.log("Här kommer datan: ")
     console.log(JSON.stringify(applicationData))
     //Sequelize transaction starts here
+    //test change
     return Db.transaction(t => {
         applicationData.availabilities.map((availability) => {
             newPromise = new Promise((resolve, reject) => {
