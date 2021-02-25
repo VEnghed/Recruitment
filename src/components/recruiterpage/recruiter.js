@@ -25,29 +25,28 @@ function Recruiter() {
             return;
         }
         
-        let data = ({
-            query: {                                                        // the query
-                name: name,
-                timeperiodfrom: timeperiodfrom,
-                timeperiodto: timeperiodto,
-                competence: competence
-            }                                                               // get token for authorization
+        let data = ({                                       // the query
+            name: name,
+            timeperiodfrom: timeperiodfrom,
+            timeperiodto: timeperiodto,
+            competence: competence                    
         })
+        console.log(data)
 
         fetch('/recruiter/search', {
             method: 'POST', 
             headers: {
               'Accept': 'application/json',
               'Content-Type': 'application/json',
-              'Authorization':'Bearer ' + window.localStorage.getItem("token")   
+              'Authorization': 'Bearer ' + window.localStorage.getItem("token")   
             },
             body: JSON.stringify(data)
         }).then(response => {
-            if(response.status === 500)             // internal error
+            if(response.status === 500)                     // internal error
                 setErrormsg(response.statusText)
-            if(response.status === 400)             // bad request
+            if(response.status === 400)                     // bad request
                 setErrormsg(response.statusText)
-            else if(response.status === 200) {      // query is valid 
+            else if(response.status === 200) {              // query is valid 
                 response.json().then(result => {
                     console.log(result)
                     showApplications(result)
@@ -56,7 +55,9 @@ function Recruiter() {
         }) 
     }
 
-    //function for creating elements & putting values
+    /**
+     * creating elements & putting values
+     */
     function showApplications(response) {
        let applications = response.map(application => (
             <li key={application.firstname} onClick={() => goToDetails()}>
@@ -70,7 +71,7 @@ function Recruiter() {
      * Go to applicant details with certain applicant
      */
     function goToDetails() {
-        window.location = "/details:id" 
+        window.location = "/details" 
         //return <Redirect to="/details"></Redirect>
     }
 
