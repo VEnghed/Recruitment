@@ -19,7 +19,6 @@ router.post('/search',
         }
 
         //add token validation
-
         controller.searchApplications(req.body.query)
         .then(result => {
             //console.log(result)

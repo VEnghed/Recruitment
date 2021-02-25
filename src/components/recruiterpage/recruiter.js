@@ -31,15 +31,15 @@ function Recruiter() {
                 timeperiodfrom: timeperiodfrom,
                 timeperiodto: timeperiodto,
                 competence: competence
-            }, 
-            token: window.localStorage.getItem("token")                     // get token for authorization
+            }                                                               // get token for authorization
         })
 
         fetch('/recruiter/search', {
             method: 'POST', 
             headers: {
               'Accept': 'application/json',
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'Authorization':'Bearer ' + window.localStorage.getItem("token")   
             },
             body: JSON.stringify(data)
         }).then(response => {
