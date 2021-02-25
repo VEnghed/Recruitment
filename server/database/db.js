@@ -127,6 +127,14 @@ function createApplication(applicationData) {
             });
             promiseList = [...promiseList, newPromise]
         })
+        //status: unhandled is default
+        newPromise = new Promise((resolve, reject) => { 
+            ApplicationStatus.create({
+                status: 'unhandled',
+                person: person.pid //make sure this is correct
+            }, {transaction: t})
+        })
+        promiseList = [...promiseList, newPromise]
         return Promise.all(promiseList);
     }).then(result => {
         console.log("Transaction commited: " + result)
@@ -137,6 +145,45 @@ function createApplication(applicationData) {
         return err// Transaction has been rolled back
         // err is whatever rejected the promise chain returned to the transaction callback
     })
+
+    /*
+    return Db.transaction(t => {
+        return Person.findAll({
+            where: {
+                username: applicationData.applicant.username //Subject to change depending on data sent
+            }, transaction: t
+        })
+        .then(doc => {
+            if (doc.length == 0) {
+                reject('no user found')
+            } else {
+                person = doc[0].dataValues; //If person is found in database save in variable person
+            }
+            applicationData.availabilities.map((availability) => {
+                return Availability.create({from_date: availability.availableFrom,
+                                            to_date: availability.availableTo,
+                                            pid: person.pid
+                }, {transaction: t})
+            })
+            applicationData.competencies.map((competence) => { 
+                return CompetenceProfile.create({
+                    years_of_experience: competence.years_experience,
+                    pid: person.pid, //replace with person.id or something
+                    competence_id: competence.competence_id
+                }, {transaction: t})
+            })
+            //status: unhandled is default
+            return ApplicationStatus.create({
+                status: 'unhandled',
+                person: person.pid //make sure this is correct
+            }, {transaction: t})
+        });
+    }).then(result => {
+
+    }).catch(err => {
+
+    }); 
+    */
 }
 
 /**
