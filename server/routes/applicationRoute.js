@@ -13,26 +13,34 @@ router.post('/post',
     //Ensure that request body is correctly formatted
     body('competencies').exists().isArray(),
     body('availabilities').exists().isArray().notEmpty(),
-    body('applicant').exists(),
-    //Ensure that firstname and lastname contain only letters
-    body('applicant.firstName').notEmpty().isAlpha(),
-    body('applicant.lastName').notEmpty().isAlpha(),
-    //username should be alphanumeric
-    body('applicant.username').notEmpty().isAlphanumeric(),
-    // password must be at least 5 chars long
-    body('applicant.password').notEmpty().isLength({ min: 5 }),
-    //Ensure email is filled in correctly
-    body('applicant.email').notEmpty().isEmail(),
-    //Social security number must be numeric
-    body('applicant.ssn').notEmpty().isNumeric(),
+    body('token').exists(),
+    //Check for jwt token...
     (req, res) => {
         //Gather validation-results
         const errors = validationResult(req);
         //If something failed to validate
         if (!errors.isEmpty()) {
-            console.log(errors.array())
+            console.log("Validation error: " + JSON.stringify(errors.array()))
             //return http status 400 and errors
-            return res.status(400).json({ errors: errors.array() });
+            let validationErrors = "Wrong input at: ";
+
+            //Finds the parameters where the validation errors occurred and appends them to a string.
+            errors.array().map((elem, index) => {
+                if(index < (errors.array().length -1)) {
+                    if(!validationErrors.includes(elem.param)) {
+                        validationErrors += elem.param + ", ";
+                    }
+                }else {
+                    if(!validationErrors.includes(elem.param)) {
+                        validationErrors += elem.param;
+                    }
+                    else {
+                        validationErrors = validationErrors.slice(0, -2);
+                    }
+                }
+            })
+            res.statusMessage = validationErrors;
+            return res.status(400).json(validationErrors);
         }
         //Try to send application to database
         let response = {};
@@ -43,7 +51,7 @@ router.post('/post',
         }catch(err) {
             //If something went wrong when sending application to database
             response.success = "false"
-            response.error = "internal error"
+            response.error = "internal server error"
             console.log(err)
             res.status(500).json(response)
         }

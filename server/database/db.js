@@ -1,11 +1,12 @@
 import pkg from 'sequelize';
 const { Sequelize, DataTypes } = pkg;
 import { makePerson } from '../model/person.js'
-import { makeRole } from '../model/role.js';
+import { makeRole } from '../model/role.js'
 import { makeCompetence } from '../model/competence.js'
 import { makeAvailability } from '../model/availability.js'
 import { makeApplicationstatus } from '../model/applicationStatus.js'
 import { makeCompetenceProfile } from '../model/competenceProfile.js'
+import { noExtendLeft } from 'sequelize/types/lib/operators';
 
 // instance of sequelize connection
 var Db
@@ -103,54 +104,14 @@ function loginUser(username, password) {
 function createApplication(applicationData) {
     let promiseList = [];
     let newPromise;
+    let person; //this is the person that the findAll query below finds
     console.log("Här kommer datan: ")
     console.log(JSON.stringify(applicationData))
     //Sequelize transaction starts here
-    //test change
-    return Db.transaction(t => {
-        applicationData.availabilities.map((availability) => {
-            newPromise = new Promise((resolve, reject) => {
-                Availability.create({from_date: availability.availableFrom,
-                    to_date: availability.availableTo,
-                    pid: applicationData.applicant.pid}, {transaction: t})
-            });
-            promiseList = [...promiseList, newPromise]
-        })
-        applicationData.competencies.map((competence) => { 
-            newPromise = new Promise((resolve, reject) => {
-                
-                CompetenceProfile.create({
-                    years_of_experience: competence.years_experience,
-                    pid: applicationData.applicant.pid,
-                    competence_id: competence.competence_id
-                }, {transaction: t})
-            });
-            promiseList = [...promiseList, newPromise]
-        })
-        //status: unhandled is default
-        newPromise = new Promise((resolve, reject) => { 
-            ApplicationStatus.create({
-                status: 'unhandled',
-                person: person.pid //make sure this is correct
-            }, {transaction: t})
-        })
-        promiseList = [...promiseList, newPromise]
-        return Promise.all(promiseList);
-    }).then(result => {
-        console.log("Transaction commited: " + result)
-        return result;// Transaction has been committed
-        // result is whatever the result of the promise chain returned to the transaction callback
-    }).catch(err => {
-        console.log("Transaction rolled back: " + err)
-        return err// Transaction has been rolled back
-        // err is whatever rejected the promise chain returned to the transaction callback
-    })
-
-    /*
     return Db.transaction(t => {
         return Person.findAll({
             where: {
-                username: applicationData.applicant.username //Subject to change depending on data sent
+                username: applicationData.username //Subject to change depending on data sent
             }, transaction: t
         })
         .then(doc => {
@@ -179,11 +140,11 @@ function createApplication(applicationData) {
             }, {transaction: t})
         });
     }).then(result => {
-
+        return result;
     }).catch(err => {
-
+        throw new Error("failed to save transaction: " + err);
     }); 
-    */
+    
 }
 
 /**
