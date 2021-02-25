@@ -26,7 +26,7 @@ function connect() {
   Competence = makeCompetence(Db, DataTypes);
   Availability = makeAvailability(Db, DataTypes, Person);
   CompetenceProfile = makeCompetenceProfile(Db, DataTypes, Person, Competence);
-  Db.sync();
+  Db.sync({ alter: true });
   return Db.authenticate();
 }
 
@@ -78,18 +78,17 @@ function loginUser(username, password) {
     })
       .then((doc) => {
         if (!doc) {
-          console.log("no match :(");
           reject("no matching user found");
         } else {
-          let now = new Date();
-          now = new Date(now.setHours(now.getHours() + 1));
+          let then = new Date();
+          then = new Date(then.setHours(then.getHours() + 2));
           doc
-            .update({ loggedInUntil: now })
+            .update({ loggedInUntil: then })
             .then(() => {
               resolve(doc.dataValues);
             })
             .catch((err) => {
-              console.log("could not update");
+              console.log("could not update loggedInUntil");
               reject(err);
             });
         }
@@ -169,6 +168,31 @@ function getCompetencies() {
   });
 }
 
+/**
+ *
+ * @param {username} username The username of the user
+ */
+function loginStatus(username) {
+  return new Promise((resolve, reject) => {
+    Person.findOne({ where: { username: username } })
+      .then((doc) => {
+        let now = new Date();
+        now = new Date(now.setHours(now.getHours() + 1));
+        let until = doc.dataValues.loggedInUntil;
+        let difference = until - now;
+		console.log('lul')
+        if (difference < 0) {
+          resolve({ isLoggedIn: false });
+        } else {
+          resolve({ isLoggedIn: true });
+        }
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
 export default {
   connect,
   createUser,
@@ -176,4 +200,5 @@ export default {
   createApplication,
   getApplications,
   getCompetencies,
+  loginStatus,
 };

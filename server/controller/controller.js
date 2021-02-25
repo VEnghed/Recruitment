@@ -1,6 +1,6 @@
-import db from '../database/db.js'
+import db from "../database/db.js";
 /**
- * controller connects the integration layer 
+ * controller connects the integration layer
  * with the HTTP-layer
  */
 
@@ -10,41 +10,55 @@ import db from '../database/db.js'
  result of the connection attempt
  */
 function establishDatabaseConnection() {
-    return db.connect()
+  return db.connect();
 }
 
-
-/** 
+/**
  * login
  */
 function loginUser({ username, password }) {
-    return db.loginUser(username, password)
+  return db.loginUser(username, password);
 }
 
 /**
  * Register a new user on the application
  * @param {object} userData data of the new user
- * @returns {Promise} a promise object representing the 
+ * @returns {Promise} a promise object representing the
  * result of the user creation attempt
  */
 async function registerApplicant(userData) {
-    return db.createUser(userData)
+  return db.createUser(userData);
 }
 
 /**
-* Sends an application from the HTTP-layer to the integration layer (database)
-* @param {*} application The application to send.
-*/
+ * Sends an application from the HTTP-layer to the integration layer (database)
+ * @param {*} application The application to send.
+ */
 function sendApplication(application) {
-   //JSON parse to ensure compatibility
-   return db.createApplication(JSON.parse(application))
+  //JSON parse to ensure compatibility
+  return db.createApplication(JSON.parse(application));
 }
 
 /**
-* Attempts to retrieve all competencies from the database.
-*/
+ * Attempts to retrieve all competencies from the database.
+ */
 function getCompetencies() {
-   return db.getCompetencies()
+  return db.getCompetencies();
 }
 
-export default { establishDatabaseConnection, loginUser, registerApplicant, sendApplication, getCompetencies }
+/**
+ *
+ * @param {username} username
+ */
+function loginStatus(username) {
+  return db.loginStatus(username);
+}
+
+export default {
+  establishDatabaseConnection,
+  loginUser,
+  registerApplicant,
+  sendApplication,
+  getCompetencies,
+  loginStatus,
+};

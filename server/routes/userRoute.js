@@ -1,7 +1,7 @@
 import express from "express";
 import { body, validationResult } from "express-validator";
 import controller from "../controller/controller.js";
-import { getAccessToken, verify } from "./auth/auth.js";
+import { authorize, getAccessToken } from "./auth/auth.js";
 
 const router = express.Router();
 const ROUTE = "/user";
@@ -69,5 +69,15 @@ router.post(
       });
   }
 );
+
+
+
+/**
+ * Help function to test JWTs
+ */
+router.get("/testToken", authorize, (req, res) => {
+  let data = { name: req.user, role: req.role};
+  res.json({ data });
+});
 
 export default { router: router, route: ROUTE };
