@@ -14,17 +14,7 @@ router.post('/post',
     body('competencies').exists().isArray(),
     body('availabilities').exists().isArray().notEmpty(),
     body('applicant').exists(),
-    //Ensure that firstname and lastname contain only letters
-    body('applicant.firstName').notEmpty().isAlpha(),
-    body('applicant.lastName').notEmpty().isAlpha(),
-    //username should be alphanumeric
-    body('applicant.username').notEmpty().isAlphanumeric(),
-    // password must be at least 5 chars long
-    body('applicant.password').notEmpty().isLength({ min: 5 }),
-    //Ensure email is filled in correctly
-    body('applicant.email').notEmpty().isEmail(),
-    //Social security number must be numeric
-    body('applicant.ssn').notEmpty().isNumeric(),
+    //Check for jwt token...
     (req, res) => {
         //Gather validation-results
         const errors = validationResult(req);

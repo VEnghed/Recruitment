@@ -96,14 +96,49 @@ function loginUser(username, password) {
 function createApplication(applicationData) {
     let promiseList = [];
     let newPromise;
+    let person; //this is the person that the findAll query below finds
     console.log("Här kommer datan: ")
     console.log(JSON.stringify(applicationData))
+    
+    return Db.transaction(t => {
+        return Person.findAll({
+            where: {
+                username: applicationData.applicant.username //Subject to change depending on data sent
+            }, transaction: t
+        })
+        .then(doc => {
+            if (doc.length == 0) {
+                reject('no user found')
+            } else {
+                person = doc[0].dataValues; //If person is found in database save in variable person
+            }
+            applicationData.availabilities.map((availability) => {
+                return Availability.create({from_date: availability.availableFrom,
+                                            to_date: availability.availableTo,
+                                            pid: person.pid
+                }, {transaction: t})
+            })
+            applicationData.competencies.map((competence) => { 
+                return CompetenceProfile.create({
+                    years_of_experience: competence.years_experience,
+                    pid: person.pid, //replace with person.id or something
+                    competence_id: competence.competence_id
+                }, {transaction: t})
+            })
+            
+            //Create entry in applicationStatus table...
+        });
+    }).then(result => {
 
-    applicationData.availabilities.map((availability) => {
+    }).catch(err => {
+
+    });
+
+/*     applicationData.availabilities.map((availability) => {
         newPromise = new Promise((resolve, reject) => {
             Availability.create({from_date: availability.availableFrom,
                 to_date: availability.availableTo,
-                pid: applicationData.applicant.pid})
+                pid: applicationData.applicant.pid}) //replace with person.id or something
         });
         promiseList = [...promiseList, newPromise]
     })
@@ -112,18 +147,20 @@ function createApplication(applicationData) {
             
             CompetenceProfile.create({
                 years_of_experience: competence.years_experience,
-                pid: applicationData.applicant.pid,
+                pid: applicationData.applicant.pid, //replace with person.id or something
                 competence_id: competence.competence_id
             })
         });
         promiseList = [...promiseList, newPromise]
     })
+
+
     Promise.all(promiseList).then(values => {
         console.log(values);
       })
       .catch(error => {
         console.error(error.message)
-      });
+      }); */
 }
 
 /**
