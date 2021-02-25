@@ -1,9 +1,6 @@
 import './applicationpage.css';
 import React, { useState } from "react";
 
-
-
-
 //global arrays use to store user input, probably not a great way to do it
 let competenceArray = [];
 let availabilityArray = [];
