@@ -19,7 +19,8 @@ function Applicationpage(props) {
     let [availabilityList, setAvailabilityList] = useState([]);
     let [from_date, set_from_date] = useState("");
     let [to_date, set_to_date] = useState("");
-    
+    let myToken = window.localStorage.getItem("token")
+
     //For showing success- and error-messages
     let [msgToUser, setMsgToUser] = useState("");
     
@@ -150,7 +151,8 @@ function Applicationpage(props) {
             method: 'POST', 
             headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + applicationData.token
             },
             body: JSON.stringify(applicationData)
         }).then(response => {
@@ -181,8 +183,9 @@ function Applicationpage(props) {
     function onSendApplicationClick() {
         //gather data
         //remove applicant below send jwt token instead
-        let token = localStorage.getItem('token');
-        let applicationData = {availabilities: availabilityArray, competencies: competenceArray, token: token};
+        //let token = window.localStorage.getItem('token');
+        let tokenVal = "mak";
+        let applicationData = {availabilities: availabilityArray, competencies: competenceArray, token: tokenVal};
         if (availabilityArray.length === 0 || competenceArray.length === 0) {
             setMsgToUser("Please add competencies and/or availabilities");
             return;

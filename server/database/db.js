@@ -6,7 +6,7 @@ import { makeCompetence } from '../model/competence.js'
 import { makeAvailability } from '../model/availability.js'
 import { makeApplicationstatus } from '../model/applicationStatus.js'
 import { makeCompetenceProfile } from '../model/competenceProfile.js'
-import { noExtendLeft } from 'sequelize/types/lib/operators';
+import { application } from 'express';
 
 // instance of sequelize connection
 var Db
@@ -76,8 +76,8 @@ function loginUser(username, password) {
                 where: {
                     username: username,
                     password: password
-                }
-            }, {transaction: t}).then(doc => {
+                }, transaction: t
+            }).then(doc => {
                 if (doc.length == 0) {
                     reject('no user found')
                 } else {
@@ -85,7 +85,7 @@ function loginUser(username, password) {
                 }
             }).catch(err => {
                 reject(err)
-            }, {transaction: t});
+            });
         })
     }).then(result => {
         return result;// Transaction has been committed
@@ -102,11 +102,10 @@ function loginUser(username, password) {
  * @returns {Promise} Promise object that represents the result of the create-application attempt.
  */
 function createApplication(applicationData) {
-    let promiseList = [];
-    let newPromise;
     let person; //this is the person that the findAll query below finds
     console.log("Här kommer datan: ")
-    console.log(JSON.stringify(applicationData))
+    console.log(applicationData)
+    let date = new Date().toISOString().slice(0, 10);
     //Sequelize transaction starts here
     return Db.transaction(t => {
         return Person.findAll({
@@ -129,17 +128,19 @@ function createApplication(applicationData) {
             applicationData.competencies.map((competence) => { 
                 return CompetenceProfile.create({
                     years_of_experience: competence.years_experience,
-                    pid: person.pid, //replace with person.id or something
+                    pid: person.pid, 
                     competence_id: competence.competence_id
                 }, {transaction: t})
             })
-            //status: unhandled is default
+           
             return ApplicationStatus.create({
-                status: 'unhandled',
-                person: person.pid //make sure this is correct
+                status: 'unhandled', //status: unhandled is default
+                person: person.pid,  //make sure this is correct
+                application_date: date
             }, {transaction: t})
         });
     }).then(result => {
+        console.log("This is the result: " + result)
         return result;
     }).catch(err => {
         throw new Error("failed to save transaction: " + err);
@@ -156,7 +157,63 @@ function getApplications() { }
  * Returns an object representing the details of 
  * an application
  */
-function getApplicationDetails() { }
+function getApplicationDetails(username) {
+    let application;
+    let personId;
+    return Db.transaction(t => {
+        return Person.findAll({
+            where: {
+                username: username //Subject to change depending on data sent
+            }, transaction: t
+        }).then(user => {
+            if (user.length == 0) {
+                reject('no user found')
+            } else {
+                application = [...application, user[0].dataValues]
+                personId = user[0].dataValues.pid; //If person is found in database save in variable person
+            }
+            return Availability.findAll({
+                where: {
+                    pid: personId
+                }, transaction: t
+            }).then(res => {
+                if (res.length == 0) 
+                    reject("no availabilities found")
+                else
+                    application = [...application, res]
+                
+                return CompetenceProfile.findAll({
+                    where: {
+                        pid: personId
+                    }, transaction: t
+                }).then(compRes => {
+                    if (compRes.length == 0)
+                        reject("no competencies found")
+                    else
+                        application = [...application, compRes]
+                    
+                    return ApplicationStatus.findAll({
+                    where: {
+                        pid: personId
+                    }, transaction: t
+                    }).then(statusRes => {
+                        if (statusRes.length == 0)
+                            reject("no applicationstatus found")
+                        else
+                            application = [...application, statusRes]
+                    })
+                })
+            })
+        })
+    }).then(result => {
+        console.log(result)
+        //application hopefully has all the info we need
+        return application;
+    })
+    .catch(err => {
+        throw Error("Fetching application details failed: " + err)
+    })
+ }
 
 /**
  * @description function to retrieve all competencies in the database
@@ -182,4 +239,4 @@ function getCompetencies() {
     })
 }
 
-export default { connect, createUser, loginUser, createApplication, getApplications, getCompetencies }
+export default { connect, createUser, loginUser, createApplication, getApplications, getCompetencies, getApplicationDetails }

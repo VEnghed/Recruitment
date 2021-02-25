@@ -38,16 +38,22 @@ async function registerApplicant(userData) {
 * @param {*} application The application to send.
 */
 function sendApplication(application) {
-   let payload = jwt.verify(application.token) //Grab payload from jwt
-   console.log(payload)
-
+   //let payload = jwt.verify(application.token) //Grab payload from jwt
+   //console.log(payload)
+   
+    let temp = application.token;
+    console.log("token: " + temp)
    //remake application with username
-   let app = {competencies: application.competencies, 
-        availabilities: application.availabilities, 
-        username: payload.username
+   //username: payload.username
+   let appl = application;
+   console.log("in controller: " + appl)
+   let app = {competencies: appl.competencies, 
+        availabilities: appl.availabilities, 
+        username: temp
     }
+    console.log("in controller: " + app)
    //JSON parse to ensure compatibility
-   return db.createApplication(JSON.parse(app))
+   return db.createApplication(app)
 }
 
 /**

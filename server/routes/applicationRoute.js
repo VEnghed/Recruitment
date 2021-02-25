@@ -14,7 +14,6 @@ router.post('/post',
     body('competencies').exists().isArray(),
     body('availabilities').exists().isArray().notEmpty(),
     body('token').exists(),
-    //Check for jwt token...
     (req, res) => {
         //Gather validation-results
         const errors = validationResult(req);
@@ -45,7 +44,8 @@ router.post('/post',
         //Try to send application to database
         let response = {};
         try {
-            controller.sendApplication(JSON.stringify(req.body))
+            console.log("Request: " + req.body)
+            controller.sendApplication(req.body)
             response.success = "true"
             res.status(200).json(response)
         }catch(err) {
