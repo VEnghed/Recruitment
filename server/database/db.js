@@ -40,7 +40,7 @@ function connect() {
     Availability.belongsTo(Person, {as: 'person', foreginKey: { name: 'pid'}});
     */
 
-    Db.sync({})
+    Db.sync({alter: true})
     return Db.authenticate()
 }
 
@@ -152,7 +152,9 @@ function createApplication(applicationData) {
                 status: 'unhandled', //status: unhandled is default
                 person: person.pid,  //make sure this is correct
                 application_date: date
-            }, {transaction: t})
+            }, {transaction: t}).catch(err => {
+              console.log(err);
+            })
         });
     }).then(result => {
         console.log("This is the result: " + result)

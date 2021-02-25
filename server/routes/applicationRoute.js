@@ -1,6 +1,8 @@
 import express from 'express'
 import controller from '../controller/controller.js'
 import {body , validationResult} from 'express-validator'
+import {authorize} from "./auth/auth.js"
+
 
 const router = express.Router()
 const ROUTE = '/application'
@@ -9,7 +11,7 @@ const ROUTE = '/application'
  * Handles a post request on the /applicationpage/post url.
  * Is used when a user wants to send an application
  */
-router.post('/post',
+router.post('/post', authorize,
     //Ensure that request body is correctly formatted
     body('competencies').exists().isArray(),
     body('availabilities').exists().isArray().notEmpty(),
@@ -44,8 +46,12 @@ router.post('/post',
         //Try to send application to database
         let response = {};
         try {
-            console.log("Request: " + req.body)
-            controller.sendApplication(req.body)
+            console.log("Request: " + JSON.stringify(req.body) + "from: " + req.user)
+            let avail = req.body.availabilities;
+            let comp = req.body.competencies;
+            let user = req.user;
+            let app = {avail, comp, user}
+            controller.sendApplication(app)
             response.success = "true"
             res.status(200).json(response)
         }catch(err) {
