@@ -32,12 +32,17 @@ function makeApplicationstatus(Sequelize, DataTypes, person) {
                 notEmpty: true,
                 isInt: true     
             }
-        }}, {
+        },
+        application_date: {
+            type: DataTypes.DATEONLY,
+            defaultValue: Sequelize.NOW,
+            allowNull: false
+        }
+        }, {
             tableName: 'applicationstatus',
-            timestamps: true, 
-            updatedAt: false
+            timestamps: false, 
         }
     );
-}
+} 
  
 export { makeApplicationstatus };

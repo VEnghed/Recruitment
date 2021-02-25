@@ -48,7 +48,10 @@ function Recruiter() {
             if(response.status === 400)         // bad request
                 setErrormsg(response.statusText)
             else if(response.status === 200) {  // query is valid 
-                response.json().then(result => showApplications(result))
+                response.json().then(result => {
+                    console.log(result)
+                    showApplications(result)
+                })
             }
         }) 
     }
@@ -56,8 +59,8 @@ function Recruiter() {
     //function for creating elements & putting values
     function showApplications(response) {
        let applications = response.map(application => (
-            <li key={application.name} onClick={() => goToDetails()}>
-                {application.name + "   " + application.date} 
+            <li key={application.firstname} onClick={() => goToDetails()}>
+                {application.firstname + " " + application.lastname + "         " + application.applicationdate} 
             </li>
         ))
         setApplications(applications);
