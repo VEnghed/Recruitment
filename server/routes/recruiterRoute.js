@@ -1,12 +1,13 @@
 import express from 'express'
 import controller from '../controller/controller.js'
+import { authorize } from './auth/auth.js'
 import {body , validationResult} from 'express-validator'
 
 const router = express.Router()
 const ROUTE = '/recruiter'
 
-router.post('/search', 
-    body('query.name').notEmpty().isString().isAlpha('en-US',{ignore:" "}),
+router.post('/search', authorize, 
+    body('query.name').notEmpty().isString().isAlpha('en-US', {ignore: " "}),
     body('query.timeperiodfrom').notEmpty().isString().isDate(),
     body('query.timeperiodto').notEmpty().isString().isDate(),
     body('query.competence').notEmpty().isString().isAlpha(),
@@ -30,13 +31,6 @@ router.post('/search',
             res.status(500).end();
         })
 }) 
-
-/*
-[
-                {name: "Markus Lövgren", date: "2021-02-07"},
-                {name: "Sarah Brown", date: "2021-01-15"},
-                {name: "Amanuel Isak", date: "2021-02-23"}
-            ]*/
 
 
 router.get('/details', (req, res) => {

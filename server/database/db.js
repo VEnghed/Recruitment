@@ -33,14 +33,7 @@ function connect() {
     ApplicationStatus = makeApplicationstatus(Db, DataTypes, Person)
     CompetenceProfile = makeCompetenceProfile(Db, DataTypes, Person, Competence)
 
-    /*
-    Role.hasMany(Person, {foreginKey: 'role_id'});
-    Person.belongsTo(Role, {as: 'role', foreginKey: { name: 'role_id'}});
-    Person.hasMany(Availability);
-    Availability.belongsTo(Person, {as: 'person', foreginKey: { name: 'pid'}});
-    */
-
-    Db.sync({})
+    Db.sync()
     return Db.authenticate()
 }
 
@@ -63,9 +56,11 @@ function createUser(userData) {
             ssn: userData.ssn
         }, {transaction: t});
     }).then(result => {
+        console.log(result)
         return result;// Transaction has been committed
         // result is whatever the result of the promise chain returned to the transaction callback
     }).catch(err => {
+        console.log(err)
         return {msg: 'could not save user', ...err}// Transaction has been rolled back
         // err is whatever rejected the promise chain returned to the transaction callback
     });
