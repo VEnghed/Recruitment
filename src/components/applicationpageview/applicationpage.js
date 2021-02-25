@@ -166,6 +166,10 @@ function Applicationpage(props) {
                 console.log("Success")
                 setMsgToUser("Application saved")
             }
+            else if (response.status === 302) {
+                console.log("redirect")
+                window.location = "/" 
+            }
             else if(response.status === 400) {
                 console.log("Wrong input")
                 //console.log(response)
