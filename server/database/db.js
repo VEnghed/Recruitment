@@ -2,15 +2,17 @@ import pkg from 'sequelize';
 const { Sequelize, DataTypes } = pkg;
 import { makePerson } from '../model/person.js'
 import { makeRole } from '../model/role.js';
-import { isAlphaString, isAlphaNumString, isPositiveInteger, isEmail } from '../util/validator.js'
 import { makeCompetence } from '../model/competence.js'
 import { makeAvailability } from '../model/availability.js'
+import { makeApplicationstatus } from '../model/applicationStatus.js'
 import { makeCompetenceProfile } from '../model/competenceProfile.js'
+
 // instance of sequelize connection
 var Db
 var Person;
 var Role;
 var Availability;
+var ApplicationStatus;
 var Competence;
 var CompetenceProfile;
 // instance of sequelize connection
@@ -26,6 +28,7 @@ function connect() {
     Person = makePerson(Db, DataTypes, Role)
     Competence = makeCompetence(Db, DataTypes)
     Availability = makeAvailability(Db, DataTypes, Person)
+    ApplicationStatus = makeApplicationstatus(Db, DataTypes, Person)
     CompetenceProfile = makeCompetenceProfile(Db, DataTypes, Person, Competence)
     Db.sync()
     return Db.authenticate()
@@ -52,7 +55,8 @@ function createUser(userData) {
             resolve(result)
             return
         }).catch(err => {
-            reject({ msg: 'could not save user', ...err })
+            //console.log(JSON.stringify(err.errors))
+            reject({ msg: 'Internal server error: failed to save new user' })
             return
         })
     })
