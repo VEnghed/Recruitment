@@ -25,7 +25,7 @@ var CompetenceProfile;
  * @throws Throws an exception if connection cannot be established
  */
 function connect() {
-    Db = new Sequelize(process.env.PG_URI, {logging:false});
+    Db = new Sequelize(process.env.PG_URI);
     Role = makeRole(Db, DataTypes)
     Person = makePerson(Db, DataTypes, Role)
     Competence = makeCompetence(Db, DataTypes)
