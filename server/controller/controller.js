@@ -23,7 +23,7 @@ function loginUser({ username, password }) {
 /**
  * Register a new user on the application
  * @param {object} userData data of the new user
- * @returns {Promise} a promise object representing the
+ * @returns {Promise} a promise representing the 
  * result of the user creation attempt
  */
 async function registerApplicant(userData) {
@@ -31,12 +31,27 @@ async function registerApplicant(userData) {
 }
 
 /**
- * Sends an application from the HTTP-layer to the integration layer (database)
- * @param {*} application The application to send.
- */
+* Sends an application from the HTTP-layer to the integration layer (database)
+*
+* @param {*} application The application to send.
+*/
 function sendApplication(application) {
-  //JSON parse to ensure compatibility
-  return db.createApplication(JSON.parse(application));
+   //let payload = jwt.verify(application.token) //Grab payload from jwt
+   //console.log(payload)
+   
+    let temp = application.token;
+    console.log("token: " + temp)
+   //remake application with username
+   //username: payload.username
+   let appl = application;
+   console.log("in controller: " + appl)
+   let app = {competencies: appl.competencies, 
+        availabilities: appl.availabilities, 
+        username: temp
+    }
+    console.log("in controller: " + app)
+   //JSON parse to ensure compatibility
+   return db.createApplication(app)
 }
 
 /**
@@ -54,6 +69,16 @@ function loginStatus(username) {
   return db.loginStatus(username);
 }
 
+/**
+ * Search after applicants in the database
+ * @param {object} query data representing the query
+ * @returns {Promise} a promise representing the 
+ * result of the search query
+ */
+function searchApplications(query) {
+  return db.getApplications(query)
+}
+
 export default {
   establishDatabaseConnection,
   loginUser,
@@ -61,4 +86,5 @@ export default {
   sendApplication,
   getCompetencies,
   loginStatus,
+  searchApplications
 };
