@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express()
 app.use(bodyParser.json())
-//app.use(express.static('./build'))
+app.use(express.static('./build'))
 
 // Entry point
 loadHandlers(app)

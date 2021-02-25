@@ -1,4 +1,4 @@
-import pkg from 'sequelize';
+import pkg from "sequelize";
 const { Sequelize, DataTypes } = pkg;
 import { makePerson } from '../model/person.js'
 import { makeRole } from '../model/role.js';
@@ -8,7 +8,7 @@ import { makeApplicationstatus } from '../model/applicationStatus.js'
 import { makeCompetenceProfile } from '../model/competenceProfile.js'
 
 // instance of sequelize connection
-var Db
+var Db;
 var Person;
 var Role;
 var Availability;
@@ -37,55 +37,72 @@ function connect() {
 /**
  * Attemps to create a new applicant user in the database
  * @param {Object} userData object representing data of the user
- * @returns {Promise} Promise object representing the result of 
+ * @returns {Promise} Promise object representing the result of
  * the create attempt.
  * @throws Throws an exception if user cannot be saved
  */
 function createUser(userData) {
-    return new Promise((resolve, reject) => {
-        Person.create({ 
-            role: userData.role,
-            firstname: userData.firstName, 
-            lastname: userData.lastName,
-            username: userData.username,
-            password: userData.password,
-            email: userData.email,
-            ssn: userData.ssn
-        }).then(result => {
-            resolve(result)
-            return
-        }).catch(err => {
-            //console.log(JSON.stringify(err.errors))
-            reject({ msg: 'Internal server error: failed to save new user' })
-            return
-        })
+  return new Promise((resolve, reject) => {
+    Person.create({
+      role: userData.role,
+      firstname: userData.firstName,
+      lastname: userData.lastName,
+      username: userData.username,
+      password: userData.password,
+      email: userData.email,
+      ssn: userData.ssn,
+      loggedInUntil: null,
     })
+      .then((result) => {
+        resolve(result);
+        return;
+      })
+      .catch((err) => {
+        console.log(JSON.stringify(err));
+        reject({ msg: "Internal server error: failed to save new user" });
+        return;
+      });
+  });
 }
 
 /**
  * Attempts to authorize the user by querying the database for an existing user matching the
  * provided credentials.
- * @param {String} username 
- * @param {String} password 
+ * @param {String} username
+ * @param {String} password
  * @returns {Promise} Promise object represents the result of the authorization attempt.
  */
 function loginUser(username, password) {
-    return new Promise((resolve, reject) => {
-        Person.findAll({
-            where: {
-                username: username,
-                password: password
-            }
-        }).then(doc => {
-            if (doc.length == 0) {
-                reject('no user found')
-            } else {
-                resolve(doc[0].dataValues)
-            }
-        }).catch(err => {
-            reject(err)
-        })
+  return new Promise((resolve, reject) => {
+    Person.findOne({
+      where: {
+        username: username,
+        password: password,
+      },
     })
+      .then((doc) => {
+        if (!doc) {
+          reject("no matching user found");
+        } else {
+          let then = new Date();
+          then = new Date(then.setHours(then.getHours() + 2));
+          doc
+            .update({ loggedInUntil: then })
+            .then(() => {
+              resolve(doc.dataValues);
+            })
+            .catch((err) => {
+              console.log("could not update loggedInUntil");
+              reject(err);
+            });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        console.log("could not connect");
+        reject(err);
+      });
+  });
 }
 
 /**
@@ -94,63 +111,98 @@ function loginUser(username, password) {
  * @returns {Promise} Promise object that represents the result of the create-application attempt.
  */
 function createApplication(applicationData) {
-    let promiseList = [];
-    let newPromise;
-    console.log("Här kommer datan: ")
-    console.log(JSON.stringify(applicationData))
+  let promiseList = [];
+  let newPromise;
+  console.log("Här kommer datan: ");
+  console.log(JSON.stringify(applicationData));
 
-    applicationData.availabilities.map((availability) => {
-        newPromise = new Promise((resolve, reject) => {
-            Availability.create({from_date: availability.availableFrom,
-                to_date: availability.availableTo,
-                pid: applicationData.applicant.pid})
-        });
-        promiseList = [...promiseList, newPromise]
-    })
-    applicationData.competencies.map((competence) => { 
-        newPromise = new Promise((resolve, reject) => {
-            
-            CompetenceProfile.create({
-                years_of_experience: competence.years_experience,
-                pid: applicationData.applicant.pid,
-                competence_id: competence.competence_id
-            })
-        });
-        promiseList = [...promiseList, newPromise]
-    })
-    Promise.all(promiseList).then(values => {
-        console.log(values);
-      })
-      .catch(error => {
-        console.error(error.message)
+  applicationData.availabilities.map((availability) => {
+    newPromise = new Promise((resolve, reject) => {
+      Availability.create({
+        from_date: availability.availableFrom,
+        to_date: availability.availableTo,
+        pid: applicationData.applicant.pid,
       });
+    });
+    promiseList = [...promiseList, newPromise];
+  });
+  applicationData.competencies.map((competence) => {
+    newPromise = new Promise((resolve, reject) => {
+      CompetenceProfile.create({
+        years_of_experience: competence.years_experience,
+        pid: applicationData.applicant.pid,
+        competence_id: competence.competence_id,
+      });
+    });
+    promiseList = [...promiseList, newPromise];
+  });
+  Promise.all(promiseList)
+    .then((values) => {
+      console.log(values);
+    })
+    .catch((error) => {
+      console.error(error.message);
+    });
 }
 
 /**
  * Returns an array of applications based on the query criterias
  */
-function getApplications() { }
+function getApplications() {}
 
 /**
- * Returns an object representing the details of 
+ * Returns an object representing the details of
  * an application
  */
-function getApplicationDetails() { }
+function getApplicationDetails() {}
 
 /**
  * @description function to retrieve all competencies in the database
  * @returns {Promise} Promise object that represents the result of the retrieval attempt.
  */
 function getCompetencies() {
-    return new Promise((resolve, reject) => {
-        Competence.findAll().then(doc => {
-            if (doc.length == 0) {
-                reject('no competencies found')
-            } else {
-                resolve(doc)
-            }
-        })
-    })
+  return new Promise((resolve, reject) => {
+    Competence.findAll().then((doc) => {
+      if (doc.length == 0) {
+        reject("no competencies found");
+      } else {
+        resolve(doc);
+      }
+    });
+  });
 }
 
-export default { connect, createUser, loginUser, createApplication, getApplications, getCompetencies }
+/**
+ *
+ * @param {username} username The username of the user
+ */
+function loginStatus(username) {
+  return new Promise((resolve, reject) => {
+    Person.findOne({ where: { username: username } })
+      .then((doc) => {
+        let now = new Date();
+        now = new Date(now.setHours(now.getHours() + 1));
+        let until = doc.dataValues.loggedInUntil;
+        let difference = until - now;
+		console.log('lul')
+        if (difference < 0) {
+          resolve({ isLoggedIn: false });
+        } else {
+          resolve({ isLoggedIn: true });
+        }
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+}
+
+export default {
+  connect,
+  createUser,
+  loginUser,
+  createApplication,
+  getApplications,
+  getCompetencies,
+  loginStatus,
+};
