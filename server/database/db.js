@@ -225,17 +225,6 @@ function getApplications(query) {
     })  
 }
 
-/*
-Availability.findAll({
-                attributes: ['application_date'],
-                where: {
-                    person: resultPerson[0].dataValues.pid
-                }
-            }).then(resultApplication => {
-                console-log(resultApplication)
-                resVal.applicationdate = resultApplication[0].dataValues.application_date
-                resolve(resVal)
-*/
 /**
  * Returns an object representing the details of 
  * an application

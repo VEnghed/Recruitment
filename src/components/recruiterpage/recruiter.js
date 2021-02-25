@@ -15,23 +15,24 @@ function Recruiter() {
     const [applications, setApplications] = useState()
     const [errorMsg, setErrormsg] = useState('')
 
-    //function for saving user auth token?
-
     /**
      * sends a search query to server with
      * given parameters
      */
     function searchApplicants() {
-        if(!name || !timeperiodfrom || !timeperiodto || !competence) {    //check if all required fields are filled
+        if(!name || !timeperiodfrom || !timeperiodto || !competence) {      //check if all required fields are filled
             setErrormsg("Please fill in all required fields")
             return;
         }
         
-        let searchQuery = ({
-            name: name,
-            timeperiodfrom: timeperiodfrom,
-            timeperiodto: timeperiodto,
-            competence: competence
+        let data = ({
+            query: {                                                        // the query
+                name: name,
+                timeperiodfrom: timeperiodfrom,
+                timeperiodto: timeperiodto,
+                competence: competence
+            }, 
+            token: window.localStorage.getItem("token")                     // get token for authorization
         })
 
         fetch('/recruiter/search', {
@@ -40,14 +41,13 @@ function Recruiter() {
               'Accept': 'application/json',
               'Content-Type': 'application/json'
             },
-            body: JSON.stringify(searchQuery)
+            body: JSON.stringify(data)
         }).then(response => {
-            //console.log(response)
-            if(response.status === 500)         // internal error
+            if(response.status === 500)             // internal error
                 setErrormsg(response.statusText)
-            if(response.status === 400)         // bad request
+            if(response.status === 400)             // bad request
                 setErrormsg(response.statusText)
-            else if(response.status === 200) {  // query is valid 
+            else if(response.status === 200) {      // query is valid 
                 response.json().then(result => {
                     console.log(result)
                     showApplications(result)
@@ -60,7 +60,7 @@ function Recruiter() {
     function showApplications(response) {
        let applications = response.map(application => (
             <li key={application.firstname} onClick={() => goToDetails()}>
-                {application.firstname + " " + application.lastname + "         " + application.applicationdate} 
+                {application.firstname + " " + application.lastname + "\t-\t" + application.applicationdate} 
             </li>
         ))
         setApplications(applications);

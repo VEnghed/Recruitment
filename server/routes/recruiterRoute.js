@@ -6,10 +6,10 @@ const router = express.Router()
 const ROUTE = '/recruiter'
 
 router.post('/search', 
-    body('name').notEmpty().isString().isAlpha('en-US',{ignore:" "}),
-    body('timeperiodfrom').notEmpty().isString().isDate(),
-    body('timeperiodto').notEmpty().isString().isDate(),
-    body('competence').notEmpty().isString().isAlpha(),
+    body('query.name').notEmpty().isString().isAlpha('en-US',{ignore:" "}),
+    body('query.timeperiodfrom').notEmpty().isString().isDate(),
+    body('query.timeperiodto').notEmpty().isString().isDate(),
+    body('query.competence').notEmpty().isString().isAlpha(),
     (req, res) => {
         const error = validationResult(req)
         if(!error.isEmpty()) {
@@ -18,15 +18,15 @@ router.post('/search',
             return res.status(400).end();  
         }
 
-        let respBody = {};
-        controller.searchApplications(req.body)
+        //add token validation
+
+        controller.searchApplications(req.body.query)
         .then(result => {
             //console.log(result)
-            respBody.result = result;
             res.status(200).json([result]);
         })
         .catch((err) => {
-            //console.log(err)
+            console.log(err)
             res.statusMessage = err.msg;
             res.status(500).end();
         })
