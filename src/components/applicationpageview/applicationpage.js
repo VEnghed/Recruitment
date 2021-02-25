@@ -142,9 +142,10 @@ function Applicationpage(props) {
      * @param applicationData The data to send
      */
     function sendApplication(applicationData) {
-       let application =  {availabilities: applicationData.availabilityArray, 
-                            competencies: applicationData.competenceArray
-        };
+       /*  let application =  {availabilities: applicationData.availabilityArray, 
+                            competencies: applicationData.competenceArray, 
+                            token: applicationData.token
+        }; */
         console.log("Sending application: " + JSON.stringify(applicationData))
         fetch('/application/post', {
             method: 'POST', 
@@ -153,7 +154,7 @@ function Applicationpage(props) {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + applicationData.token
             },
-            body: JSON.stringify(application)
+            body: JSON.stringify(applicationData)
         }).then(response => {
             //If something went wrong with saving application
             if(response.status === 500) {   // internal error
