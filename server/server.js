@@ -21,7 +21,6 @@ app.listen(process.env.PORT || 8080, () => {
     console.log('Check it out http://localhost:' + (process.env.PORT || 8080))
 })
 
-//connect react router to our routing
-app.get('*', function (req, res) {
-    res.sendFile('index.html', { root: path.join(__dirname, '../build/') });
-});
+app.get('*', function(req, res) {
+    res.sendFile('index.html', {root: path.join(__dirname, '../build/')});
+  });
