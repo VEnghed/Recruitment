@@ -43,9 +43,7 @@ function makeApplicationstatus(Sequelize, DataTypes, person) {
         }
         }, {
             tableName: 'applicationstatus',
-            timestamps: true, 
-            updatedAt: false,
-            createdAt: false
+            timestamps: false
         }
     );
 }
