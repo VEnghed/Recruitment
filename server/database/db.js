@@ -1,7 +1,11 @@
 import pkg from 'sequelize';
 const { Sequelize, DataTypes } = pkg;
 import { makePerson } from '../model/person.js'
+<<<<<<< HEAD
 import { makeRole } from '../model/role.js';
+=======
+import { makeRole } from '../model/role.js'
+>>>>>>> c4e8a07 (Add applicationstatus table in model and in db.js)
 import { makeCompetence } from '../model/competence.js'
 import { makeAvailability } from '../model/availability.js'
 import { makeApplicationstatus } from '../model/applicationStatus.js'
@@ -125,8 +129,11 @@ function createApplication(applicationData) {
                     competence_id: competence.competence_id
                 }, {transaction: t})
             })
-            
-            //Create entry in applicationStatus table...
+            //status: unhandled is default
+            return ApplicationStatus.create({
+                status: 'unhandled',
+                person: person.pid //make sure this is correct
+            }, {transaction: t})
         });
     }).then(result => {
 
