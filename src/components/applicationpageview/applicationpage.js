@@ -142,17 +142,17 @@ function Applicationpage(props) {
      * @param applicationData The data to send
      */
     function sendApplication(applicationData) {
-       /*  let application =  {availabilities: applicationData.availabilityArray, 
-                            competencies: applicationData.competenceArray, 
-                            token: applicationData.token
-        }; */
+
+        //Get jsonwebtoken
+        let token = window.localStorage.getItem("token")
+        
         console.log("Sending application: " + JSON.stringify(applicationData))
         fetch('/application/post', {
             method: 'POST', 
             headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + applicationData.token
+            'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify(applicationData)
         }).then(response => {
@@ -184,8 +184,7 @@ function Applicationpage(props) {
         //gather data
         //remove applicant below send jwt token instead
         //let token = window.localStorage.getItem('token');
-        let tokenVal = "mak";
-        let applicationData = {availabilities: availabilityArray, competencies: competenceArray, token: tokenVal};
+        let applicationData = {availabilities: availabilityArray, competencies: competenceArray};
         if (availabilityArray.length === 0 || competenceArray.length === 0) {
             setMsgToUser("Please add competencies and/or availabilities");
             return;

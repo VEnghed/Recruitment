@@ -39,17 +39,14 @@ function sendApplication(application) {
    //let payload = jwt.verify(application.token) //Grab payload from jwt
    //console.log(payload)
    
-    let temp = application.token;
-    console.log("token: " + temp)
-   //remake application with username
-   //username: payload.username
-   let appl = application;
-   console.log("in controller: " + appl)
-   let app = {competencies: appl.competencies, 
-        availabilities: appl.availabilities, 
-        username: temp
+    let user = application.user;
+    console.log("user: " + user)
+   
+   let app = {competencies: application.competencies, 
+        availabilities: application.availabilities, 
+        username: user
     }
-    console.log("in controller: " + app)
+    console.log("in controller: " + JSON.stringify(app))
    //JSON parse to ensure compatibility
    return db.createApplication(app)
 }
@@ -59,6 +56,10 @@ function sendApplication(application) {
  */
 function getCompetencies() {
   return db.getCompetencies();
+}
+
+function getApplicationDetails(username) {
+  return db.getApplicationDetails(username)
 }
 
 /**
@@ -76,4 +77,5 @@ export default {
   sendApplication,
   getCompetencies,
   loginStatus,
+  getApplicationDetails
 };

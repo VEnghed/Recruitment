@@ -31,6 +31,7 @@ function connect() {
     Availability = makeAvailability(Db, DataTypes, Person)
     ApplicationStatus = makeApplicationstatus(Db, DataTypes, Person)
     CompetenceProfile = makeCompetenceProfile(Db, DataTypes, Person, Competence)
+
     Db.sync()
     return Db.authenticate()
 }
@@ -113,6 +114,7 @@ function createApplication(applicationData) {
     console.log(applicationData)
     let date = new Date().toISOString().slice(0, 10);
     //Sequelize transaction starts here
+    
     return Db.transaction(t => {
         return Person.findAll({
             where: {
@@ -166,6 +168,21 @@ function getApplications() {}
 function getApplicationDetails(username) {
     let application;
     let personId;
+  /*   let applicationdetails = Person.findAll({
+      where: {
+        username: user
+      },
+      include: [ Availability, 
+      CompetenceProfile]
+    }).then(result => {
+      
+      console.log("Res of query: " + result)
+      return result;
+    }).catch(err => {
+      throw new Error("Could not find application-details" + err)
+    })
+    console.log("Result of query" + applicationdetails)
+    return applicationdetails  */
     return Db.transaction(t => {
         return Person.findAll({
             where: {
@@ -268,6 +285,7 @@ export default {
   loginUser,
   createApplication,
   getApplications,
+  getApplicationDetails,
   getCompetencies,
   loginStatus,
 };
