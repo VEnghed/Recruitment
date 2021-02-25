@@ -58,7 +58,7 @@ function createUser(userData) {
         return result;// Transaction has been committed
         // result is whatever the result of the promise chain returned to the transaction callback
     }).catch(err => {
-        return {msg: 'could not save user', ...err}// Transaction has been rolled back
+        throw new Error('could not save user' + err)// Transaction has been rolled back
         // err is whatever rejected the promise chain returned to the transaction callback
     });
 }
