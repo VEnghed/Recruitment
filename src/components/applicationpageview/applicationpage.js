@@ -209,7 +209,7 @@ function Applicationpage(props) {
      */
     function onSendApplicationClick() {
         //gather data
-        //Applicant should not be hardcoded
+        //remove applicant below send jwt token instead
         let applicant = {
             role: 2,
             firstName: "firstName",
