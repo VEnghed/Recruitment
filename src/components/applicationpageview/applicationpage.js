@@ -141,18 +141,18 @@ function Applicationpage(props) {
      * @param applicationData The data to send
      */
     function sendApplication(applicationData) {
-        let application =  {availabilities: applicationData.availabilityArray, 
+       /*  let application =  {availabilities: applicationData.availabilityArray, 
                             competencies: applicationData.competenceArray, 
-                            applicant: applicationData.applicant
-        };
-        console.log("Sending application: " + JSON.stringify(application))
+                            token: applicationData.token
+        }; */
+        console.log("Sending application: " + JSON.stringify(applicationData))
         fetch('/application/post', {
             method: 'POST', 
             headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
             },
-            body: JSON.stringify(application)
+            body: JSON.stringify(applicationData)
         }).then(response => {
             //If something went wrong with saving application
             if(response.status === 500) {   // internal error
@@ -182,12 +182,11 @@ function Applicationpage(props) {
         //gather data
         //remove applicant below send jwt token instead
         let token = localStorage.getItem('token');
-        let applicationData = {availabilityArray, competenceArray, token};
+        let applicationData = {availabilities: availabilityArray, competencies: competenceArray, token: token};
         if (availabilityArray.length === 0 || competenceArray.length === 0) {
             setMsgToUser("Please add competencies and/or availabilities");
             return;
         } 
-        console.log(applicationData);
         sendApplication(applicationData);
     }
 
