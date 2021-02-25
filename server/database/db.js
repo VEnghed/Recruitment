@@ -6,6 +6,7 @@ import { makeCompetence } from '../model/competence.js'
 import { makeAvailability } from '../model/availability.js'
 import { makeApplicationstatus } from '../model/applicationStatus.js'
 import { makeCompetenceProfile } from '../model/competenceProfile.js'
+import { noExtendLeft } from 'sequelize/types/lib/operators';
 
 // instance of sequelize connection
 var Db
@@ -103,14 +104,14 @@ function createApplication(applicationData) {
     return Db.transaction(t => {
         return Person.findAll({
             where: {
-                username: applicationData.applicant.username //Subject to change depending on data sent
+                username: applicationData.username //Subject to change depending on data sent
             }, transaction: t
         })
-        .then(doc => {
-            if (doc.length == 0) {
-                reject('no user found')
+        .then(result => {
+            if (result.length == 0) {
+                throw new Error('no user found')
             } else {
-                person = doc[0].dataValues; //If person is found in database save in variable person
+                person = result[0].dataValues; //If person is found in database save in variable person
             }
             applicationData.availabilities.map((availability) => {
                 return Availability.create({from_date: availability.availableFrom,
@@ -132,9 +133,10 @@ function createApplication(applicationData) {
             }, {transaction: t})
         });
     }).then(result => {
-
+        return result;
     }).catch(err => {
-
+        console.log(err)
+        throw new Error("Could not save application");
     });
 
 /*     applicationData.availabilities.map((availability) => {

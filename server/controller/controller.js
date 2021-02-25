@@ -1,4 +1,5 @@
 import db from '../database/db.js'
+import { verify } from "../routes/auth/auth.js";
 /**
  * controller connects the integration layer 
  * with the HTTP-layer
@@ -33,11 +34,20 @@ async function registerApplicant(userData) {
 
 /**
 * Sends an application from the HTTP-layer to the integration layer (database)
+*
 * @param {*} application The application to send.
 */
 function sendApplication(application) {
+   let payload = jwt.verify(application.token) //Grab payload from jwt
+   console.log(payload)
+
+   //remake application with username
+   let app = {competencies: application.competencies, 
+        availabilities: application.availabilities, 
+        username: payload.username
+    }
    //JSON parse to ensure compatibility
-   return db.createApplication(JSON.parse(application))
+   return db.createApplication(JSON.parse(app))
 }
 
 /**

@@ -13,7 +13,7 @@ router.post('/post',
     //Ensure that request body is correctly formatted
     body('competencies').exists().isArray(),
     body('availabilities').exists().isArray().notEmpty(),
-    body('applicant').exists(),
+    body('token').exists(),
     //Check for jwt token...
     (req, res) => {
         //Gather validation-results
