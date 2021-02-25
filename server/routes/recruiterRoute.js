@@ -7,10 +7,10 @@ const router = express.Router()
 const ROUTE = '/recruiter'
 
 router.post('/search', authorize, 
-    body('query.name').notEmpty().isString().isAlpha('en-US', {ignore: " "}),
-    body('query.timeperiodfrom').notEmpty().isString().isDate(),
-    body('query.timeperiodto').notEmpty().isString().isDate(),
-    body('query.competence').notEmpty().isString().isAlpha(),
+    body('name').notEmpty().isString().isAlpha('en-US', {ignore: " "}),
+    body('timeperiodfrom').notEmpty().isString().isDate(),
+    body('timeperiodto').notEmpty().isString().isDate(),
+    body('competence').notEmpty().isString().isAlpha(),
     (req, res) => {
         const error = validationResult(req)
         if(!error.isEmpty()) {
@@ -18,9 +18,9 @@ router.post('/search', authorize,
             error.array().map(err => res.statusMessage += (err.param) + ', ');
             return res.status(400).end();  
         }
-
+        console.log("user search: " + req.user)
         //add token validation
-        controller.searchApplications(req.body.query)
+        controller.searchApplications(req.body)
         .then(result => {
             //console.log(result)
             res.status(200).json([result]);

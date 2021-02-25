@@ -203,10 +203,10 @@ function getApplications(query) {
                         pid: resultPerson[0].dataValues.pid,
                     }
                 }).then(resultCompetenceprof => {
-                    console.log(resultCompetenceprof[1].dataValues.competence_id)
+                    console.log(resultCompetenceprof[0].dataValues.competence_id)
                     Competence.findAll({
                         where: {
-                            competence_id: resultCompetenceprof[1].dataValues.competence_id,
+                            competence_id: resultCompetenceprof[0].dataValues.competence_id,
                             name: query.competence
                         }                        
                     }).then(resultsComeptence => {

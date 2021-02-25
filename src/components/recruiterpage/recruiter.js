@@ -31,13 +31,14 @@ function Recruiter() {
             timeperiodto: timeperiodto,
             competence: competence                    
         })
+        console.log(data)
 
         fetch('/recruiter/search', {
             method: 'POST', 
             headers: {
               'Accept': 'application/json',
               'Content-Type': 'application/json',
-              'Authorization':'Bearer ' + window.localStorage.getItem("token")   
+              'Authorization': 'Bearer ' + window.localStorage.getItem("token")   
             },
             body: JSON.stringify(data)
         }).then(response => {
