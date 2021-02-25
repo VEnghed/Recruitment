@@ -42,22 +42,6 @@ function Applicationpage(props) {
         let newElem = {competence_id: id, competence: comp, years_experience: exp};
         competenceArray.push(newElem);
     } 
-    /**
-     * @description Changes a competency in the competency array
-     * identified by @param id, using the parameters @param comp, @param exp 
-     * @param {*} id Identifies the row/entry in the array
-     * @param {*} comp The competency
-     * @param {*} exp The years experience
-     */
-    function changeCompArray (id, comp, exp) {
-        //competenceArray[id] = {"competence":comp, "yearsExperience":exp}
-        let cid;
-        if (comp === "Korvgrillning")
-            cid = 1;
-        else 
-            cid = 2;
-        competenceArray[id] = {competence_id: cid, competence: comp, years_experience: exp}
-    }
 
     /**
      * @description Adds an availability element to the availability array
@@ -67,16 +51,6 @@ function Applicationpage(props) {
     function addAvailabilityToArr (avFrom, avTo) {
         let newElem = {"availableFrom":avFrom, "availableTo":avTo};
         availabilityArray.push(newElem);
-    }
-    /**
-     * @description Changes an element in the availability array 
-     * identified by @param id, with the parameters @param avFrom and @param avTo
-     * @param {*} id Identifies row/element in availability array
-     * @param {*} avFrom The available from date
-     * @param {*} avTo The available to date
-     */
-    function changeAvArray (id, avFrom, avTo) {
-        availabilityArray[id] = {"availableFrom":avFrom, "availableTo":avTo};
     }
 
     /**
