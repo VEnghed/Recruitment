@@ -42,6 +42,8 @@ function Recruiter() {
             },
             body: JSON.stringify(data)
         }).then(response => {
+            if(response.status === 302) 
+                window.Location = '/'
             if(response.status === 500)                     // internal error
                 setErrormsg(response.statusText)
             if(response.status === 400)                     // bad request
