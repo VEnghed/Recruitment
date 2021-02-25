@@ -70,13 +70,11 @@ router.post(
   }
 );
 
-
-
 /**
  * Help function to test JWTs
  */
 router.get("/testToken", authorize, (req, res) => {
-  let data = { name: req.user, role: req.role};
+  let data = { name: req.user, role: req.role };
   res.json({ data });
 });
 
