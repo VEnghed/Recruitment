@@ -23,7 +23,7 @@ function loginUser({ username, password }) {
 /**
  * Register a new user on the application
  * @param {object} userData data of the new user
- * @returns {Promise} a promise object representing the
+ * @returns {Promise} a promise representing the 
  * result of the user creation attempt
  */
 async function registerApplicant(userData) {
@@ -69,6 +69,16 @@ function loginStatus(username) {
   return db.loginStatus(username);
 }
 
+/**
+ * Search after applicants in the database
+ * @param {object} query data representing the query
+ * @returns {Promise} a promise representing the 
+ * result of the search query
+ */
+function searchApplications(query) {
+  return db.getApplications(query)
+}
+
 export default {
   establishDatabaseConnection,
   loginUser,
@@ -76,4 +86,5 @@ export default {
   sendApplication,
   getCompetencies,
   loginStatus,
+  searchApplications
 };

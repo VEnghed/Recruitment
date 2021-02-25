@@ -46,6 +46,6 @@ function makeApplicationstatus(Sequelize, DataTypes, person) {
             timestamps: false
         }
     );
-}
+} 
  
 export { makeApplicationstatus };

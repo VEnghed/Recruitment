@@ -1,5 +1,6 @@
 import pkg from "sequelize";
 const { Sequelize, DataTypes } = pkg;
+const op = Sequelize.Op;
 import { makePerson } from '../model/person.js'
 import { makeRole } from '../model/role.js'
 import { makeCompetence } from '../model/competence.js'
@@ -24,14 +25,22 @@ var CompetenceProfile;
  * @throws Throws an exception if connection cannot be established
  */
 function connect() {
-    Db = new Sequelize(process.env.PG_URI);
+    Db = new Sequelize(process.env.PG_URI, {logging:false});
     Role = makeRole(Db, DataTypes)
     Person = makePerson(Db, DataTypes, Role)
     Competence = makeCompetence(Db, DataTypes)
     Availability = makeAvailability(Db, DataTypes, Person)
     ApplicationStatus = makeApplicationstatus(Db, DataTypes, Person)
     CompetenceProfile = makeCompetenceProfile(Db, DataTypes, Person, Competence)
-    Db.sync()
+
+    /*
+    Role.hasMany(Person, {foreginKey: 'role_id'});
+    Person.belongsTo(Role, {as: 'role', foreginKey: { name: 'role_id'}});
+    Person.hasMany(Availability);
+    Availability.belongsTo(Person, {as: 'person', foreginKey: { name: 'pid'}});
+    */
+
+    Db.sync({})
     return Db.authenticate()
 }
 
@@ -153,11 +162,96 @@ function createApplication(applicationData) {
     }); 
     
 }
-
+ 
 /**
- * Returns an array of applications based on the query criterias
+ * Returns a set of applications based 
+ * on the query criterias
  */
-function getApplications() {}
+function getApplications(query) { 
+    console.log(query)
+    //from, to, comeptence
+    let resVal = {}
+    let names = query.name.split(" ")
+    return new Promise((resolve, reject) => {
+        Person.findAll({
+            attributes: ['firstname', 'lastname', 'pid'],
+            where: { 
+                firstname: names[0],
+                lastname: names[1]
+            },
+        }).then(resultPerson => {
+            if(resultPerson == {}) {
+                reject({ msg: 'Could not find matching applicants' })
+                return
+            }
+            resVal.firstname = resultPerson[0].dataValues.firstname
+            resVal.lastname = resultPerson[0].dataValues.lastname
+            Availability.findAll({
+                where: {
+                    pid: resultPerson[0].dataValues.pid,
+                    from_date: {
+                        [op.gte]: query.timeperiodfrom
+                    },
+                    to_date: {
+                        [op.lte]: query.timeperiodto
+                    }
+                }
+            }).then(resultAvailability => {
+                //console.log(resultAvailability)
+                if(resultAvailability == {}) {
+                    reject({ msg: 'Could not find matching applicants' })
+                    return
+                }
+                CompetenceProfile.findAll({
+                    attributes: ['competence_id'],
+                    where: {
+                        pid: resultPerson[0].dataValues.pid,
+                    }
+                }).then(resultCompetenceprof => {
+                    console.log(resultCompetenceprof[1].dataValues.competence_id)
+                    Competence.findAll({
+                        where: {
+                            competence_id: resultCompetenceprof[1].dataValues.competence_id,
+                            name: query.competence
+                        }                        
+                    }).then(resultsComeptence => {
+                        ApplicationStatus.findAll({
+                            attributes: ['application_date'],
+                            where: {
+                                person: resultPerson[0].dataValues.pid,
+                            }
+                        }).then(resApplication => {
+                            resVal.applicationdate = resApplication[0].dataValues.application_date
+                            console.log(resVal)
+                            resolve(resVal)
+                            return
+                        }).catch(err => {
+                            console.log(err)
+                            reject({ msg: 'Internal server error: failed to search applicants' })
+                            return
+                        })                  
+                    }).catch(err => {
+                        console.log(err)
+                        reject({ msg: 'Internal server error: failed to search applicants' })
+                        return
+                    })
+                }).catch(err => {
+                    console.log(err)
+                    reject({ msg: 'Internal server error: failed to search applicants' })
+                    return
+                })
+            }).catch(err => {
+                console.log(err)
+                reject({ msg: 'Internal server error: failed to search applicants' })
+                return
+            })
+        }).catch(err => { 
+            console.log(err)
+            reject({ msg: 'Internal server error: failed to search applicants' })
+            return
+        })
+    })  
+}
 
 /**
  * Returns an object representing the details of
