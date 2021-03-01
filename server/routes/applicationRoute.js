@@ -15,7 +15,6 @@ router.post('/post', authorize,
     //Ensure that request body is correctly formatted
     body('competencies').exists().isArray(),
     body('availabilities').exists().isArray().notEmpty(),
-    body('token').exists(),
     (req, res) => {
         //Gather validation-results
         const errors = validationResult(req);
