@@ -185,6 +185,8 @@ function Applicationpage(props) {
      */
     function onSendApplicationClick() {
         //gather data
+        //remove applicant below send jwt token instead
+        //let token = window.localStorage.getItem('token');
         let applicationData = {availabilities: availabilityArray, competencies: competenceArray};
         if (availabilityArray.length === 0 || competenceArray.length === 0) {
             setMsgToUser("Please add competencies and/or availabilities");
