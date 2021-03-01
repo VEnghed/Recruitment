@@ -14,7 +14,7 @@ const ROUTE = "/recruiter";
  *          401: If the user is not authenicated
  *          500: If there is internal server error
  */
-router.post("/search",
+router.post("/search", authorize,
   body("name").notEmpty().isString().isAlpha("en-US", { ignore: " " }),
   body("timeperiodfrom").notEmpty().isString().isDate(),
   body("timeperiodto").notEmpty().isString().isDate(),
@@ -22,10 +22,15 @@ router.post("/search",
   (req, res) => {
     const error = validationResult(req);
     if (!error.isEmpty()) {
-      res.statusMessage = "The following fields are invalid: ";
-      error.array().map((err) => (res.statusMessage += err.param + ", "));
-      return res.status(400).end();
-    }       
+        res.statusMessage = "The following fields are invalid: ";
+        error.array().map((err) => (res.statusMessage += err.param + ", "));
+        return res.status(400).end();
+    }     
+    
+    if(req.role != 1) {
+        res.statusMessage = "Invalid token: not an authorized recruiter";
+        return res.status(401).end();
+    }
 
     controller
       .searchApplications(req.body)
