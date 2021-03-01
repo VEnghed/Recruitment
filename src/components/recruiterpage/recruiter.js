@@ -60,7 +60,7 @@ function Recruiter() {
      */
     function showApplications(response) {
        let applications = response.map(application => (
-            <li id={application.firstname}  key={application.firstname} onClick={ event => goToDetails(event) }>
+            <li id="application"  key={application.firstname} onClick={ event => goToDetails(event)}>
                 {application.firstname + " " + application.lastname + "\t-\t" + application.applicationdate} 
             </li>
         ))
@@ -96,7 +96,7 @@ function Recruiter() {
           </div>
         <hr></hr>
         <div className="search-results" >
-            <ul>{applications}</ul>
+            <ul className="search-data">{applications}</ul>
         </div>
         <button className="load-applicants-btn" onClick={() => loadMoreApplicants()}>Load more applicants</button>
         </div>
