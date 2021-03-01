@@ -22,6 +22,7 @@ router.post(
   body("password").notEmpty().isString().isAlphanumeric(),
   body("email").notEmpty().isString().isEmail(),
   body("ssn").notEmpty().isString(),
+  body("update").notEmpty().isBoolean(),
   (req, res) => {
     console.log("New user attempt: " + JSON.stringify(req.body) + "\n");
 
@@ -31,9 +32,23 @@ router.post(
       error.array().map((err) => (res.statusMessage += err.param + ", "));
       return res.status(400).end();
     }
+
     let respBody = {};
-    controller
-      .registerApplicant(req.body)
+
+    if(req.body.update == true) {
+      controller.updateUser(req.body)
+      .then((user) => {
+        respBody.user = user;
+        respBody.statusMessage = "User has been updated"
+        res.status(200).json(respBody);
+      })
+      .catch((err) => {
+        res.statusMessage = err.msg;
+        res.status(500).end();
+      });
+    }
+    else {  
+      controller.registerApplicant(req.body)
       .then((user) => {
         respBody.user = user;
         res.status(201).json(respBody);
@@ -42,6 +57,7 @@ router.post(
         res.statusMessage = err.msg;
         res.status(500).end();
       });
+    }
   }
 );
 

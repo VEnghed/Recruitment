@@ -12,3 +12,9 @@
 input > .register-container {
     margin: 0px 20px;
 }
+
+.register-btn {
+    display: block;
+    text-align: center;
+    margin: auto;
+}

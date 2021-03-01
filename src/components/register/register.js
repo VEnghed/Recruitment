@@ -15,6 +15,7 @@ function Register() {
   const [email, setEmail] = useState('')
   const [ssn, setSsn] = useState('')
   const [errorMsg, setErrormsg] = useState('')
+  const [updateExisting, setUpdate] = useState(false)
 
   /**
    * registers a valid user, the user 
@@ -26,14 +27,15 @@ function Register() {
       return
     }
 
-    let newUser = ({
+    let data = ({
       role: 2,
       firstName: firstName,
       lastName: lastName,
       username: username,
       password: password,
       email: email,
-      ssn: ssn
+      ssn: ssn,
+      update: updateExisting
     })
 
     fetch('/user/register', {
@@ -42,10 +44,8 @@ function Register() {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(newUser)
+      body: JSON.stringify(data)
     }).then(response => {
-      console.log(response)
-      //check if the user is registered
       if(response.status === 500) {         // internal error
         setErrormsg(response.statusText)
       } 
@@ -75,6 +75,8 @@ function Register() {
         <input id="email" type="text" placeholder="mail"  value={email} onChange={event => setEmail(event.target.value)}></input>
         <input id="ssn" type="text" placeholder="ssn"  value={ssn} onChange={event => setSsn(event.target.value)}></input>
       </div>
+      <input type="checkbox" id="update-existing" name="update" onClick={event => setUpdate(event.target.checked)}></input>
+      <label for="update">I want to update existing user</label>
       <button className="register-btn" onClick={registerUser}>Register</button>
     </div>
   );

@@ -66,6 +66,39 @@ function createUser(userData) {
 }
 
 /**
+ * Attemps to update an existing user in the database
+ * @param {Object} userData object representing data of the user
+ * @returns {Promise} Promise object representing the result of
+ * the update attempt.
+ * @throws Throws an exception if user cannot be updated or
+ * does not exist
+ */
+function updatePerson(userData) {
+    return Db.transaction(t => {
+        return Person.update({ 
+            role: userData.role,
+            firstname: userData.firstName, 
+            lastname: userData.lastName,
+            username: userData.username,
+            password: userData.password,
+            email: userData.email,
+            ssn: userData.ssn,
+        }, { where: {
+            
+        }},
+        {transaction: t});
+    }).then(result => {
+        console.log(result)
+        return result;// Transaction has been committed
+        // result is whatever the result of the promise chain returned to the transaction callback
+    }).catch(err => {
+        console.log(err)
+        return {msg: 'could not save user', ...err}// Transaction has been rolled back
+        // err is whatever rejected the promise chain returned to the transaction callback
+    });
+}
+
+/**
  * Attempts to authorize the user by querying the database for an existing user matching the
  * provided credentials.
  * @param {String} username

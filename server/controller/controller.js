@@ -31,6 +31,16 @@ async function registerApplicant(userData) {
 }
 
 /**
+ * Update an existing user on the application database
+ * @param {object} userData data of existing user
+ * @returns {Promise} a promise representing the 
+ * result of the user update attempt
+ */
+async function updateUser(userData) {
+  return db.updatePerson(userData);
+}
+
+/**
 * Sends an application from the HTTP-layer to the integration layer (database)
 *
 * @param {*} application The application to send.
@@ -83,6 +93,7 @@ export default {
   establishDatabaseConnection,
   loginUser,
   registerApplicant,
+  updateUser,
   sendApplication,
   getCompetencies,
   loginStatus,
