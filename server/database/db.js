@@ -1,6 +1,6 @@
 import pkg from "sequelize";
 const { Sequelize, DataTypes } = pkg;
-const op = Sequelize.Op;
+const op = Sequelize.Op;      // for sequelize query operations
 import { makePerson } from '../model/person.js'
 import { makeRole } from '../model/role.js'
 import { makeCompetence } from '../model/competence.js'
@@ -17,7 +17,6 @@ var Availability;
 var ApplicationStatus;
 var Competence;
 var CompetenceProfile;
-// instance of sequelize connection
 
 /**
  * Authenticate connection to database
@@ -169,21 +168,22 @@ function getApplications(query) {
     let names = query.name.split(" ")
     return new Promise((resolve, reject) => {
         Person.findAll({
+            raw: true,
             attributes: ['firstname', 'lastname', 'pid'],
             where: { 
                 firstname: names[0],
                 lastname: names[1]
             },
         }).then(resultPerson => {
-            if(resultPerson == {}) {
-                reject({ msg: 'Could not find matching applicants' })
-                return
+            if(resultPerson.length < 1) {
+                reject({ msg: 'Could not find applicants matching query' })
+                return;
             }
-            resVal.firstname = resultPerson[0].dataValues.firstname
-            resVal.lastname = resultPerson[0].dataValues.lastname
+            resVal.firstname = resultPerson[0].firstname
+            resVal.lastname = resultPerson[0].lastname
             Availability.findAll({
                 where: {
-                    pid: resultPerson[0].dataValues.pid,
+                    pid: resultPerson[0].pid,
                     from_date: {
                         [op.gte]: query.timeperiodfrom
                     },
@@ -192,31 +192,40 @@ function getApplications(query) {
                     }
                 }
             }).then(resultAvailability => {
-                //console.log(resultAvailability)
-                if(resultAvailability == {}) {
-                    reject({ msg: 'Could not find matching applicants' })
-                    return
+                if(resultAvailability.length < 1) {
+                    reject({ msg: 'Could not find applicants matching query' })
+                    return;
                 }
                 CompetenceProfile.findAll({
                     attributes: ['competence_id'],
                     where: {
-                        pid: resultPerson[0].dataValues.pid,
+                        pid: resultPerson[0].pid,
                     }
                 }).then(resultCompetenceprof => {
-                    console.log(resultCompetenceprof[0].dataValues.competence_id)
-                    Competence.findAll({
+                    if(resultCompetenceprof.length < 1) {
+                        reject({ msg: 'Could not find applicants matching query' })
+                        return;
+                    }                    Competence.findAll({
                         where: {
-                            competence_id: resultCompetenceprof[0].dataValues.competence_id,
+                            competence_id: resultCompetenceprof[0].competence_id,
                             name: query.competence
                         }                        
-                    }).then(resultsComeptence => {
+                    }).then(resultsCompetence => {
+                        if(resultsCompetence.length < 1) {
+                            reject({ msg: 'Could not find applicants matching query' })
+                            return;
+                        }
                         ApplicationStatus.findAll({
                             attributes: ['application_date'],
                             where: {
-                                person: resultPerson[0].dataValues.pid,
+                                person: resultPerson[0].pid,
                             }
                         }).then(resApplication => {
-                            resVal.applicationdate = resApplication[0].dataValues.application_date
+                            if(resApplication.length < 1) {
+                                reject({ msg: 'Could not find applicants matching query' })
+                                return;
+                            }
+                            resVal.applicationdate = resApplication[0].application_date
                             console.log(resVal)
                             resolve(resVal)
                             return
