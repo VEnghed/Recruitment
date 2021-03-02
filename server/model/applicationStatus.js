@@ -14,11 +14,11 @@ function makeApplicationstatus(Sequelize, DataTypes, person) {
         status: {
             type: DataTypes.STRING,
             allowNull: false,
-            isIn: [['accepted','rejected','unhandled']],
-            validate: {
+            //isIn: [['accepted','rejected','unhandled']],
+            /* validate: {
                 notEmpty: true,
                 isAlpha: true     
-            }
+            } */
         },
         person: {
             type: DataTypes.INTEGER,
@@ -46,6 +46,6 @@ function makeApplicationstatus(Sequelize, DataTypes, person) {
             timestamps: false
         }
     );
-}
+} 
  
 export { makeApplicationstatus };

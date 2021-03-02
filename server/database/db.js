@@ -1,5 +1,6 @@
 import pkg from "sequelize";
 const { Sequelize, DataTypes } = pkg;
+const op = Sequelize.Op;
 import { makePerson } from '../model/person.js'
 import { makeRole } from '../model/role.js'
 import { makeCompetence } from '../model/competence.js'
@@ -147,7 +148,9 @@ function createApplication(applicationData) {
                 status: 'unhandled', //status: unhandled is default
                 person: person.pid,  //make sure this is correct
                 application_date: date
-            }, {transaction: t})
+            }, {transaction: t}).catch(err => {
+              console.log(err);
+            })
         });
     }).then(result => {
         console.log("This is the result: " + result)
@@ -157,8 +160,7 @@ function createApplication(applicationData) {
     }); 
     
 }
-
-
+ 
 /**
  * Returns a set of applications based 
  * on the query criterias
@@ -248,6 +250,9 @@ function getApplications(query) {
                 return
             })
         })  
+    }).catch(err => {
+        console.log("transaction failed: ")
+        throw new Error("Transaction failed: " + err)
     })
     
 }

@@ -142,17 +142,16 @@ function Applicationpage(props) {
      * @param applicationData The data to send
      */
     function sendApplication(applicationData) {
-
-        //Get jsonwebtoken
-        let token = window.localStorage.getItem("token")
-        
+  /*      let application =  {availabilities: applicationData.availabilityArray, 
+                            competencies: applicationData.competenceArray
+        }; */
         console.log("Sending application: " + JSON.stringify(applicationData))
         fetch('/application/post', {
             method: 'POST', 
             headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
+            'Authorization': 'Bearer ' + myToken
             },
             body: JSON.stringify(applicationData)
         }).then(response => {
@@ -165,6 +164,10 @@ function Applicationpage(props) {
             else if(response.status === 200) {    
                 console.log("Success")
                 setMsgToUser("Application saved")
+            }
+            else if (response.status === 302) {
+                console.log("redirect")
+                window.location = "/" 
             }
             else if(response.status === 400) {
                 console.log("Wrong input")
