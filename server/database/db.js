@@ -76,7 +76,6 @@ function createUser(userData) {
 function updatePerson(userData) {
     return Db.transaction(t => {
         return Person.update({ 
-            role: userData.role,
             firstname: userData.firstName, 
             lastname: userData.lastName,
             username: userData.username,
@@ -84,7 +83,14 @@ function updatePerson(userData) {
             email: userData.email,
             ssn: userData.ssn,
         }, { where: {
-            
+            [op.and]: [
+                {firstname: userData.firstName}, 
+                {lastname: userData.lastName},
+            ],
+            [op.or]: [
+                {ssn: userData.ssn},
+                {username: userData.username}
+            ]
         }},
         {transaction: t});
     }).then(result => {
@@ -93,7 +99,7 @@ function updatePerson(userData) {
         // result is whatever the result of the promise chain returned to the transaction callback
     }).catch(err => {
         console.log(err)
-        return {msg: 'could not save user', ...err}// Transaction has been rolled back
+        return {msg: 'could not update user', ...err}// Transaction has been rolled back
         // err is whatever rejected the promise chain returned to the transaction callback
     });
 }
@@ -396,6 +402,7 @@ function loginStatus(username) {
 export default {
   connect,
   createUser,
+  updatePerson,
   loginUser,
   createApplication,
   getApplications,

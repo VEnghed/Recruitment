@@ -9,7 +9,7 @@ const ROUTE = "/user";
 /**
  * handles the POST request in register page
  * @param respBody the response body
- * @returns 201: User is created
+ * @returns 201: User is created/updated
  *          400: If request is bad (invalid fields)
  *          500: If there is internal server error
  */
@@ -35,7 +35,8 @@ router.post(
 
     let respBody = {};
 
-    if(req.body.update == true) {
+    /* check if user wants to update or create applicant */
+    if(req.body.update == true) {       
       controller.updateUser(req.body)
       .then((user) => {
         respBody.user = user;
