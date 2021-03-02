@@ -6,19 +6,11 @@ function makeRole(Sequelize, DataTypes) {
             type: DataTypes.INTEGER,
             primaryKey: true,
             allowNull: false,
-            autoIncrement: true,
-            validate: {
-                isInt: true,      
-                min: 1,
-                max: 2
-            }
+            autoIncrement: true
         },
         name: {
             type: DataTypes.STRING,
             allowNull: false,
-            validate: {
-                isAlpha: true,
-            }
         }}, {
             tableName: 'role',
             timestamps: false

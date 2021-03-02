@@ -8,11 +8,16 @@ function makeCompetenceProfile(Sequelize, DataTypes, person, competence) {
         competence_profile_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
-            autoIncrement: true
+            autoIncrement: true,
+            allowNull: false,
         },
         years_of_experience: {
             type: DataTypes.INTEGER,
-            allownNull: false
+            allownNull: false,
+            validate: {
+                notEmpty: true,
+                isInt: true     
+            }
         },
         pid: {
             type: DataTypes.INTEGER,
@@ -21,7 +26,11 @@ function makeCompetenceProfile(Sequelize, DataTypes, person, competence) {
                 model: person,
                 // This is the column name of the referenced model
                 key: 'pid',
-              }
+            },
+            validate: {
+                notEmpty: true,
+                isInt: true     
+            }
         },
         competence_id: {
             type: DataTypes.INTEGER,
@@ -30,7 +39,11 @@ function makeCompetenceProfile(Sequelize, DataTypes, person, competence) {
                 model: competence,
                 // This is the column name of the referenced model
                 key: 'competence_id',
-              }
+            },
+            validate: {
+                notEmpty: true,
+                isInt: true     
+            }
         }}, {
             tableName: 'competence_profile',
             timestamps: false
