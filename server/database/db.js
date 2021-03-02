@@ -7,7 +7,6 @@ import { makeCompetence } from '../model/competence.js'
 import { makeAvailability } from '../model/availability.js'
 import { makeApplicationstatus } from '../model/applicationStatus.js'
 import { makeCompetenceProfile } from '../model/competenceProfile.js'
-import { application } from 'express';
 
 // instance of sequelize connection
 var Db;

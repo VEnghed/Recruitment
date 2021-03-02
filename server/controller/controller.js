@@ -42,8 +42,8 @@ function sendApplication(application) {
     let user = application.user;
     console.log("user: " + user)
    
-   let app = {competencies: application.competencies, 
-        availabilities: application.availabilities, 
+   let app = {competencies: application.comp, 
+        availabilities: application.avail, 
         username: user
     }
     console.log("in controller: " + JSON.stringify(app))
