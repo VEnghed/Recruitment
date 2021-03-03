@@ -31,12 +31,16 @@ function authorize(req, res, next) {
     }
     req.user = user.username;
     req.role = user.role;
+    next();
 
     controller
       .loginStatus(user.username)
-      .then((doc) => {
-        console.log(doc);
-        next();
+      .then((res) => {
+        if (res.isLoggedin) {
+          res.redirect("/");
+        } else {
+          next();
+        }
       })
       .catch((err) => {
         console.log("oops");

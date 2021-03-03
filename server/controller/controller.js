@@ -49,15 +49,15 @@ function sendApplication(application) {
    //let payload = jwt.verify(application.token) //Grab payload from jwt
    //console.log(payload)
    
-    let temp = application.token;
-    console.log("token: " + temp)
+    let user = application.user;
+    console.log("token: " + user)
    //remake application with username
    //username: payload.username
-   let appl = application;
-   console.log("in controller: " + appl)
-   let app = {competencies: appl.competencies, 
-        availabilities: appl.availabilities, 
-        username: temp
+   
+
+   let app = {competencies: application.comp, 
+        availabilities: application.avail, 
+        username: user
     }
     console.log("in controller: " + app)
    //JSON parse to ensure compatibility

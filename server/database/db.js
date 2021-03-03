@@ -24,7 +24,7 @@ var CompetenceProfile;
  * @throws Throws an exception if connection cannot be established
  */
 function connect() {
-    Db = new Sequelize(process.env.PG_URI, {logging:false});
+    Db = new Sequelize(process.env.PG_URI);
     Role = makeRole(Db, DataTypes)
     Person = makePerson(Db, DataTypes, Role)
     Competence = makeCompetence(Db, DataTypes)
@@ -190,7 +190,9 @@ function createApplication(applicationData) {
                 status: 'unhandled', //status: unhandled is default
                 person: person.pid,  //make sure this is correct
                 application_date: date
-            }, {transaction: t})
+            }, {transaction: t}).catch(err => {
+              console.log(err);
+            })
         });
     }).then(result => {
         console.log("This is the result: " + result)
