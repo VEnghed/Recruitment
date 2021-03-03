@@ -38,9 +38,10 @@ router.post(
     /* check if user wants to update or create applicant */
     if(req.body.update == true) {       
       controller.updateUser(req.body)
-      .then((user) => {
-        respBody.user = user;
-        respBody.statusMessage = "User has been updated"
+      .then((result) => {
+        respBody.user = result.user;
+        respBody.statusMessage = result.msg
+        console.log(result.msg)
         res.status(200).json(respBody);
       })
       .catch((err) => {

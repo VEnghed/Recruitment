@@ -39,7 +39,7 @@ function connect() {
 /**
  * Attemps to create a new applicant user in the database
  * @param {Object} userData object representing data of the user
- * @returns {Promise} Promise object representing the result of
+ * @returns {Object} Object representing the result of
  * the create attempt.
  * @throws Throws an exception if user cannot be saved
  */
@@ -68,7 +68,7 @@ function createUser(userData) {
 /**
  * Attemps to update an existing user in the database
  * @param {Object} userData object representing data of the user
- * @returns {Promise} Promise object representing the result of
+ * @returns {Object} object representing the result of
  * the update attempt.
  * @throws Throws an exception if user cannot be updated or
  * does not exist
@@ -95,11 +95,16 @@ function updatePerson(userData) {
         {transaction: t});
     }).then(result => {
         console.log(result)
-        return result;// Transaction has been committed
+        if(result[0] == true) {
+            return {msg: 'The user has been updated', user: result} // Transaction has been committed
+        }
+        else {
+            return {msg: 'No user with the specified parameters was found'} // no transaction has taken place
+        }
         // result is whatever the result of the promise chain returned to the transaction callback
     }).catch(err => {
         console.log(err)
-        return {msg: 'could not update user', ...err}// Transaction has been rolled back
+        return {msg: 'Internal server error: could not update user', ...err } // Transaction has been rolled back
         // err is whatever rejected the promise chain returned to the transaction callback
     });
 }

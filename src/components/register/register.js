@@ -46,22 +46,30 @@ function Register() {
       },
       body: JSON.stringify(data)
     }).then(response => {
-      if(response.status === 500) {         // internal error
-        setErrormsg(response.statusText)
-      } 
-      if(response.status === 400) {         // bad request
-        setErrormsg(response.statusText)
-      }
-      else if(response.status === 201) {    // user is registered 
+      console.log(response)
+      if(response.status === 201) {    // user is registered 
         //window.location = "/application" 
         return <Redirect to="/application"></Redirect>
       }
+      else if(response.status === 200) {       // ok request
+        response.json().then(result => setErrormsg(result.statusMessage))
+      } 
+      else if(response.status === 400) {       // bad request
+        setErrormsg(response.statusText)
+      }
+      else if(response.status === 500) {       // internal error
+        setErrormsg(response.statusText)
+      } 
     })
+  }
+
+  function selectUpdate(evt) {
+    setUpdate(evt.target.checked)
   }
 
   return (
     <div className="register-container">
-      <h2 className="register-text" >Register</h2>
+      <h2 className="register-text" >Register & Update page</h2>
       <h4 className="errorText" >{errorMsg}</h4>
       <div>
         <input id="fname" type="text" placeholder="first name" value={firstName} onChange={event => setFirstName(event.target.value)} ></input>
@@ -75,8 +83,9 @@ function Register() {
         <input id="email" type="text" placeholder="mail"  value={email} onChange={event => setEmail(event.target.value)}></input>
         <input id="ssn" type="text" placeholder="ssn"  value={ssn} onChange={event => setSsn(event.target.value)}></input>
       </div>
-      <input type="checkbox" id="update-existing" name="update" onClick={event => setUpdate(event.target.checked)}></input>
+      <input type="checkbox" className="update-existing" name="update" onClick={event => setUpdate(event.target.checked)}></input>
       <label for="update">I want to update existing user</label>
+      <em id="update-note">For updating user: firstname, lastname and ssn (or username) must be correct</em>
       <button className="register-btn" onClick={registerUser}>Register</button>
     </div>
   );

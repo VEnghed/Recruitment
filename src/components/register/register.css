@@ -5,16 +5,21 @@
     vertical-align: middle;
 }
 
-.register-btn {
-    margin-top: 20px;
-}
-
 input > .register-container {
     margin: 0px 20px;
 }
 
 .register-btn {
+    margin-top: 20px;
     display: block;
     text-align: center;
     margin: auto;
+}
+
+.update-existing ~ #update-note{
+    display: none;
+}
+
+.update-existing:checked ~ #update-note{
+    display: block;
 }
