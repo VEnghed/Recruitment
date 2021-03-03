@@ -35,12 +35,12 @@ router.post("/search", authorize,
     controller
       .searchApplications(req.body)
       .then((result) => {
-        return res.json([result]);
+        res.json([result]);
       })
       .catch((err) => {
         console.log(err);
         res.statusMessage = err.msg;
-        return res.status(500).end();
+        res.status(500).end();
       });
   }
 );
