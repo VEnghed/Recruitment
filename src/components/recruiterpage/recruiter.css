@@ -1,8 +1,17 @@
-.recruiter-container{
+.recruiter-container {
     text-align: center;
     line-height: 30px;
     vertical-align: middle;
     height: 100%;
+}
 
-
+#application {
+    display:inline-block;
+    background:lightblue;
+    color:black;
+    margin-right: 45px;
+    font-weight: 25px;
+    font-size: 18px;
+    border-radius: 10px;
+    width: 600px;
 }

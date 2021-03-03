@@ -1,6 +1,6 @@
 import pkg from "sequelize";
 const { Sequelize, DataTypes } = pkg;
-const op = Sequelize.Op;
+const op = Sequelize.Op;      // for sequelize query operations
 import { makePerson } from '../model/person.js'
 import { makeRole } from '../model/role.js'
 import { makeCompetence } from '../model/competence.js'
@@ -17,7 +17,6 @@ var Availability;
 var ApplicationStatus;
 var Competence;
 var CompetenceProfile;
-// instance of sequelize connection
 
 /**
  * Authenticate connection to database
@@ -40,7 +39,7 @@ function connect() {
 /**
  * Attemps to create a new applicant user in the database
  * @param {Object} userData object representing data of the user
- * @returns {Promise} Promise object representing the result of
+ * @returns {Object} Object representing the result of
  * the create attempt.
  * @throws Throws an exception if user cannot be saved
  */
@@ -62,6 +61,50 @@ function createUser(userData) {
     }).catch(err => {
         console.log(err)
         return {msg: 'could not save user', ...err}// Transaction has been rolled back
+        // err is whatever rejected the promise chain returned to the transaction callback
+    });
+}
+
+/**
+ * Attemps to update an existing user in the database
+ * @param {Object} userData object representing data of the user
+ * @returns {Object} object representing the result of
+ * the update attempt.
+ * @throws Throws an exception if user cannot be updated or
+ * does not exist
+ */
+function updatePerson(userData) {
+    return Db.transaction(t => {
+        return Person.update({ 
+            firstname: userData.firstName, 
+            lastname: userData.lastName,
+            username: userData.username,
+            password: userData.password,
+            email: userData.email,
+            ssn: userData.ssn,
+        }, { where: {
+            [op.and]: [
+                {firstname: userData.firstName}, 
+                {lastname: userData.lastName},
+            ],
+            [op.or]: [
+                {ssn: userData.ssn},
+                {username: userData.username}
+            ]
+        }},
+        {transaction: t});
+    }).then(result => {
+        console.log(result)
+        if(result[0] == true) {
+            return {msg: 'The user has been updated', user: result} // Transaction has been committed
+        }
+        else {
+            return {msg: 'No user with the specified parameters was found'} // no transaction has taken place
+        }
+        // result is whatever the result of the promise chain returned to the transaction callback
+    }).catch(err => {
+        console.log(err)
+        return {msg: 'Internal server error: could not update user', ...err } // Transaction has been rolled back
         // err is whatever rejected the promise chain returned to the transaction callback
     });
 }
@@ -171,21 +214,22 @@ function getApplications(query) {
     let names = query.name.split(" ")
     return new Promise((resolve, reject) => {
         Person.findAll({
+            raw: true,
             attributes: ['firstname', 'lastname', 'pid'],
             where: { 
                 firstname: names[0],
                 lastname: names[1]
             },
         }).then(resultPerson => {
-            if(resultPerson == {}) {
-                reject({ msg: 'Could not find matching applicants' })
-                return
+            if(resultPerson.length < 1) {
+                reject({ msg: 'Could not find applicants matching query' })
+                return;
             }
-            resVal.firstname = resultPerson[0].dataValues.firstname
-            resVal.lastname = resultPerson[0].dataValues.lastname
+            resVal.firstname = resultPerson[0].firstname
+            resVal.lastname = resultPerson[0].lastname
             Availability.findAll({
                 where: {
-                    pid: resultPerson[0].dataValues.pid,
+                    pid: resultPerson[0].pid,
                     from_date: {
                         [op.gte]: query.timeperiodfrom
                     },
@@ -194,31 +238,40 @@ function getApplications(query) {
                     }
                 }
             }).then(resultAvailability => {
-                //console.log(resultAvailability)
-                if(resultAvailability == {}) {
-                    reject({ msg: 'Could not find matching applicants' })
-                    return
+                if(resultAvailability.length < 1) {
+                    reject({ msg: 'Could not find applicants matching query' })
+                    return;
                 }
                 CompetenceProfile.findAll({
                     attributes: ['competence_id'],
                     where: {
-                        pid: resultPerson[0].dataValues.pid,
+                        pid: resultPerson[0].pid,
                     }
                 }).then(resultCompetenceprof => {
-                    console.log(resultCompetenceprof[0].dataValues.competence_id)
-                    Competence.findAll({
+                    if(resultCompetenceprof.length < 1) {
+                        reject({ msg: 'Could not find applicants matching query' })
+                        return;
+                    }                    Competence.findAll({
                         where: {
-                            competence_id: resultCompetenceprof[0].dataValues.competence_id,
+                            competence_id: resultCompetenceprof[0].competence_id,
                             name: query.competence
                         }                        
-                    }).then(resultsComeptence => {
+                    }).then(resultsCompetence => {
+                        if(resultsCompetence.length < 1) {
+                            reject({ msg: 'Could not find applicants matching query' })
+                            return;
+                        }
                         ApplicationStatus.findAll({
                             attributes: ['application_date'],
                             where: {
-                                person: resultPerson[0].dataValues.pid,
+                                person: resultPerson[0].pid,
                             }
                         }).then(resApplication => {
-                            resVal.applicationdate = resApplication[0].dataValues.application_date
+                            if(resApplication.length < 1) {
+                                reject({ msg: 'Could not find applicants matching query' })
+                                return;
+                            }
+                            resVal.applicationdate = resApplication[0].application_date
                             console.log(resVal)
                             resolve(resVal)
                             return
@@ -356,6 +409,7 @@ function loginStatus(username) {
 export default {
   connect,
   createUser,
+  updatePerson,
   loginUser,
   createApplication,
   getApplications,

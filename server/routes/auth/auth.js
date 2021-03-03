@@ -20,14 +20,14 @@ function getAccessToken(username, role) {
 function authorize(req, res, next) {
   let header = req.header("Authorization");
   if (!header) {
-    res.status(401).json({ error: "no token, log in ya dingus!" });
+    return res.status(401).json({ error: "no token, log in ya dingus!" });
   } else {
     let data = header.split(" ")[1];
     let user;
     try {
       user = jwt.verify(data, process.env.ACCESS_TOKEN_SECRET);
     } catch (error) {
-      res.status(401).json({ error: "invalid access token" });
+      return res.status(401).json({ error: "invalid access token" });
     }
     req.user = user.username;
     req.role = user.role;

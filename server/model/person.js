@@ -80,7 +80,7 @@ function makePerson(Sequelize, DataTypes, Role) {
         allownNull: false,
         isEmail: true,
         validate: {
-          isInt: true,
+          notEmpty: true,
         },
       },
     },
