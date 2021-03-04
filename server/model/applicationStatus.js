@@ -20,19 +20,6 @@ function makeApplicationstatus(Sequelize, DataTypes, person) {
                 isAlpha: true     
             } */
         },
-        person: {
-            type: DataTypes.INTEGER,
-            references: {
-                // This is a reference to another model
-                model: person,
-                // This is the column name of the referenced model
-                key: 'pid',
-            },
-            validate: {
-                notEmpty: true,
-                isInt: true     
-            }
-        },
         application_date: {
             type: DataTypes.DATEONLY,
             allowNull: false,

@@ -17,17 +17,6 @@ function makePerson(Sequelize, DataTypes, Role) {
           isInt: true,
         },
       },
-      role: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: Role,
-          key: "role_id",
-        },
-        validate: {
-          isInt: true,
-        },
-        allownNull: false,
-      },
       firstname: {
         type: DataTypes.STRING,
         allownNull: false,
@@ -89,6 +78,19 @@ function makePerson(Sequelize, DataTypes, Role) {
       timestamps: false,
     }
   );
-}
-
+} 
+  
 export { makePerson };
+
+/*
+role: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: Role,
+          key: "role_id",
+        },
+        validate: {
+          isInt: true,
+        }
+      },
+*/
