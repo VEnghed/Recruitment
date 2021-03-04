@@ -277,14 +277,48 @@ function getApplications(query) {
     let names = query.name.split(" ")
     return new Promise((resolve, reject) => {
         Person.findAll({
+            attributes: ['firstname', 'lastname'],
             raw: true,
-            attributes: ['firstname', 'lastname', 'pid'],
-            where: { 
+            include: [
+                {
+                    model: Availability,
+                    required: true,
+                    uniqure: true,
+                    attributes: [],
+                    where: {
+                        from_date: {[op.gte]: query.timeperiodfrom},
+                        to_date: {[op.lte]: query.timeperiodto}
+                    }
+                }, {
+                    model: ApplicationStatus,
+                    required: true,
+                    attributes: ['application_date'],
+                },
+            ], 
+            where: {  
                 firstname: names[0],
                 lastname: names[1]
             },
-        }).then(resultPerson => {
-            if(resultPerson.length < 1) {
+        }).then(result => {
+            console.log(result)
+            resolve({firstname:"test", lastname:"testagain", applicationdate: "20202020"})
+            return
+        }).catch(err => { 
+            console.log(err)
+            reject({ msg: 'Internal server error: failed to search applicants' })
+            return
+        })
+    })  
+}
+
+// keep
+/*
+resVal.applicationdate = resApplication[0].application_date
+                            
+*/
+
+/*
+if(resultPerson.length < 1) {
                 reject({ msg: 'Could not find applicants matching query' })
                 return;
             }
@@ -293,12 +327,7 @@ function getApplications(query) {
             Availability.findAll({
                 where: {
                     pid: resultPerson[0].pid,
-                    from_date: {
-                        [op.gte]: query.timeperiodfrom
-                    },
-                    to_date: {
-                        [op.lte]: query.timeperiodto
-                    }
+                    
                 }
             }).then(resultAvailability => {
                 if(resultAvailability.length < 1) {
@@ -334,10 +363,7 @@ function getApplications(query) {
                                 reject({ msg: 'Could not find applicants matching query' })
                                 return;
                             }
-                            resVal.applicationdate = resApplication[0].application_date
-                            console.log(resVal)
-                            resolve(resVal)
-                            return
+                            
                         }).catch(err => {
                             console.log(err)
                             reject({ msg: 'Internal server error: failed to search applicants' })
@@ -358,13 +384,7 @@ function getApplications(query) {
                 reject({ msg: 'Internal server error: failed to search applicants' })
                 return
             })
-        }).catch(err => { 
-            console.log(err)
-            reject({ msg: 'Internal server error: failed to search applicants' })
-            return
-        })
-    })  
-}
+*/
 
 /**
  * Returns an object representing the details of
