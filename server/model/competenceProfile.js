@@ -18,33 +18,7 @@ function makeCompetenceProfile(Sequelize, DataTypes, person, competence) {
                 notEmpty: true,
                 isInt: true     
             }
-        },
-        pid: {
-            type: DataTypes.INTEGER,
-            references: {
-                // This is a reference to another model
-                model: person,
-                // This is the column name of the referenced model
-                key: 'pid',
-            },
-            validate: {
-                notEmpty: true,
-                isInt: true     
-            }
-        },
-        competence_id: {
-            type: DataTypes.INTEGER,
-            references: {
-                // This is a reference to another model
-                model: competence,
-                // This is the column name of the referenced model
-                key: 'competence_id',
-            },
-            validate: {
-                notEmpty: true,
-                isInt: true     
-            }
-        }}, {
+        },}, {
             tableName: 'competence_profile',
             timestamps: false
         }

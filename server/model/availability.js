@@ -18,20 +18,6 @@ function makeAvailability(Sequelize, DataTypes, person) {
         to_date: {
             type: DataTypes.DATEONLY,
             allowNull: false
-        },
-        pid: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                // This is a reference to another model
-                model: person,
-                // This is the column name of the referenced model
-                key: 'pid'
-            },
-            validate: {
-                notEmpty: true,
-                isInt: true     
-            }
         }}, {
             tableName: 'availability',
             timestamps: false

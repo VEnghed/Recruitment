@@ -32,7 +32,70 @@ function connect() {
     ApplicationStatus = makeApplicationstatus(Db, DataTypes, Person)
     CompetenceProfile = makeCompetenceProfile(Db, DataTypes, Person, Competence)
 
+    Role.hasMany(Person, { 
+        foreignKey: {
+            name: 'role',
+            type: DataTypes.INTEGER,
+            onDelete: 'CASCADE',
+            allowNull: false,
+            validate: {
+                notEmpty: true,
+                isInt: true     
+            }
+        }
+    });
+    Person.hasMany(Availability, { 
+        foreignKey: {
+            name: 'person',
+            type: DataTypes.INTEGER,
+            onDelete: 'CASCADE',
+            allowNull: false,
+            validate: {
+                notEmpty: true,
+                isInt: true     
+            }
+        }
+    });
+    Person.hasMany(ApplicationStatus, { 
+        foreignKey: {
+            name: 'person',
+            type: DataTypes.INTEGER,
+            onDelete: 'CASCADE',
+            allowNull: false,
+            validate: {
+                notEmpty: true,
+                isInt: true     
+            }
+        }
+    });
+    Person.hasMany(CompetenceProfile, { 
+        foreignKey: {
+            name: 'person',
+            type: DataTypes.INTEGER,
+            onDelete: 'CASCADE',
+            allowNull: false,
+            validate: {
+                notEmpty: true,
+                isInt: true     
+            }
+        }
+    });
+    Competence.hasMany(CompetenceProfile, { 
+        foreignKey: {
+            name: 'competence',
+            type: DataTypes.INTEGER,
+            onDelete: 'CASCADE',
+            allowNull: false,
+            validate: {
+                notEmpty: true,
+                isInt: true     
+            }
+        }
+    });
+    
     Db.sync()
+    //Person.findOne({ include: CompetenceProfile }).then(result => console.log(JSON.stringify(result))) 
+
     return Db.authenticate()
 }
 
