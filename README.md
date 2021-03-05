@@ -29,7 +29,7 @@ The production build is served at the API endpoint.
 
 During development, all the api calls from the app will be proxied to http://localhost:8080 so as to imitate the functionality of the built  and served application.
 
-The app is hosted on Heroku and can be found [here](https://recruiter-of-bots.herokuapp.com/).
+The app is hosted on Heroku and can be found [here](https://recruiter-of-bots.herokuapp.com/). This is kept up to date with the version on the main branch of the repository. Heroku listens to the webhook that is called each time there is a push made to the main branch and will then pull from the main branch, build the application and host it there. 
 
 ## Structure
 
@@ -69,7 +69,7 @@ The backend is built so as to make modification easy, for example: If you would 
 
  The database is currently hosted on [GCP](https://cloud.google.com/) but could be moved anywhere, just update the environment variables with the appropriate parameters.
 
-  The frontend app is served as a static asset located in the parent directory outside of the server directory and the server is connected to the router in the frontend app so as to only serve the necessary chunks of javascript and css. 
+  The frontend app is served as a static asset located in the `build` directory located in the parent directory of the server and is connected to the router in the frontend app so as to only serve the necessary chunks of javascript and css. 
 
   ### Frontend
 
@@ -100,4 +100,5 @@ The frontend consists of a React application that was bootstrapped using `create
  ┣ 📜index.js    
  ┗ 📜logo.svg
 
-If a page has to be changed, it is done by modifying the the corresponding component. If a page is to be added, create the component and add it to the router in `App.js`
+If a page has to be changed, it is done by modifying the the corresponding component. If a page is to be added, create the component and add it to the router in `App.js`. The server will serve the new page automatically after building the application.
+
