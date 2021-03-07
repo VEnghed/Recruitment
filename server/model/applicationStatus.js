@@ -3,7 +3,7 @@
  * @param {*} Sequelize The tool used for connecting to the database
  * @param {*} DataTypes Used for defining the datatypes in the table
  */
-function makeApplicationstatus(Sequelize, DataTypes, person) {
+function makeApplicationstatus(Sequelize, DataTypes) {
     return Sequelize.define('applicationStatus', {
         application_id: {
             type: DataTypes.INTEGER,

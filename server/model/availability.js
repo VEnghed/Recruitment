@@ -3,7 +3,7 @@
  * @param {*} Sequelize The tool used for connecting to the database
  * @param {*} DataTypes Used for defining the datatypes in the table
  */
-function makeAvailability(Sequelize, DataTypes, person) {
+function makeAvailability(Sequelize, DataTypes) {
     return Sequelize.define('availability', {
         availability_id: {
             type: DataTypes.INTEGER,

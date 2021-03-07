@@ -26,12 +26,13 @@ var CompetenceProfile;
 function connect() {
     Db = new Sequelize(process.env.PG_URI);
     Role = makeRole(Db, DataTypes)
-    Person = makePerson(Db, DataTypes, Role)
+    Person = makePerson(Db, DataTypes)
     Competence = makeCompetence(Db, DataTypes)
-    Availability = makeAvailability(Db, DataTypes, Person)
-    ApplicationStatus = makeApplicationstatus(Db, DataTypes, Person)
-    CompetenceProfile = makeCompetenceProfile(Db, DataTypes, Person, Competence)
+    Availability = makeAvailability(Db, DataTypes)
+    ApplicationStatus = makeApplicationstatus(Db, DataTypes)
+    CompetenceProfile = makeCompetenceProfile(Db, DataTypes)
 
+    // lägg i egen kod, associations.js
     Role.hasMany(Person, { 
         foreignKey: {
             name: 'role',
@@ -67,36 +68,45 @@ function connect() {
                 isInt: true     
             }
         }
+    }); 
+    Person.belongsToMany(Competence, { 
+        through: CompetenceProfile, 
+        foreignKey: 'person',
+        type: DataTypes.INTEGER,
+        allownNull: false,
+        validate: {
+            notEmpty: true,
+            isInt: true
+        } 
     });
-    Person.hasMany(CompetenceProfile, { 
-        foreignKey: {
-            name: 'person',
-            type: DataTypes.INTEGER,
-            onDelete: 'CASCADE',
-            allowNull: false,
-            validate: {
-                notEmpty: true,
-                isInt: true     
-            }
+    Competence.belongsToMany(Person, { 
+        through: CompetenceProfile, 
+        foreignKey: 'competence',
+        type: DataTypes.INTEGER,
+        allownNull: false,
+        validate: {
+            notEmpty: true,
+            isInt: true     
         }
     });
-    Competence.hasMany(CompetenceProfile, { 
-        foreignKey: {
-            name: 'competence',
-            type: DataTypes.INTEGER,
-            onDelete: 'CASCADE',
-            allowNull: false,
-            validate: {
-                notEmpty: true,
-                isInt: true     
-            }
-        }
-    });
-    
-    Db.sync()
-    //Person.findOne({ include: CompetenceProfile }).then(result => console.log(JSON.stringify(result))) 
 
-    return Db.authenticate()
+/*
+competence: { 
+            references: {
+                model: competence,
+                key: 'competence_id'
+            },
+             
+        }, person: {
+            
+            references: {
+                model: person,
+                key: 'pid'
+            }, 
+        }
+    */
+    Db.sync({alter:true})  
+    return Db.authenticate() 
 }
 
 /**
@@ -273,17 +283,14 @@ function createApplication(applicationData) {
 function getApplications(query) { 
     console.log(query)
     //from, to, comeptence
-    let resVal = {}
     let names = query.name.split(" ")
+    let resQuery = []
     return new Promise((resolve, reject) => {
         Person.findAll({
             attributes: ['firstname', 'lastname'],
-            raw: true,
             include: [
                 {
                     model: Availability,
-                    required: true,
-                    uniqure: true,
                     attributes: [],
                     where: {
                         from_date: {[op.gte]: query.timeperiodfrom},
@@ -291,17 +298,31 @@ function getApplications(query) {
                     }
                 }, {
                     model: ApplicationStatus,
-                    required: true,
                     attributes: ['application_date'],
-                },
-            ], 
-            where: {  
+                    unique: true
+                }, {
+                    model: Competence, 
+                    required: true,
+                    attributes: [],
+                    through: {
+                        attributes: []  // removes attributes from other models
+                    }
+                }
+            ],
+            where: {   
+                //ändra till IN
                 firstname: names[0],
                 lastname: names[1]
             },
         }).then(result => {
-            console.log(result)
-            resolve({firstname:"test", lastname:"testagain", applicationdate: "20202020"})
+            result.map(applicant => {
+                resQuery.push({ 
+                    firstname: applicant.firstname, 
+                    lastname: applicant.lastname,
+                    applicationdate: applicant.applicationStatuses[0].dataValues.application_date
+                })
+            })
+            resolve(resQuery)
             return
         }).catch(err => { 
             console.log(err)
