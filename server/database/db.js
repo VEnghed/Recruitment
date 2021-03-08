@@ -7,7 +7,6 @@ import { makeCompetence } from '../model/competence.js'
 import { makeAvailability } from '../model/availability.js'
 import { makeApplicationstatus } from '../model/applicationStatus.js'
 import { makeCompetenceProfile } from '../model/competenceProfile.js'
-import { application } from 'express';
 
 // instance of sequelize connection
 var Db;
@@ -33,14 +32,70 @@ function connect() {
     ApplicationStatus = makeApplicationstatus(Db, DataTypes, Person)
     CompetenceProfile = makeCompetenceProfile(Db, DataTypes, Person, Competence)
 
-    /*
-    Role.hasMany(Person, {foreginKey: 'role_id'});
-    Person.belongsTo(Role, {as: 'role', foreginKey: { name: 'role_id'}});
-    Person.hasMany(Availability);
-    Availability.belongsTo(Person, {as: 'person', foreginKey: { name: 'pid'}});
-    */
+    Role.hasMany(Person, { 
+        foreignKey: {
+            name: 'role',
+            type: DataTypes.INTEGER,
+            onDelete: 'CASCADE',
+            allowNull: false,
+            validate: {
+                notEmpty: true,
+                isInt: true     
+            }
+        }
+    });
+    Person.hasMany(Availability, { 
+        foreignKey: {
+            name: 'person',
+            type: DataTypes.INTEGER,
+            onDelete: 'CASCADE',
+            allowNull: false,
+            validate: {
+                notEmpty: true,
+                isInt: true     
+            }
+        }
+    });
+    Person.hasMany(ApplicationStatus, { 
+        foreignKey: {
+            name: 'person',
+            type: DataTypes.INTEGER,
+            onDelete: 'CASCADE',
+            allowNull: false,
+            validate: {
+                notEmpty: true,
+                isInt: true     
+            }
+        }
+    });
+    Person.hasMany(CompetenceProfile, { 
+        foreignKey: {
+            name: 'person',
+            type: DataTypes.INTEGER,
+            onDelete: 'CASCADE',
+            allowNull: false,
+            validate: {
+                notEmpty: true,
+                isInt: true     
+            }
+        }
+    });
+    Competence.hasMany(CompetenceProfile, { 
+        foreignKey: {
+            name: 'competence',
+            type: DataTypes.INTEGER,
+            onDelete: 'CASCADE',
+            allowNull: false,
+            validate: {
+                notEmpty: true,
+                isInt: true     
+            }
+        }
+    });
+    
+    Db.sync({})
+    //Person.findOne({ include: CompetenceProfile }).then(result => console.log(JSON.stringify(result))) 
 
-    Db.sync({alter: true})
     return Db.authenticate()
 }
 
@@ -137,30 +192,35 @@ function createApplication(applicationData) {
             applicationData.availabilities.map((availability) => {
                 return Availability.create({from_date: availability.availableFrom,
                                             to_date: availability.availableTo,
-                                            pid: person.pid
+                                            person: person.pid
                 }, {transaction: t})
             })
-            applicationData.competencies.map((competence) => { 
+            applicationData.competencies.map((competence) => {
+                let yearsexp = parseInt(competence.years_experience)
                 return CompetenceProfile.create({
-                    years_of_experience: competence.years_experience,
-                    pid: person.pid, 
-                    competence_id: competence.competence_id
-                }, {transaction: t})
+                    years_of_experience: yearsexp,
+                    person: person.pid, 
+                    competence: competence.competence_id
+                }, {transaction: t}).catch(err => {
+                    console.log("Error creating profile: " + err)
+                })
             })
            
             return ApplicationStatus.create({
-                status: 'unhandled', //status: unhandled is default
+                status: 'unhandled', //unhandled is default
                 person: person.pid,  //make sure this is correct
                 application_date: date
             }, {transaction: t}).catch(err => {
-              console.log(err);
+              throw new Error("ERROR: " + err);
             })
+        }).catch(err => {
+            console.log("ERROR OCCURRED: " + error);
         });
     }).then(result => {
         console.log("This is the result: " + result)
         return result;
     }).catch(err => {
-        throw new Error("failed to save transaction: " + err);
+        console.log("failed to save transaction: " + err);
     }); 
     
 }
@@ -190,7 +250,7 @@ function getApplications(query) {
             resVal.lastname = resultPerson[0].dataValues.lastname
             Availability.findAll({
                 where: {
-                    pid: resultPerson[0].dataValues.pid,
+                    person: resultPerson[0].dataValues.pid,
                     from_date: {
                         [op.gte]: query.timeperiodfrom
                     },
@@ -207,7 +267,7 @@ function getApplications(query) {
                 CompetenceProfile.findAll({
                     attributes: ['competence_id'],
                     where: {
-                        pid: resultPerson[0].dataValues.pid,
+                        person: resultPerson[0].dataValues.pid,
                     }
                 }).then(resultCompetenceprof => {
                     console.log(resultCompetenceprof[1].dataValues.competence_id)
@@ -260,7 +320,7 @@ function getApplications(query) {
  * an application
  */
 function getApplicationDetails(username) {
-    let application;
+    let appl = {};
     let personId;
     return Db.transaction(t => {
         return Person.findAll({
@@ -269,48 +329,62 @@ function getApplicationDetails(username) {
             }, transaction: t
         }).then(user => {
             if (user.length == 0) {
-                reject('no user found')
+                throw new Error("No user found")
             } else {
-                application = [...application, user[0].dataValues]
+                appl.userdata = user[0].dataValues;
                 personId = user[0].dataValues.pid; //If person is found in database save in variable person
             }
             return Availability.findAll({
                 where: {
-                    pid: personId
+                    person: personId
                 }, transaction: t
             }).then(res => {
                 if (res.length == 0) 
-                    reject("no availabilities found")
+                    throw new Error("no availabilities found")
                 else
-                    application = [...application, res]
+                    appl.availabilities = res;
                 
                 return CompetenceProfile.findAll({
                     where: {
-                        pid: personId
+                        person: personId
                     }, transaction: t
                 }).then(compRes => {
                     if (compRes.length == 0)
-                        reject("no competencies found")
-                    else
-                        application = [...application, compRes]
-                    
+                        throw new Error("no competencies found for" + personId)
+                    else {
+                        appl.competencies = compRes;
+                        appl.competenceNames = [];
+                        compRes.map(competProf  => {
+                            return Competence.findAll({
+                                where: {
+                                    competence_id: competProf.competence
+                                }, transaction: t
+                            }).then(competenceNames => {
+                                if(competenceNames.length == 0)
+                                    throw new Error ("No matches found")
+                                else {
+                                    appl.competenceNames.push({competence_id: competenceNames[0].competence_id, name :competenceNames[0].name}); 
+                                }
+                            })
+                        })
+                    }
                     return ApplicationStatus.findAll({
                     where: {
-                        pid: personId
+                        person: personId
                     }, transaction: t
                     }).then(statusRes => {
                         if (statusRes.length == 0)
-                            reject("no applicationstatus found")
+                            throw new Error("no applicationstatus found")
                         else
-                            application = [...application, statusRes]
+                            appl.appstatus = statusRes;
                     })
                 })
             })
         })
     }).then(result => {
-        console.log(result)
         //application hopefully has all the info we need
-        return application;
+        console.log("Application: "+JSON.stringify(appl))
+        return appl;
     })
     .catch(err => {
         throw Error("Fetching application details failed: " + err)
@@ -338,24 +412,59 @@ function getCompetencies() {
  * @param {username} username The username of the user
  */
 function loginStatus(username) {
-  return new Promise((resolve, reject) => {
-    Person.findOne({ where: { username: username } })
-      .then((doc) => {
-        let now = new Date();
-        now = new Date(now.setHours(now.getHours() + 1));
-        let until = doc.dataValues.loggedInUntil;
-        let difference = until - now;
-		console.log('lul')
-        if (difference < 0) {
-          resolve({ isLoggedIn: false });
-        } else {
-          resolve({ isLoggedIn: true });
-        }
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
+    return new Promise((resolve, reject) => {
+      Person.findOne({ where: { username: username } })
+        .then((doc) => {
+          let now = new Date();
+          now = new Date(now.setHours(now.getHours() + 1));
+          let until = doc.dataValues.loggedInUntil;
+          let difference = until - now;
+          console.log('lul')
+          if (difference < 0) {
+            resolve({ isLoggedIn: false });
+          } else {
+            resolve({ isLoggedIn: true });
+          }
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+}
+
+/**
+ * @description Changes applicationstatus in the database for @param person to @param applicationStatus
+ * @param person The person whos application status gets changed
+ * @param applicationStatus The status to change to
+ */
+function changeApplicationStatus(person, applicationStatus) {
+    return Db.transaction(t => {
+        return Person.findAll({
+            where: {
+                username: person //Subject to change depending on data sent
+            }, transaction: t
+        }).then(user => {
+            if(user.length == 0) {
+                throw new Error("That user was not found in database");
+            }
+            else {
+                let personId = user[0].dataValues.pid;
+                return ApplicationStatus.findAll({
+                    where: {
+                        person: personId //Subject to change depending on data sent
+                    }, transaction: t
+                }).then(applicationstat => {
+                    
+                    return ApplicationStatus.update({status: applicationStatus}, {where: {person: personId},transaction: t})
+                    
+                }).catch(err => {
+                    throw new Error(err);  
+                })
+            }
+        })
+    }).catch(err => {
+        throw new Error("Failed to save applicationstatus: " + err);
+    })
 }
 
 export default {
@@ -365,5 +474,7 @@ export default {
   createApplication,
   getApplications,
   getCompetencies,
+  getApplicationDetails,
   loginStatus,
+  changeApplicationStatus
 };
