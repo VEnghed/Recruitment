@@ -1,12 +1,14 @@
 import pkg from "sequelize";
 const { Sequelize, DataTypes } = pkg;
 const op = Sequelize.Op;      // for sequelize query operations
+
 import { makePerson } from '../model/person.js'
 import { makeRole } from '../model/role.js'
 import { makeCompetence } from '../model/competence.js'
 import { makeAvailability } from '../model/availability.js'
 import { makeApplicationstatus } from '../model/applicationStatus.js'
 import { makeCompetenceProfile } from '../model/competenceProfile.js'
+import associations from './associations.js'
 import { application } from 'express';
 
 // instance of sequelize connection
@@ -26,77 +28,16 @@ var CompetenceProfile;
 function connect() {
     Db = new Sequelize(process.env.PG_URI);
     Role = makeRole(Db, DataTypes)
-    Person = makePerson(Db, DataTypes, Role)
+    Person = makePerson(Db, DataTypes)
     Competence = makeCompetence(Db, DataTypes)
-    Availability = makeAvailability(Db, DataTypes, Person)
-    ApplicationStatus = makeApplicationstatus(Db, DataTypes, Person)
-    CompetenceProfile = makeCompetenceProfile(Db, DataTypes, Person, Competence)
+    Availability = makeAvailability(Db, DataTypes)
+    ApplicationStatus = makeApplicationstatus(Db, DataTypes)
+    CompetenceProfile = makeCompetenceProfile(Db, DataTypes)
 
-    Role.hasMany(Person, { 
-        foreignKey: {
-            name: 'role',
-            type: DataTypes.INTEGER,
-            onDelete: 'CASCADE',
-            allowNull: false,
-            validate: {
-                notEmpty: true,
-                isInt: true     
-            }
-        }
-    });
-    Person.hasMany(Availability, { 
-        foreignKey: {
-            name: 'person',
-            type: DataTypes.INTEGER,
-            onDelete: 'CASCADE',
-            allowNull: false,
-            validate: {
-                notEmpty: true,
-                isInt: true     
-            }
-        }
-    });
-    Person.hasMany(ApplicationStatus, { 
-        foreignKey: {
-            name: 'person',
-            type: DataTypes.INTEGER,
-            onDelete: 'CASCADE',
-            allowNull: false,
-            validate: {
-                notEmpty: true,
-                isInt: true     
-            }
-        }
-    });
-    Person.hasMany(CompetenceProfile, { 
-        foreignKey: {
-            name: 'person',
-            type: DataTypes.INTEGER,
-            onDelete: 'CASCADE',
-            allowNull: false,
-            validate: {
-                notEmpty: true,
-                isInt: true     
-            }
-        }
-    });
-    Competence.hasMany(CompetenceProfile, { 
-        foreignKey: {
-            name: 'competence',
-            type: DataTypes.INTEGER,
-            onDelete: 'CASCADE',
-            allowNull: false,
-            validate: {
-                notEmpty: true,
-                isInt: true     
-            }
-        }
-    });
-    
-    Db.sync()
-    //Person.findOne({ include: CompetenceProfile }).then(result => console.log(JSON.stringify(result))) 
-
-    return Db.authenticate()
+    // creates all associations between the models
+    associations.makeAssociations(Role, Person, Availability, ApplicationStatus, Competence, CompetenceProfile)
+    Db.sync()  
+    return Db.authenticate() 
 }
 
 /**
@@ -158,12 +99,10 @@ function updatePerson(userData) {
         {transaction: t});
     }).then(result => {
         console.log(result)
-        if(result[0] == true) {
+        if(result[0] == true) 
             return {msg: 'The user has been updated', user: result} // Transaction has been committed
-        }
-        else {
+        else 
             return {msg: 'No user with the specified parameters was found'} // no transaction has taken place
-        }
         // result is whatever the result of the promise chain returned to the transaction callback
     }).catch(err => {
         console.log(err)
@@ -233,18 +172,18 @@ function createApplication(applicationData) {
             if (doc.length == 0) {
                 reject('no user found')
             } else {
-                person = doc[0].dataValues; //If person is found in database save in variable person
+                person = doc[0].dataValues; //If person is found in database save in variable person 
             }
             applicationData.availabilities.map((availability) => {
                 return Availability.create({from_date: availability.availableFrom,
                                             to_date: availability.availableTo,
-                                            pid: person.pid
+                                            person: person.pid
                 }, {transaction: t})
             })
             applicationData.competencies.map((competence) => { 
                 return CompetenceProfile.create({
                     years_of_experience: competence.years_experience,
-                    pid: person.pid, 
+                    person: person.pid, 
                     competence_id: competence.competence_id
                 }, {transaction: t})
             })
@@ -267,97 +206,53 @@ function createApplication(applicationData) {
 }
  
 /**
- * Returns a set of applications based 
- * on the query criterias
+ * Returns a set of applications based on the query 
+ * @param query Data containing the query
+ * @returns {Promise} Promise object that represents 
+ * the result of the query attempt
  */
 function getApplications(query) { 
     console.log(query)
-    //from, to, comeptence
-    let resVal = {}
+    // name, from, to, comeptence
     let names = query.name.split(" ")
+    let resQuery = []
     return new Promise((resolve, reject) => {
         Person.findAll({
-            raw: true,
-            attributes: ['firstname', 'lastname', 'pid'],
-            where: { 
+            attributes: ['firstname', 'lastname'],
+            include: [
+                {
+                    model: Availability,
+                    attributes: [],
+                    where: {
+                        from_date: { [op.gte]: query.timeperiodfrom },
+                        to_date: { [op.lte]: query.timeperiodto }
+                    }
+                }, {
+                    model: ApplicationStatus,
+                    attributes: ['application_date'],
+                    unique: true
+                }, {
+                    model: Competence, 
+                    required: true,
+                    attributes: [],
+                    through: {
+                        attributes: []  // removes attributes from other models
+                    }
+                }
+            ],
+            where: {   
                 firstname: names[0],
                 lastname: names[1]
             },
-        }).then(resultPerson => {
-            if(resultPerson.length < 1) {
-                reject({ msg: 'Could not find applicants matching query' })
-                return;
-            }
-            resVal.firstname = resultPerson[0].firstname
-            resVal.lastname = resultPerson[0].lastname
-            Availability.findAll({
-                where: {
-                    pid: resultPerson[0].pid,
-                    from_date: {
-                        [op.gte]: query.timeperiodfrom
-                    },
-                    to_date: {
-                        [op.lte]: query.timeperiodto
-                    }
-                }
-            }).then(resultAvailability => {
-                if(resultAvailability.length < 1) {
-                    reject({ msg: 'Could not find applicants matching query' })
-                    return;
-                }
-                CompetenceProfile.findAll({
-                    attributes: ['competence_id'],
-                    where: {
-                        pid: resultPerson[0].pid,
-                    }
-                }).then(resultCompetenceprof => {
-                    if(resultCompetenceprof.length < 1) {
-                        reject({ msg: 'Could not find applicants matching query' })
-                        return;
-                    }                    Competence.findAll({
-                        where: {
-                            competence_id: resultCompetenceprof[0].competence_id,
-                            name: query.competence
-                        }                        
-                    }).then(resultsCompetence => {
-                        if(resultsCompetence.length < 1) {
-                            reject({ msg: 'Could not find applicants matching query' })
-                            return;
-                        }
-                        ApplicationStatus.findAll({
-                            attributes: ['application_date'],
-                            where: {
-                                person: resultPerson[0].pid,
-                            }
-                        }).then(resApplication => {
-                            if(resApplication.length < 1) {
-                                reject({ msg: 'Could not find applicants matching query' })
-                                return;
-                            }
-                            resVal.applicationdate = resApplication[0].application_date
-                            console.log(resVal)
-                            resolve(resVal)
-                            return
-                        }).catch(err => {
-                            console.log(err)
-                            reject({ msg: 'Internal server error: failed to search applicants' })
-                            return
-                        })                  
-                    }).catch(err => {
-                        console.log(err)
-                        reject({ msg: 'Internal server error: failed to search applicants' })
-                        return
-                    })
-                }).catch(err => {
-                    console.log(err)
-                    reject({ msg: 'Internal server error: failed to search applicants' })
-                    return
+        }).then(result => {
+            result.map(applicant => {
+                resQuery.push({  
+                    firstname: applicant.firstname, 
+                    lastname: applicant.lastname,
                 })
-            }).catch(err => {
-                console.log(err)
-                reject({ msg: 'Internal server error: failed to search applicants' })
-                return
             })
+            resolve(resQuery)
+            return
         }).catch(err => { 
             console.log(err)
             reject({ msg: 'Internal server error: failed to search applicants' })

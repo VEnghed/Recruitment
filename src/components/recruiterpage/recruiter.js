@@ -46,6 +46,8 @@ function Recruiter() {
                 setErrormsg("")
                 response.json().then(result => showApplications(result))
             }
+            else if(response.status === 302)                 // unauthorized: redirect to login
+                return <Redirect to="/"></Redirect>
             else if(response.status === 400)                 // bad request
                 setErrormsg(response.statusText)
             else if(response.status === 401)                 // invalid authentication
@@ -60,8 +62,8 @@ function Recruiter() {
      */
     function showApplications(response) {
        let applications = response.map(application => (
-            <li id="application"  key={application.firstname} onClick={ event => goToDetails(event)}>
-                {application.firstname + " " + application.lastname + "\t-\t" + application.applicationdate} 
+            <li id="application"  key={application.firstname} onClick={event => goToDetails(event)}>
+                {application.firstname + " " + application.lastname} 
             </li>
         ))
         setApplications(applications);
@@ -71,16 +73,16 @@ function Recruiter() {
      * Go to applicant details with certain applicant
      */
     function goToDetails(evt) {
-        let applicant = evt.target.id;
-        window.location = "/details:" + applicant;
-        //return <Redirect to="/details"></Redirect>
+        let detailsUrl = "/details:" + evt.target.id;
+        //window.location = detailsUrl;
+        return <Redirect to={detailsUrl}></Redirect>
     }
 
     /**
      * loads more applicants to view
      */
     function loadMoreApplicants() {
-        //comming soon
+        console.log("more applicants")
     }
         
     return (

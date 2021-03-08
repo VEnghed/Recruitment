@@ -63,10 +63,6 @@ function Register() {
     })
   }
 
-  function selectUpdate(evt) {
-    setUpdate(evt.target.checked)
-  }
-
   return (
     <div className="register-container">
       <h2 className="register-text" >Register & Update page</h2>

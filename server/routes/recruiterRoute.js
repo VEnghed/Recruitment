@@ -35,7 +35,7 @@ router.post("/search", authorize,
     controller
       .searchApplications(req.body)
       .then((result) => {
-        res.json([result]);
+        res.json(result);
       })
       .catch((err) => {
         console.log(err);
