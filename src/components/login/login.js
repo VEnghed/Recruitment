@@ -23,7 +23,7 @@ function Login() {
       .then((response) => response.json())
       .then((data) => {
         window.localStorage.setItem("token", data.accessToken);
-        if (data.role == 2) {
+        if (data.role === 2) {
           window.location = "/application";
         } else {
           window.location = "/recruiter/search";
