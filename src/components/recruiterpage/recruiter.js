@@ -46,8 +46,10 @@ function Recruiter() {
                 setErrormsg("")
                 response.json().then(result => showApplications(result))
             }
-            else if(response.status === 302)                 // unauthorized: redirect to login
-                return <Redirect to="/"></Redirect>
+            else if (response.status === 302) {
+                console.log("redirect")
+                window.location = "/" 
+            }
             else if(response.status === 400)                 // bad request
                 setErrormsg(response.statusText)
             else if(response.status === 401)                 // invalid authentication
