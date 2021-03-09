@@ -226,7 +226,7 @@ function getApplications(query) {
     let resQuery = []
     return Db.transaction(t=> {
         return Person.findAll({
-            attributes: ['firstname', 'lastname'],
+            attributes: ['firstname', 'lastname', 'username'],
             include: [
                 {
                     model: Availability,
@@ -257,16 +257,21 @@ function getApplications(query) {
                 resQuery.push({
                     firstname: applicant.firstname, 
                     lastname: applicant.lastname,
+                    username: applicant.username
                 })
             })
         })
     }).then(res => {
-        return resQuery;
+        if(res.length > 0) 
+            return resQuery;    // if atleast one applicant is found
+        else 
+            return {msg: 'No applicant matching the search was found'}
+            // else there is no applicant matching the search 
     }).catch(err => {
-        console.log("transaction failed: ")
-        throw new Error("Transaction failed: " + err)
+        console.log(err)
+        return {msg: 'Internal server error: could search applicants', ...err }
+        // Error on database
     })
-    
 }
 
 /**

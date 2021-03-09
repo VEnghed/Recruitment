@@ -1,6 +1,5 @@
 import './recruiter.css';
 import { useState } from 'react';
-import { Redirect } from 'react-router-dom'
 
 /**
  * the function component that renders the recruitment page,
@@ -25,12 +24,13 @@ function Recruiter() {
             return;
         }
         
-        let data = ({                                   // the query
+        let data = ({                                       // the query 
             name: name,
             timeperiodfrom: timeperiodfrom,
             timeperiodto: timeperiodto,
             competence: competence                    
         })
+        let token = window.localStorage.getItem("token")   // token
         console.log(data)
 
         fetch('/recruiter/search', {
@@ -38,23 +38,19 @@ function Recruiter() {
             headers: {
               'Accept': 'application/json',
               'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + window.localStorage.getItem("token")   
+              'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify(data)
         }).then(response => {
-            if(response.status === 200) {                    // query is valid 
-                setErrormsg("")
+            if(response.status === 200)                     // query is valid 
                 response.json().then(result => showApplications(result))
-            }
-            else if (response.status === 302) {
-                console.log("redirect")
+            else if (response.status === 302) 
                 window.location = "/" 
-            }
-            else if(response.status === 400)                 // bad request
+            else if(response.status === 400)                // bad request
                 setErrormsg(response.statusText)
-            else if(response.status === 401)                 // invalid authentication
+            else if(response.status === 401)                // invalid authentication
                 setErrormsg(response.statusText)
-            else if(response.status === 500)                 // internal server error
+            else if(response.status === 500)                // internal server error
                 setErrormsg(response.statusText)
         }) 
     }
@@ -63,21 +59,27 @@ function Recruiter() {
      * creating elements & putting values
      */
     function showApplications(response) {
-       let applications = response.map(application => (
-            <li id="application"  key={application.firstname} onClick={event => goToDetails(event)}>
-                {application.firstname + " " + application.lastname} 
-            </li>
-        ))
-        setApplications(applications);
+
+        
+        if(response.length > 0) {    // if there is applicants
+            setErrormsg("")
+            let applications = response.map(application => (
+                <li className="application" id={application.username} key={application.username} onClick={event => goToDetails(event)}>
+                    {application.firstname + " " + application.lastname} 
+                </li>
+            ))
+            setApplications(applications);
+        } else {                     // else there is none
+            setErrormsg(response.statusMessage)
+        }
     }
 
     /**
      * Go to applicant details with certain applicant
      */
     function goToDetails(evt) {
-        let detailsUrl = "/details:" + evt.target.id;
-        //window.location = detailsUrl;
-        return <Redirect to={detailsUrl}></Redirect>
+        let detailsUrl = evt.target.id;
+        window.location = "/details:" + detailsUrl;
     }
 
     /**

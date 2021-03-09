@@ -14,11 +14,6 @@ function makeApplicationstatus(Sequelize, DataTypes) {
         status: {
             type: DataTypes.STRING,
             allowNull: false,
-            //isIn: [['accepted','rejected','unhandled']],
-            /* validate: {
-                notEmpty: true,
-                isAlpha: true     
-            } */
         },
         application_date: {
             type: DataTypes.DATEONLY,

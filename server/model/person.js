@@ -1,5 +1,3 @@
-
-//instance of sequelize
 /**
  * Creates a table in the database called person
  * @param {*} Sequelize The tool used for connecting to the database
@@ -82,16 +80,3 @@ function makePerson(Sequelize, DataTypes) {
 } 
   
 export { makePerson };
-
-/*
-role: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: Role,
-          key: "role_id",
-        },
-        validate: {
-          isInt: true,
-        }
-      },
-*/

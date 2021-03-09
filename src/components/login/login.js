@@ -26,7 +26,7 @@ function Login() {
         if (data.role === 2) {
           window.location = "/application";
         } else {
-          window.location = "/recruiter/search";
+          window.location = "/recruiter";
         }
       })
       .catch(console.log);
