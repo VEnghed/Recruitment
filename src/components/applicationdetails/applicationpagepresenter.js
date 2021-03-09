@@ -50,9 +50,12 @@ function DetailspagePresenter() {
                 console.log(errorsInRes);
                 setMsgToUser("Could not load application details: " + errorsInRes)
             }
+            else if (response.status === 401) {
+                window.location = "/"; 
+            }
             else if (response.status === 302) {
-                console.log("redirect")
-                window.location = "/" 
+                console.log("redirect");
+                window.location = "/" ;
             }
         }).catch(err => {
             console.log("something went wrong" + err);
