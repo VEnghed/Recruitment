@@ -49,7 +49,7 @@ function Recruiter() {
             else if(response.status === 400)                // bad request
                 setErrormsg(response.statusText)
             else if(response.status === 401)                // invalid authentication
-                setErrormsg(response.statusText)
+                window.location = "/" 
             else if(response.status === 500)                // internal server error
                 setErrormsg(response.statusText)
         }) 
