@@ -54,7 +54,7 @@ function Register() {
       }
       else if(response.status === 201) {    // user is registered 
         //window.location = "/application" 
-        return <Redirect to="/application"></Redirect>
+        return <Redirect to="/"></Redirect>
       }
     })
   }

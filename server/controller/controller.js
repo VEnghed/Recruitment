@@ -40,16 +40,13 @@ function sendApplication(application) {
    //console.log(payload)
    
     let user = application.user;
-    console.log("token: " + user)
-   //remake application with username
-   //username: payload.username
+    console.log("user: " + user)
    
-
    let app = {competencies: application.comp, 
         availabilities: application.avail, 
         username: user
     }
-    console.log("in controller: " + app)
+    console.log("in controller: " + JSON.stringify(app))
    //JSON parse to ensure compatibility
    return db.createApplication(app)
 }
@@ -70,6 +67,10 @@ function getApplicationDetails(username) {
  */
 function getCompetencies() {
   return db.getCompetencies();
+}
+
+function getApplicationDetails(username) {
+  return db.getApplicationDetails(username)
 }
 
 /**
@@ -107,7 +108,12 @@ export default {
   sendApplication,
   getCompetencies,
   loginStatus,
+<<<<<<< HEAD
   searchApplications,
   getApplicationDetails,
   changeApplicationStatus
+=======
+  getApplicationDetails,
+  searchApplications
+>>>>>>> feature-transactions
 };
