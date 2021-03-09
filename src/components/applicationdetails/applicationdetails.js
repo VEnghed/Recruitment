@@ -12,12 +12,14 @@ function ApplicationDetails(props) {
     let [competencies, setCompetencies] = useState("");
     let [status, setStatus] = useState("");
     let [msgToUser, setMsgToUser] = useState("");
-    let myToken = window.localStorage.getItem("token")
+    let myToken = window.localStorage.getItem("token");
+    
     /**
      * Creates list items containing the important availabilities data
      * @param {*} themProps Contains the data
      */
     function listAvailabilities(themProps) {
+        console.log("props " + JSON.stringify(themProps));
         let avails = themProps.availabilities;
         let avs = avails.map(av => (
             <li><p>From: {av.from_date}, To: {av.to_date}</p></li>
@@ -31,18 +33,10 @@ function ApplicationDetails(props) {
      */
     function listCompetencies(themProps) {
         let comps = themProps.competencies;
-        let newcmps = [];
 
-        comps.map(cmp => {
-            themProps.competenceNames.map(names => {
-                if (cmp.competence === names.competence_id) {
-                    newcmps.push({name: names.name,exp: cmp.years_of_experience})
-                }
-            })
-        })
 
-        let cmps = newcmps.map(cmp => (
-            <li><p>Competence: {cmp.name}, Years experience: {cmp.exp}</p></li>
+        let cmps = comps.map(cmp => (
+            <li><p>Competence: {cmp.name}, Years experience: {cmp.competenceprofile.years_of_experience}</p></li>
         ));
         setCompetencies(cmps);
     }

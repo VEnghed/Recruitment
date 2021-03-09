@@ -45,7 +45,6 @@ function Applicationpage(props) {
             default:
                 id = 1;
         }
-
         let newElem = {competence_id: id, competence: comp, years_experience: exp};
         competenceArray.push(newElem);
     } 
