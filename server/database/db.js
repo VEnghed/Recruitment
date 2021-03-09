@@ -172,7 +172,7 @@ function createApplication(applicationData) {
         })
         .then(doc => {
             if (doc.length == 0) {
-                reject('no user found')
+                throw new Error('no user found');
             } else {
                 person = doc[0].dataValues; //If person is found in database save in variable person 
             }
@@ -180,7 +180,9 @@ function createApplication(applicationData) {
                 return Availability.create({from_date: availability.availableFrom,
                                             to_date: availability.availableTo,
                                             person: person.pid
-                }, {transaction: t})
+                }, {transaction: t}).catch(err => {
+                    throw new Error("Error creating availabilities: " + err)
+                })
             })
             applicationData.competencies.map((competence) => {
                 let yearsexp = parseInt(competence.years_experience)
@@ -189,7 +191,7 @@ function createApplication(applicationData) {
                     person: person.pid, 
                     competence: competence.competence_id
                 }, {transaction: t}).catch(err => {
-                    console.log("Error creating profile: " + err)
+                    throw new Error("Error creating profile: " + err)
                 })
             })
            
@@ -201,13 +203,13 @@ function createApplication(applicationData) {
               throw new Error("ERROR: " + err);
             })
         }).catch(err => {
-            console.log("ERROR OCCURRED: " + error);
+            console.log("ERROR OCCURRED: " + err);
         });
     }).then(result => {
         console.log("This is the result: " + result)
         return result;
     }).catch(err => {
-        console.log("failed to save transaction: " + err);
+        throw new Error("failed to save transaction: " + err);
     }); 
 }
  
