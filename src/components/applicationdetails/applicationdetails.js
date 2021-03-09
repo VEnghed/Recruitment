@@ -60,7 +60,7 @@ function ApplicationDetails(props) {
         listAvailabilities(props);
         listCompetencies(props);
         listAppStatus(props);
-        console.log("details listed")
+        console.log("details listed");
         }, []
     );
 
@@ -81,7 +81,7 @@ function ApplicationDetails(props) {
         let statusChange = {};
         statusChange.person = props.userdata.username;
         statusChange.applicationStatus = "rejected";
-        console.log(statusChange)
+        console.log(statusChange);
         postStatus(statusChange);
     }
 

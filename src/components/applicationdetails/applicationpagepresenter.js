@@ -44,7 +44,7 @@ function DetailspagePresenter() {
                 });
             }
             else if(response.status === 400) {
-                console.log("Wrong input")
+                console.log("Wrong input");
                 //console.log(response)
                 let errorsInRes = response.statusText;
                 console.log(errorsInRes);
