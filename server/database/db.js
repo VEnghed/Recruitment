@@ -401,28 +401,3 @@ export default {
   changeApplicationStatus
 };
 
-/*
-/**
- *
- * @param {username} username The username of the user
- */
-/* function loginStatus(username) {
-    return new Promise((resolve, reject) => {
-      Person.findOne({ where: { username: username } })
-        .then((doc) => {
-          let now = new Date();
-          now = new Date(now.setHours(now.getHours() + 1));
-          let until = doc.dataValues.loggedInUntil;
-          let difference = until - now;
-          console.log('lul')
-          if (difference < 0) {
-            resolve({ isLoggedIn: false });
-          } else {
-            resolve({ isLoggedIn: true });
-          }
-        })
-        .catch((err) => {
-          reject(err);
-        });
-    });
-} */

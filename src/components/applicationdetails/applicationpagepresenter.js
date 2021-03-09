@@ -34,20 +34,28 @@ function DetailspagePresenter() {
                 response.json().then(body => {
                     let deets = body.applicationDetails;
                     console.log(JSON.stringify(body.applicationDetails));
-                    let appDetailsComponent = <ApplicationDetails  userdata={deets.userdata}
-                                                 availabilities={deets.availabilities} 
-                                                 competencies={deets.competencies}
-                                                 competenceNames={deets.competenceNames} 
-                                                 applicationStatus={deets.appstatus}/>;
+                    let userdata = {firstname: deets[0].firstname, lastname: deets[0].lastname, username:deets[0].username, email: deets[0].email};
+                    let appDetailsComponent = <ApplicationDetails
+                                                userdata={userdata}
+                                                availabilities={deets[0].availabilities} 
+                                                competencies={deets[0].competences}
+                                                applicationStatus={deets[0].applicationStatuses}/>;
                     setApplication(appDetailsComponent)
                 });
             }
             else if(response.status === 400) {
-                console.log("Wrong input")
+                console.log("Wrong input");
                 //console.log(response)
                 let errorsInRes = response.statusText;
                 console.log(errorsInRes);
                 setMsgToUser("Could not load application details: " + errorsInRes)
+            }
+            else if (response.status === 401) {
+                window.location = "/"; 
+            }
+            else if (response.status === 302) {
+                console.log("redirect");
+                window.location = "/" ;
             }
         }).catch(err => {
             console.log("something went wrong" + err);
