@@ -94,8 +94,8 @@ function updatePerson(userData) {
                 {ssn: userData.ssn},
                 {username: userData.username}
             ]
-        }},
-        {transaction: t});
+        },transaction: t},
+        );
     }).then(result => {
         console.log(result)
         if(result[0] == true) 
@@ -222,8 +222,8 @@ function getApplications(query) {
     // name, from, to, comeptence
     let names = query.name.split(" ")
     let resQuery = []
-    return new Promise((resolve, reject) => {
-        Person.findAll({
+    return Db.transaction(t=> {
+        return Person.findAll({
             attributes: ['firstname', 'lastname'],
             include: [
                 {
@@ -249,97 +249,17 @@ function getApplications(query) {
             where: {   
                 firstname: names[0],
                 lastname: names[1]
-            },
-        }).then(resultPerson => {
-            if(resultPerson == {}) {
-                reject({ msg: 'Could not find matching applicants' })
-                return
-            }
-            resVal.firstname = resultPerson[0].dataValues.firstname
-            resVal.lastname = resultPerson[0].dataValues.lastname
-            Availability.findAll({
-                where: {
-                    person: resultPerson[0].dataValues.pid,
-                    from_date: {
-                        [op.gte]: query.timeperiodfrom
-                    },
-                    to_date: {
-                        [op.lte]: query.timeperiodto
-                    }
-                }, transaction: t
-            }).then(resultAvailability => {
-                //console.log(resultAvailability)
-                if(resultAvailability == {}) {
-                    reject({ msg: 'Could not find matching applicants' })
-                    return
-                }
-                resVal.firstname = resultPerson[0].dataValues.firstname
-                resVal.lastname = resultPerson[0].dataValues.lastname
-                Availability.findAll({
-                    where: {
-                        person: resultPerson[0].dataValues.pid,
-                        from_date: {
-                            [op.gte]: query.timeperiodfrom
-                        },
-                        to_date: {
-                            [op.lte]: query.timeperiodto
-                        }
-                    }, transaction: t
-                }).then(resultAvailability => {
-                    //console.log(resultAvailability)
-                    if(resultAvailability == {}) {
-                        reject({ msg: 'Could not find matching applicants' })
-                        return
-                    }
-                    CompetenceProfile.findAll({
-                        attributes: ['competence_id'],
-                        where: {
-                            pid: resultPerson[0].dataValues.pid,
-                        }, transaction: t
-                    }).then(resultCompetenceprof => {
-                        console.log(resultCompetenceprof[1].dataValues.competence_id)
-                        Competence.findAll({
-                            where: {
-                                competence_id: resultCompetenceprof[1].dataValues.competence_id,
-                                name: query.competence
-                            }, transaction: t                  
-                        }).then(resultsComeptence => {
-                            ApplicationStatus.findAll({
-                                attributes: ['application_date'],
-                                where: {
-                                    person: resultPerson[0].dataValues.pid,
-                                }, transaction: t
-                            }).then(resApplication => {
-                                resVal.applicationdate = resApplication[0].dataValues.application_date
-                                console.log(resVal)
-                                resolve(resVal)
-                                return
-                            }).catch(err => {
-                                console.log(err)
-                                reject({ msg: 'Internal server error: failed to search applicants' })
-                                return
-                            })                  
-                        }).catch(err => {
-                            console.log(err)
-                            reject({ msg: 'Internal server error: failed to search applicants' })
-                            return
-                        })
-                    }).catch(err => {
-                        console.log(err)
-                        reject({ msg: 'Internal server error: failed to search applicants' })
-                        return
-                    })
-                }).catch(err => {
-                    console.log(err)
-                    reject({ msg: 'Internal server error: failed to search applicants' })
-                    return
+            }, transaction: t
+        }).then(result => {
+            result.map(applicant => {
+                resQuery.push({
+                    firstname: applicant.firstname, 
+                    lastname: applicant.lastname,
                 })
-            }).catch(err => { 
-                console.log(err)
-                reject({ msg: 'Internal server error: failed to search applicants' })
-                return
             })
-        })  
+        })
+    }).then(res => {
+        return resQuery;
     }).catch(err => {
         console.log("transaction failed: ")
         throw new Error("Transaction failed: " + err)
@@ -353,66 +273,26 @@ function getApplications(query) {
  */
 function getApplicationDetails(username) {
     let appl = {};
-    let personId;
     return Db.transaction(t => {
         return Person.findAll({
-        where: {
-            username: username //Subject to change depending on data sent
-        }, transaction: t
-        }).then(user => {
-            if (user.length == 0) {
-                throw new Error("No user found")
-            } else {
-                appl.userdata = user[0].dataValues;
-                personId = user[0].dataValues.pid; //If person is found in database save in variable person
-            }
-            return Availability.findAll({
-                where: {
-                    person: personId
-                }, transaction: t
-            }).then(res => {
-                if (res.length == 0) 
-                    throw new Error("no availabilities found")
-                else
-                    appl.availabilities = res;
-                
-                return CompetenceProfile.findAll({
-                    where: {
-                        person: personId
-                    }, transaction: t
-                }).then(compRes => {
-                    if (compRes.length == 0)
-                        throw new Error("no competencies found for" + personId)
-                    else {
-                        appl.competencies = compRes;
-                        appl.competenceNames = [];
-                        compRes.map(competProf  => {
-                            return Competence.findAll({
-                                where: {
-                                    competence_id: competProf.competence
-                                }, transaction: t
-                            }).then(competenceNames => {
-                                if(competenceNames.length == 0)
-                                    throw new Error ("No matches found")
-                                else {
-                                    appl.competenceNames.push({competence_id: competenceNames[0].competence_id, name :competenceNames[0].name}); 
-                                }
-                            })
-                        })
-                    }
-                    return ApplicationStatus.findAll({
-                    where: {
-                        person: personId
-                    }, transaction: t
-                    }).then(statusRes => {
-                        if (statusRes.length == 0)
-                            throw new Error("no applicationstatus found")
-                        else {
-                            appl.appstatus = statusRes;
-                        }
-                    })
-                })
-            })
+            attributes: ['firstname', 'lastname', 'username', 'email'],
+            include: [
+                {
+                    model: Availability,
+                    required: true,
+                }, {
+                    model: ApplicationStatus,
+                    required: true
+                }, {
+                    model: Competence, 
+                    required: true,
+                }
+            ],
+            where: {   
+                username: username
+            }, transaction: t
+        }).then(res => {
+            appl = res;
         })
     }).then(result => {
         //application hopefully has all the info we need
@@ -420,8 +300,8 @@ function getApplicationDetails(username) {
         return appl;
     })
     .catch(err => {
-        reject("Failed to fetch details: " + err)
-        //throw Error("Fetching application details failed: " + err)
+        
+        throw Error("Fetching application details failed: " + err)
     })
 }
 
@@ -448,8 +328,8 @@ function getCompetencies() {
  * @param {username} username The username of the user
  */
 function loginStatus(username) {
-    return new Promise((resolve, reject) => {
-      Person.findOne({ where: { username: username } })
+    return Db.transaction(t => {
+      return Person.findOne({ where: { username: username }, transaction:t })
         .then((doc) => {
           let now = new Date();
           now = new Date(now.setHours(now.getHours() + 1));
@@ -457,13 +337,13 @@ function loginStatus(username) {
           let difference = until - now;
           console.log('lul')
           if (difference < 0) {
-            resolve({ isLoggedIn: false });
+            return { isLoggedIn: false };
           } else {
-            resolve({ isLoggedIn: true });
+            return { isLoggedIn: true };
           }
         })
         .catch((err) => {
-          reject(err);
+          throw new Error("Error checking status: " + err);
         });
     });
 }
@@ -490,7 +370,7 @@ function changeApplicationStatus(person, applicationStatus) {
                         person: personId //Subject to change depending on data sent
                     }, transaction: t
                 }).then(applicationstat => {
-                    
+                    console.log(applicationstat);
                     return ApplicationStatus.update({status: applicationStatus}, {where: {person: personId},transaction: t})
                     
                 }).catch(err => {
@@ -515,3 +395,29 @@ export default {
   loginStatus,
   changeApplicationStatus
 };
+
+/*
+/**
+ *
+ * @param {username} username The username of the user
+ */
+/* function loginStatus(username) {
+    return new Promise((resolve, reject) => {
+      Person.findOne({ where: { username: username } })
+        .then((doc) => {
+          let now = new Date();
+          now = new Date(now.setHours(now.getHours() + 1));
+          let until = doc.dataValues.loggedInUntil;
+          let difference = until - now;
+          console.log('lul')
+          if (difference < 0) {
+            resolve({ isLoggedIn: false });
+          } else {
+            resolve({ isLoggedIn: true });
+          }
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+} */
