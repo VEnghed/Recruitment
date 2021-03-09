@@ -1,10 +1,9 @@
-
 /**
- * Creates a table in the database called competence_profile
+ * Creates a table in the database called competenceprofile
  * @param {*} Sequelize The tool used for connecting to database
  * @param {*} DataTypes Used for defining the datatypes in the table
  */
-function makeCompetenceProfile(Sequelize, DataTypes, person, competence) {
+function makeCompetenceProfile(Sequelize, DataTypes) {
     return Sequelize.define('competenceprofile', {
         competence_profile_id: {
             type: DataTypes.INTEGER,

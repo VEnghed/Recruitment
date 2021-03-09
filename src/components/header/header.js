@@ -1,5 +1,4 @@
 import './header.css'
-import { Redirect } from 'react-router-dom'
 
 /**
  * An reusable header for all pages,
