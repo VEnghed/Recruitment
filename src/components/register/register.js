@@ -46,8 +46,8 @@ function Register() {
       body: JSON.stringify(data)
     }).then(response => {
       console.log(response)
-      if(response.status === 201) {             // user is registered 
-        window.location = "/application" 
+      if(response.status === 201) {    // user is registered 
+        window.location = "/" 
       }
       else if(response.status === 200) {        // ok request
         response.json().then(result => setErrormsg(result.statusMessage))

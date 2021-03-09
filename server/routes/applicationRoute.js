@@ -42,6 +42,11 @@ router.post(
       res.statusMessage = validationErrors;
       return res.status(400).json(validationErrors);
     }
+
+    if(req.role != 2) {
+      res.statusMessage = "Invalid token: not an authorized recruiter";
+      return res.status(401).end();
+    }
     //Try to send application to database
     let response = {};
     try {

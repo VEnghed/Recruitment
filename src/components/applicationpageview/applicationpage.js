@@ -177,6 +177,10 @@ function Applicationpage(props) {
                 console.log("redirect")
                 window.location = "/" 
             }
+            else if (response.status === 401) {
+                
+                window.location = "/" 
+            }
             else if(response.status === 400) {
                 console.log("Wrong input")
                 //console.log(response)
