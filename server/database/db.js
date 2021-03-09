@@ -259,7 +259,7 @@ function getApplications(query) {
                     to_date: {
                         [op.lte]: query.timeperiodto
                     }
-                }
+                }, transaction: t
             }).then(resultAvailability => {
                 //console.log(resultAvailability)
                 if(resultAvailability == {}) {
@@ -348,11 +348,10 @@ function getApplicationDetails(username) {
     let appl = {};
     let personId;
     return Db.transaction(t => {
-        return new Promise((resolve,reject) => {
-            return Person.findAll({
-            where: {
-                username: username //Subject to change depending on data sent
-            }, transaction: t
+        return Person.findAll({
+        where: {
+            username: username //Subject to change depending on data sent
+        }, transaction: t
         }).then(user => {
             if (user.length == 0) {
                 throw new Error("No user found")
@@ -401,13 +400,13 @@ function getApplicationDetails(username) {
                     }).then(statusRes => {
                         if (statusRes.length == 0)
                             throw new Error("no applicationstatus found")
-                        else
+                        else {
                             appl.appstatus = statusRes;
+                        }
                     })
                 })
             })
         })
-    })
     }).then(result => {
         //application hopefully has all the info we need
         console.log("Application: "+JSON.stringify(appl))

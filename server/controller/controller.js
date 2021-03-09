@@ -69,10 +69,6 @@ function getCompetencies() {
   return db.getCompetencies();
 }
 
-function getApplicationDetails(username) {
-  return db.getApplicationDetails(username)
-}
-
 /**
  *
  * @param {username} username
@@ -108,12 +104,7 @@ export default {
   sendApplication,
   getCompetencies,
   loginStatus,
-<<<<<<< HEAD
   searchApplications,
   getApplicationDetails,
   changeApplicationStatus
-=======
-  getApplicationDetails,
-  searchApplications
->>>>>>> feature-transactions
 };
