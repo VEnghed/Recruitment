@@ -32,10 +32,19 @@ function Applicationpage(props) {
     function addCompetenceToArr (comp, exp) {
         //let newElem = {"competence" : comp, "yearsExperience": exp};
         let id;
-        if (comp === "Korvgrillning")
-            id = 1;
-        else 
-            id = 2;
+        switch (comp) {
+            case "Korvgrillning":
+                id = 1;
+                break;
+            case "Karuselldrift":
+                id = 2;
+                break;
+            case "Städning":
+                id = 3;
+                break;
+            default:
+                id = 1;
+        }
 
         let newElem = {competence_id: id, competence: comp, years_experience: exp};
         competenceArray.push(newElem);
@@ -249,6 +258,7 @@ function Applicationpage(props) {
                                     <option value="">--Välj ett alternativ--</option>
                                     {/*Remove hardcoded alternatives, fetch from database */}
                                     <option value="Korvgrillning">Korvgrillning</option>
+                                    <option value="Karuselldrift">Karuselldrift</option>
                                     <option value="Städning">Städning</option>
                                 </select>
                             </div>

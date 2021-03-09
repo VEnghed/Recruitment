@@ -50,18 +50,26 @@ function sendApplication(application) {
    //console.log(payload)
    
     let user = application.user;
-    console.log("token: " + user)
-   //remake application with username
-   //username: payload.username
+    console.log("user: " + user)
    
-
    let app = {competencies: application.comp, 
         availabilities: application.avail, 
         username: user
     }
-    console.log("in controller: " + app)
+    console.log("in controller: " + JSON.stringify(app))
    //JSON parse to ensure compatibility
    return db.createApplication(app)
+}
+
+/**
+ * @description Retrieves the details of an application by querying the database.
+ * @param {*} username 
+ * @returns The applicationdetails if the query  is successfull, or an error if unsuccessfull
+ */
+function getApplicationDetails(username) {
+  console.log("Requesting applicationdetails from database!")
+  let applicationDeets = db.getApplicationDetails(username)
+  return applicationDeets;
 }
 
 /**
@@ -89,6 +97,16 @@ function searchApplications(query) {
   return db.getApplications(query)
 }
 
+/**
+ * Change the application status of @param person, to @param applicationStatus
+ * @param {*} person The person whos application status will change
+ * @param {*} applicationStatus The status to change to
+ */
+function changeApplicationStatus(person, applicationStatus) {
+  return db.changeApplicationStatus(person, applicationStatus);
+}
+
+
 export default {
   establishDatabaseConnection,
   loginUser,
@@ -97,5 +115,7 @@ export default {
   sendApplication,
   getCompetencies,
   loginStatus,
-  searchApplications
+  searchApplications,
+  getApplicationDetails,
+  changeApplicationStatus
 };

@@ -1,3 +1,4 @@
+
 //instance of sequelize
 /**
  * Creates a table in the database called person

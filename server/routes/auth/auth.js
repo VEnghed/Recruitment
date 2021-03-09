@@ -35,8 +35,10 @@ function authorize(req, res, next) {
 
     controller
       .loginStatus(user.username)
-      .then((res) => {
-        if (res.isLoggedin) {
+      .then((result) => {
+        if (result.isLoggedin) {
+          console.log("auth response" + res)
+          
           res.redirect("/");
         } else {
           next();
