@@ -6,6 +6,8 @@ import { authorize } from "./auth/auth.js";
 const router = express.Router();
 const ROUTE = "/application";
 
+
+
 /**
  * @description Handles a post request on the /applicationpage/post url.
  * Is used when a user wants to send an application
@@ -102,6 +104,10 @@ router.get(
       res.statusMessage = validationErrors;
       return res.status(400).json(validationErrors);
     }
+    if(req.role != 1) {
+      res.statusMessage = "Invalid token: not an authorized recruiter";
+      return res.status(401).end();
+    }
 		let response = {};
 		let appldets = [];
 
@@ -160,6 +166,11 @@ router.post('/status',
       return res.status(400).json(validationErrors);
     }
     
+    if(req.role != 1) {
+      res.statusMessage = "Invalid token: not an authorized recruiter";
+      return res.status(401).end();
+    }
+
 		let response = {};
 		try {
 			console.log("Request: " + JSON.stringify(req.body) + "from: " + req.user);
