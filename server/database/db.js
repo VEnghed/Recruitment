@@ -262,9 +262,11 @@ function getApplications(query) {
             })
         })
     }).then(res => {
-        if(res.length > 0) 
+        console.log("res: " + res);
+        console.log("resquery: " + resQuery);
+        if(resQuery.length > 0) 
             return resQuery;    // if atleast one applicant is found
-        else 
+        else if(resQuery.length <= 0)
             return {msg: 'No applicant matching the search was found'}
             // else there is no applicant matching the search 
     }).catch(err => {

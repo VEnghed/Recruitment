@@ -79,7 +79,7 @@ function Recruiter() {
      */
     function goToDetails(evt) {
         let detailsUrl = evt.target.id;
-        window.location = "/details:" + detailsUrl;
+        window.location = "/details/" + detailsUrl;
     }
 
     /**
