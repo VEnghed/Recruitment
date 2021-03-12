@@ -55,15 +55,9 @@ function Register() {
       else if(response.status === 400) {        // bad request
         setErrormsg(response.statusText)
       }
-<<<<<<< HEAD
-      else if(response.status === 201) {    // user is registered 
-        window.location = "/application" 
-      }
-=======
       else if(response.status === 500) {        // internal error
         setErrormsg(response.statusText)
       } 
->>>>>>> development
     })
   }
 

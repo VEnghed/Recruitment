@@ -22,7 +22,6 @@ function Login() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
         window.localStorage.setItem("token", data.accessToken);
         if(!data.accessToken) {
           return;
