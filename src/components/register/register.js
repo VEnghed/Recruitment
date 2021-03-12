@@ -1,6 +1,5 @@
 import './register.css';
 import { useState } from 'react';
-import { Redirect } from 'react-router-dom'
 
 /**
  * the function component that renders the register page.
@@ -15,6 +14,7 @@ function Register() {
   const [email, setEmail] = useState('')
   const [ssn, setSsn] = useState('')
   const [errorMsg, setErrormsg] = useState('')
+  const [updateExisting, setUpdate] = useState(false)
 
   /**
    * registers a valid user, the user 
@@ -26,14 +26,15 @@ function Register() {
       return
     }
 
-    let newUser = ({
+    let data = ({
       role: 2,
       firstName: firstName,
       lastName: lastName,
       username: username,
       password: password,
       email: email,
-      ssn: ssn
+      ssn: ssn,
+      update: updateExisting
     })
 
     fetch('/user/register', {
@@ -42,25 +43,33 @@ function Register() {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(newUser)
+      body: JSON.stringify(data)
     }).then(response => {
       console.log(response)
-      //check if the user is registered
-      if(response.status === 500) {         // internal error
-        setErrormsg(response.statusText)
+      if(response.status === 201) {    // user is registered 
+        window.location = "/" 
+      }
+      else if(response.status === 200) {        // ok request
+        response.json().then(result => setErrormsg(result.statusMessage))
       } 
-      if(response.status === 400) {         // bad request
+      else if(response.status === 400) {        // bad request
         setErrormsg(response.statusText)
       }
+<<<<<<< HEAD
       else if(response.status === 201) {    // user is registered 
         window.location = "/application" 
       }
+=======
+      else if(response.status === 500) {        // internal error
+        setErrormsg(response.statusText)
+      } 
+>>>>>>> development
     })
   }
 
   return (
     <div className="register-container">
-      <h2 className="register-text" >Register</h2>
+      <h2 className="register-text" >Register & Update page</h2>
       <h4 className="errorText" >{errorMsg}</h4>
       <div>
         <input id="fname" type="text" placeholder="first name" value={firstName} onChange={event => setFirstName(event.target.value)} ></input>
@@ -74,6 +83,9 @@ function Register() {
         <input id="email" type="text" placeholder="mail"  value={email} onChange={event => setEmail(event.target.value)}></input>
         <input id="ssn" type="text" placeholder="ssn"  value={ssn} onChange={event => setSsn(event.target.value)}></input>
       </div>
+      <input type="checkbox" className="update-existing" name="update" onClick={event => setUpdate(event.target.checked)}></input>
+      <label for="update">I want to update existing user</label>
+      <em id="update-note">For updating user: firstname, lastname and ssn (or username) must be correct</em>
       <button className="register-btn" onClick={registerUser}>Register</button>
     </div>
   );

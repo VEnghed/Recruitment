@@ -7,6 +7,8 @@ import Register from './components/register/register.js';
 import Recruiter from './components/recruiterpage/recruiter.js';
 import Success from './components/success.js';
 
+import DetailspagePresenter from './components/applicationdetails/applicationpagepresenter.js';
+
 /**
  * renders the application as a header component
  * and the component of the page currently viewed
@@ -22,6 +24,7 @@ function App() {
           <Route path="/success" component={Success} />
           <Route path="/application" component={Application} />
           <Route path="/recruiter" component={Recruiter} />
+          <Route path="/details/:id" component={DetailspagePresenter} />
         </Switch>
       </Router>
     </div>

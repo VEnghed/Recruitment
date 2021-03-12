@@ -1,10 +1,9 @@
-//instance of sequelize
 /**
  * Creates a table in the database called person
  * @param {*} Sequelize The tool used for connecting to the database
  * @param {*} DataTypes Used for defining the datatypes in the table
  */
-function makePerson(Sequelize, DataTypes, Role) {
+function makePerson(Sequelize, DataTypes) {
   return Sequelize.define(
     "person",
     {
@@ -16,17 +15,6 @@ function makePerson(Sequelize, DataTypes, Role) {
         validate: {
           isInt: true,
         },
-      },
-      role: {
-        type: DataTypes.INTEGER,
-        references: {
-          model: Role,
-          key: "role_id",
-        },
-        validate: {
-          isInt: true,
-        },
-        allownNull: false,
       },
       firstname: {
         type: DataTypes.STRING,
@@ -80,7 +68,7 @@ function makePerson(Sequelize, DataTypes, Role) {
         allownNull: false,
         isEmail: true,
         validate: {
-          isInt: true,
+          notEmpty: true,
         },
       },
     },
@@ -89,6 +77,6 @@ function makePerson(Sequelize, DataTypes, Role) {
       timestamps: false,
     }
   );
-}
-
+} 
+  
 export { makePerson };

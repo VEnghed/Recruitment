@@ -1,6 +1,5 @@
 import './recruiter.css';
 import { useState } from 'react';
-import { Redirect } from 'react-router-dom'
 
 /**
  * the function component that renders the recruitment page,
@@ -25,60 +24,69 @@ function Recruiter() {
             return;
         }
         
-        let data = ({
-            query: {                                                        // the query
-                name: name,
-                timeperiodfrom: timeperiodfrom,
-                timeperiodto: timeperiodto,
-                competence: competence
-            }                                                               // get token for authorization
+        let data = ({                                       // the query 
+            name: name,
+            timeperiodfrom: timeperiodfrom,
+            timeperiodto: timeperiodto,
+            competence: competence                    
         })
+        let token = window.localStorage.getItem("token")   // token
+        console.log(data)
 
         fetch('/recruiter/search', {
             method: 'POST', 
             headers: {
               'Accept': 'application/json',
               'Content-Type': 'application/json',
-              'Authorization':'Bearer ' + window.localStorage.getItem("token")   
+              'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify(data)
         }).then(response => {
-            if(response.status === 500)             // internal error
+            if(response.status === 200)                     // query is valid 
+                response.json().then(result => showApplications(result))
+            else if (response.status === 302) 
+                window.location = "/" 
+            else if(response.status === 400)                // bad request
                 setErrormsg(response.statusText)
-            if(response.status === 400)             // bad request
+            else if(response.status === 401)                // invalid authentication
                 setErrormsg(response.statusText)
-            else if(response.status === 200) {      // query is valid 
-                response.json().then(result => {
-                    console.log(result)
-                    showApplications(result)
-                })
-            }
+            else if(response.status === 500)                // internal server error
+                setErrormsg(response.statusText)
         }) 
     }
 
-    //function for creating elements & putting values
+    /**
+     * creating elements & putting values
+     */
     function showApplications(response) {
-       let applications = response.map(application => (
-            <li key={application.firstname} onClick={() => goToDetails()}>
-                {application.firstname + " " + application.lastname + "\t-\t" + application.applicationdate} 
-            </li>
-        ))
-        setApplications(applications);
+
+        
+        if(response.length > 0) {    // if there is applicants
+            setErrormsg("")
+            let applications = response.map(application => (
+                <li className="application" id={application.username} key={application.username} onClick={event => goToDetails(event)}>
+                    {application.firstname + " " + application.lastname} 
+                </li>
+            ))
+            setApplications(applications);
+        } else {                     // else there is none
+            setErrormsg(response.statusMessage)
+        }
     }
 
     /**
      * Go to applicant details with certain applicant
      */
-    function goToDetails() {
-        window.location = "/details:id" 
-        //return <Redirect to="/details"></Redirect>
+    function goToDetails(evt) {
+        let detailsUrl = evt.target.id;
+        window.location = "/details/" + detailsUrl;
     }
 
     /**
      * loads more applicants to view
      */
     function loadMoreApplicants() {
-        //comming soon
+        console.log("more applicants")
     }
         
     return (
@@ -94,7 +102,7 @@ function Recruiter() {
           </div>
         <hr></hr>
         <div className="search-results" >
-            <ul>{applications}</ul>
+            <ul className="search-data">{applications}</ul>
         </div>
         <button className="load-applicants-btn" onClick={() => loadMoreApplicants()}>Load more applicants</button>
         </div>

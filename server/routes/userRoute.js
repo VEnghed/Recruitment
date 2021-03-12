@@ -9,7 +9,7 @@ const ROUTE = "/user";
 /**
  * handles the POST request in register page
  * @param respBody the response body
- * @returns 201: User is created
+ * @returns 201: User is created/updated
  *          400: If request is bad (invalid fields)
  *          500: If there is internal server error
  */
@@ -22,6 +22,7 @@ router.post(
   body("password").notEmpty().isString().isAlphanumeric(),
   body("email").notEmpty().isString().isEmail(),
   body("ssn").notEmpty().isString(),
+  body("update").notEmpty().isBoolean(),
   (req, res) => {
     console.log("New user attempt: " + JSON.stringify(req.body) + "\n");
 
@@ -31,9 +32,25 @@ router.post(
       error.array().map((err) => (res.statusMessage += err.param + ", "));
       return res.status(400).end();
     }
+
     let respBody = {};
-    controller
-      .registerApplicant(req.body)
+
+    /* check if user wants to update or create applicant */
+    if(req.body.update == true) {       
+      controller.updateUser(req.body)
+      .then((result) => {
+        respBody.user = result.user;
+        respBody.statusMessage = result.msg
+        console.log(result.msg)
+        res.status(200).json(respBody);
+      })
+      .catch((err) => {
+        res.statusMessage = err.msg;
+        res.status(500).end();
+      });
+    }
+    else {  
+      controller.registerApplicant(req.body)
       .then((user) => {
         respBody.user = user;
         res.status(201).json(respBody);
@@ -42,6 +59,7 @@ router.post(
         res.statusMessage = err.msg;
         res.status(500).end();
       });
+    }
   }
 );
 

@@ -22,11 +22,15 @@ function Login() {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data)
         window.localStorage.setItem("token", data.accessToken);
-        if (data.role == 2) {
+        if(!data.accessToken) {
+          return;
+        }
+        if (data.role === 2) {
           window.location = "/application";
-        } else {
-          window.location = "/recruiter/search";
+        } else if (data.role ===1){
+          window.location = "/recruiter";
         }
       })
       .catch(console.log);
