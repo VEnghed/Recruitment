@@ -2,10 +2,16 @@ import { useState } from "react";
 import "./login.css";
 import { Link } from "react-router-dom";
 
+/**
+ * Function component to handle login usecase
+ */
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  /**
+   * Sends a login request to the server, and depending on user, sends to appropriate page
+  */
   function Tellem() {
     let data = {
       username: username,

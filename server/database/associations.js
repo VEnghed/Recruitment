@@ -1,6 +1,15 @@
 import pkg from "sequelize";
 const { DataTypes } = pkg;
 
+/**
+ * Creates associations between tables in the database
+ * @param {*} Role 
+ * @param {*} Person 
+ * @param {*} Availability 
+ * @param {*} ApplicationStatus 
+ * @param {*} Competence 
+ * @param {*} CompetenceProfile 
+ */
 const makeAssociations = (Role, Person, Availability, ApplicationStatus, Competence, CompetenceProfile) => {
     console.log("IT WORKS")
     Role.hasMany(Person, { 

@@ -14,7 +14,7 @@ function establishDatabaseConnection() {
 }
 
 /**
- * login
+ * Logs in a user
  */
 function loginUser({ username, password }) {
   return db.loginUser(username, password);
@@ -46,9 +46,6 @@ async function updateUser(userData) {
 * @param {*} application The application to send.
 */
 function sendApplication(application) {
-   //let payload = jwt.verify(application.token) //Grab payload from jwt
-   //console.log(payload)
-   
     let user = application.user;
     console.log("user: " + user)
    
@@ -80,7 +77,7 @@ function getCompetencies() {
 }
 
 /**
- *
+ * Calls the databases loginstatus function
  * @param {username} username
  */
 function loginStatus(username) {

@@ -2,6 +2,10 @@ import React, { useState, useEffect} from "react";
 import {useParams} from 'react-router-dom';
 import ApplicationDetails from './applicationdetails.js';
 
+
+/**
+ * Function component for the application details page
+ */
 function DetailspagePresenter() {
     let [application, setApplication] = useState("Loading...");
     let myToken = window.localStorage.getItem("token");

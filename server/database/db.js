@@ -9,7 +9,6 @@ import { makeAvailability } from '../model/availability.js'
 import { makeApplicationstatus } from '../model/applicationStatus.js'
 import { makeCompetenceProfile } from '../model/competenceProfile.js'
 import associations from './associations.js'
-import { application } from 'express';
 
 // instance of sequelize connection
 var Db;
@@ -333,7 +332,7 @@ function getCompetencies() {
 }
 
 /**
- *
+ * Checks loginstatus of the user
  * @param {username} username The username of the user
  */
 function loginStatus(username) {
